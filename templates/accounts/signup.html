@@ -1,34 +1,82 @@
+{% include 'base/base.html' %}
+
+{% block content %}
+    
 <form method="POST">
     {% csrf_token %}
     {{ error }} 
     <br>
+    
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="firstname" class="col-form-label">First Name</label>
+        </div>
+        <div class="col-auto">
+            <input type="text" id="firstname" placeholder="First Name" class="form-control" aria-describedby="">
+        </div>
+    </div>
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="lastname" class="col-form-label">Last Name</label>
+        </div>
+        <div class="col-auto">
+            <input type="text" id="lastname" placeholder="Last Name" class="form-control" aria-describedby="">
+        </div>
+    </div>
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="email" class="col-form-label">Email</label>
+        </div>
+        <div class="col-auto">
+            <input type="email" id="email" placeholder="username@gmail.com" class="form-control" aria-describedby="" required>
+        </div>
+    </div>
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="phonenumber" class="col-form-label">Phone No.</label>
+        </div>
+        <div class="col-auto">
+            <input type="tel" id="lastname" class="form-control" aria-describedby="">
+        </div>
+    </div>
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="password" class="col-form-label">Password</label>
+        </div>
+        <div class="col-auto">
+            <input type="password" id="password" class="form-control" aria-describedby="" required>
+        </div>
+        <div class="col-auto">
+            <span id="passwordHelpInline" class="form-text">
+            Must be 8-20 characters long.
+            </span>
+        </div>
+    </div>
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="confirmpassword" class="col-form-label">Confirm Password</label>
+        </div>
+        <div class="col-auto">
+            <input type="password" id="confirmpassword" class="form-control" aria-describedby="" required>
+        </div>
+    </div>
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="bankaccount" class="col-form-label">Bank Account No.</label>
+        </div>
+        <div class="col-auto">
+            <input type="text" id="bankaccount" placeholder="Credit Card No." class="form-control" aria-describedby="">
+        </div>
+    </div>
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="creditcard" class="col-form-label">Credit Card No.</label>
+        </div>
+        <div class="col-auto">
+            <input type="text" id="creditcard" placeholder="Credit Card No." class="form-control" aria-describedby="">
+        </div>
+    </div>
 
-    <label for="firstname">First Name</label>
-    <input type="text" name="firstname" placeholder="First Name"><br>
-
-    <label for="lastname">Last Name</label>
-    <input type="text" name="lastname" placeholder="Last Name"><br>
-
-    <label for="username">User Name</label>
-    <input type="text" name="username" placeholder="Username" required><br>
-
-    <label for="email">Email</label>
-    <input type="email" name="email" placeholder="username@gmail.com" required><br>
-
-    <label for="phonenumber">Phone No.</label>
-    <input type="tel" name="phonenumber"><br>
-
-    <label for="password">Password</label>
-    <input type="password" name="password" required><br>
-
-    <label for="confirmpassword">Confirm Password</label>
-    <input type="password" name="confirmpassword" required><br>
-
-    <label for="bankaccount">Bank Account No.</label>
-    <input type="text" name="bankaccount" placeholder="Bank Account No."><br>
-
-    <label for="creditcard">Credit Card No.</label>
-    <input type="text" name="creditcard" placeholder="Credit Card No."><br>
-
-    <button type="submit">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+{% endblock content %}
