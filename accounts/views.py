@@ -87,12 +87,11 @@ def signup(request):
                 print(data)
                 return render(request, "accounts/signup.html", data)
 
-            """ user = User.objects.create_user(firstname=firstname, lastname=lastname, email=email, username=username, password=password1)
+            user = User.objects.create_user(first_name=firstname, last_name=lastname, email=email, username=username, password=password1)
             user.save()
-            auth.login(request, user) """
-            messages.success(request, 'You are now logged in.')
+            auth.login(request, user)
             # TODO: redirect to home
-            return render(request, "accounts/signup.html")
+            return render(request, "pages/home.html")
         
         
 def signin(request):
@@ -109,7 +108,15 @@ def signin(request):
         cursor.close()
         if result is None:
             messages.error(request,"Invalid login credentials!!")
-            return render(request, "accounts/signin.html")
+            return redirect('signin')
         else:
-            messages.success(request, "Logged in successfully!!")
-            return render(request, "accounts/signin.html")
+            user = auth.authenticate(username=username, password=password)
+            auth.login(request, user)
+            return render(request, "pages/home.html")
+        
+        
+def logout(request):
+    if request.method == 'POST':
+        auth.logout(request)
+        return redirect('home')
+    return redirect('home')
