@@ -1,20 +1,18 @@
-function validateSignupForm() {
-    console.log("okay");
-    let password1 = document.getElementById('password').value;
-    let password2 = document.getElementById('confirmpassword').value;
+$(function () {
+    'use strict';
+    // Showing page loader
+    $(window).on('load', function () {
+        setTimeout(function () {
+            $(".page_loader").fadeOut("fast");
+        }, 200);
+    });
 
-    if(password1.locateCompare(password2) != 0) {
-        alert("Passwords did not match");
-        return false;
-    } else {
-        return true;
-    }
-}
+    $('.hideMessage').on('click',function(){
+        document.getElementById("message").style.display = "None";
+    });
+
+});
 
 setTimeout(function(){
     $('#message').fadeOut('slow');
 }, 4000)
-
-function hideMessage() {
-    document.getElementById("message").style.display = "None";
-}

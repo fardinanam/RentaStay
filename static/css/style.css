@@ -1,3 +1,6 @@
+body{
+    background-color: #535353;
+}
 .alert {
     text-transform: uppercase;
     font-size: 12px;
@@ -14,3 +17,90 @@
 span {
     color: #535353;
 }
+
+.page_loader {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999999;
+    background: url(../img/loader.gif) center no-repeat #fff;
+}
+
+/** Top header start **/
+.top-header{
+    font-family: 'Roboto', sans-serif;
+    display: inline-block;
+    width: 100%;
+}
+
+.top-header.bg-active{
+    background: #222e56;
+}
+
+.top-header .list-inline {
+    padding: 13px 0;
+}
+
+.list-inline a {
+    color: #fff;
+    margin-right: 15px;
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+.top-header .list-inline a:last-child{
+    margin-right: 0;
+}
+
+.list-inline a i {
+    margin-right: 5px;
+}
+
+.top-header ul li {
+    padding: 0 7px;
+    height: 50px;
+    display: inline-block;
+    text-align: center;
+    line-height: 44px;
+    color: #aaa;
+    font-size: 15px;
+}
+
+.top-header ul li:last-child{
+    padding-right: 0;
+}
+
+.top-header .sign-in, .top-header .sign-in:hover {
+    line-height: 36px;
+    color: #ececec;
+    font-size: 13px;
+    background: #2c3b6d;
+    padding: 4px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.top-header ul li a {
+    color: #fff;
+}
+
+.top-header .sign-in, .top-header .sign-in:hover
+
+
+.th-2 .sign-in, .top-header .sign-in:hover {
+    line-height: 50px;
+    color: #ececec;
+    font-size: 13px;
+    background: #2c3b6d;
+    padding: 4px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    background: rgba(0,0,0,0.15);
+    -webkit-box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.2);
+    box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.2);
+}
+
+/** Top header end **/
