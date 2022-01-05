@@ -14,7 +14,3 @@ function validateSignupForm() {
 setTimeout(function(){
     $('#message').fadeOut('slow');
 }, 4000)
-
-function hideMessage() {
-    document.getElementById("message").style.display = "None";
-}

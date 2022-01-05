@@ -7,45 +7,66 @@
 {% block content %}
 <h1 class="text-center">Sign Up</h1>
 <div >
-    <form method="POST" >
+    <form method="POST">
         {% csrf_token %}
-        {% if messages %}
+        <!-- {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-danger text-center" role="alert">
                     {{ message }}  
                 </div>
             {% endfor %}
-        {% endif %}
+        {% endif %} -->
         
+        {% include 'includes/messages.html' %}
         
         <div class="mb-3 row">
             <label for="firstname" class="col-sm-2 col-form-label">First Name</label>
             <div class="col-sm-10">
-                <input type="text" id="firstname" name="firstname" placeholder="First Name" class="form-control" aria-describedby="">
+                {% if firstname %}
+                    <input type="text" id="firstname" name="firstname" value="{{ firstname }}" class="form-control" aria-describedby="">
+                {% else %}
+                    <input type="text" id="firstname" name="firstname" placeholder="First Name" class="form-control" aria-describedby="">
+                {% endif %}
             </div>
         </div>
         <div class="mb-3 row">
             <label for="lastname" class="col-sm-2 col-form-label">Last Name</label>
             <div class="col-sm-10">
-                <input type="text" id="lastname" name="lastname" placeholder="Last Name" class="form-control" aria-describedby="">
+                {% if lastname %}
+                    <input type="text" id="lastname" name="lastname" value="{{ lastname }}" class="form-control" aria-describedby="">
+                {% else %}
+                    <input type="text" id="lastname" name="lastname" placeholder="Last Name" class="form-control" aria-describedby="">
+                {% endif %}
             </div>
         </div>
         <div class="mb-3 row">
             <label for="username" class="col-sm-2 col-form-label">Username</label>
             <div class="col-sm-10">
-                <input type="text" id="username" name="username" placeholder="username" class="form-control" aria-describedby="">
+                {% if username %}
+                    <input type="text" id="username" name="username" value="{{ username }}" class="form-control" aria-describedby="" required>
+                {% else %}
+                    <input type="text" id="username" name="username" placeholder="username" class="form-control" aria-describedby="" required>
+                {% endif %}
             </div>
         </div>
         <div class="mb-3 row">
             <label for="email" class="col-sm-2 col-form-label">Email</label>
             <div class="col-sm-10">
-                <input type="email" id="email" name="email" placeholder="username@gmail.com" class="form-control" aria-describedby="" required>
+                {% if email %}
+                    <input type="email" id="email" name="email" value="{{ email }}" class="form-control" aria-describedby="" required>
+                {% else %}
+                    <input type="email" id="email" name="email" placeholder="username@gmail.com" class="form-control" aria-describedby="" required>
+                {% endif %}
             </div>
         </div>
         <div class="mb-3 row">
             <label for="phonenumber" class="col-sm-2 col-form-label">Phone No.</label>
             <div class="col-sm-10">
-                <input type="tel" id="phonenumber" name="phonenumber" placeholder="01XXXXXXX" class="form-control" aria-describedby="">
+                {% if phone %}
+                    <input type="tel" id="phonenumber" name="phonenumber" value="{{ phone }}" class="form-control" aria-describedby="">
+                {% else %}
+                    <input type="tel" id="phonenumber" name="phonenumber" placeholder="01XXXXXXX" class="form-control" aria-describedby="">
+                {% endif %}
             </div>
         </div>
         <div class="mb-3 row">
@@ -63,13 +84,21 @@
         <div class="mb-3 row">
             <label for="bankaccount" class="col-sm-2 col-form-label">Bank Account No.</label>
             <div class="col-sm-10">
-                <input type="text" id="bankaccount" name="bankaccount" placeholder="XXXX XXXXX XXXXX" class="form-control" aria-describedby="">
+                {% if bankacc %}
+                    <input type="text" id="bankaccount" name="bankaccount" value="{{ bankacc }}" class="form-control" aria-describedby="">
+                {% else %}
+                    <input type="text" id="bankaccount" name="bankaccount" placeholder="XXXX XXXXX XXXXX" class="form-control" aria-describedby="">
+                {% endif %}
             </div>
         </div>
         <div class="mb-3 row">
             <label for="creditcard" class="col-sm-2 col-form-label">Credit Card No.</label>
             <div class="col-sm-10">
-                <input type="text" id="creditcard" name="creditcard" placeholder="XXXX XXXX XXXX XXXX" class="form-control" aria-describedby="">
+                {% if creditcard %}
+                    <input type="text" id="creditcard" name="creditcard" value="{{ creditcard }}" class="form-control" aria-describedby="">
+                {% else %}
+                    <input type="text" id="creditcard" name="creditcard" placeholder="XXXX XXXX XXXX XXXX" class="form-control" aria-describedby="">
+                {% endif %}
             </div>
         </div>
         <div class="text-center">

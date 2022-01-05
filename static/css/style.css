@@ -1,0 +1,16 @@
+.alert {
+    text-transform: uppercase;
+    font-size: 12px;
+    border-radius: 0;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.alert .close {
+    line-height: 15px;
+}
+
+span {
+    color: #535353;
+}
