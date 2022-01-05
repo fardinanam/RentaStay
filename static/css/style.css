@@ -1,6 +1,8 @@
 body{
-    background-color: #535353;
+    background-image: url("../img/home-6.jpg"); 
+    background-size: cover;
 }
+
 .alert {
     text-transform: uppercase;
     font-size: 12px;

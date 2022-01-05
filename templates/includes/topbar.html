@@ -24,10 +24,10 @@
                         </li>
                     {% else %}
                         <li>
-                            <a href="#" class="sign-in"><i class="fa fa-sign-in"></i> Login</a>
+                            <a href="{% url 'signin' %}" class="sign-in"><i class="fa fa-sign-in"></i> Login</a>
                         </li>
                         <li>
-                            <a href="#" class="sign-in"><i class="fa fa-user"></i> Register</a>
+                            <a href="{% url 'signup' %}" class="sign-in"><i class="fa fa-user"></i> Register</a>
                         </li>
                     {% endif %}
                 </ul>

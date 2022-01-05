@@ -2,8 +2,8 @@ import hashlib
 
 from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
-from django.contrib import messages
-
+from django.contrib import messages, auth
+from django.contrib.auth.models import User
 
 def signup(request):
     if request.method == 'GET':
@@ -87,5 +87,29 @@ def signup(request):
                 print(data)
                 return render(request, "accounts/signup.html", data)
 
+            """ user = User.objects.create_user(firstname=firstname, lastname=lastname, email=email, username=username, password=password1)
+            user.save()
+            auth.login(request, user) """
+            messages.success(request, 'You are now logged in.')
             # TODO: redirect to home
             return render(request, "accounts/signup.html")
+        
+        
+def signin(request):
+    if request.method == 'GET':
+        return render(request, "accounts/signin.html")
+    elif request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        cursor = connection.cursor()
+        query = "SELECT USERNAME FROM USERS WHERE USERNAME=%s AND PASSWORD=%s"
+        cursor.execute(query, [username,hashed_password])
+        result = cursor.fetchone()
+        cursor.close()
+        if result is None:
+            messages.error(request,"Invalid login credentials!!")
+            return render(request, "accounts/signin.html")
+        else:
+            messages.success(request, "Logged in successfully!!")
+            return render(request, "accounts/signin.html")
