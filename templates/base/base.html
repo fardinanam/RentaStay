@@ -34,9 +34,8 @@
     </head>
     <body>
         {% comment %} <div class="page_loader"></div> {% endcomment %}
-        {% include 'includes/topbar.html' %}
-
         {% include 'includes/navbar.html' %}
+        {% comment %} {% include 'includes/topbar.html' %} {% endcomment %}
         
         <div class="container">
             {% block content %}

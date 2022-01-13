@@ -107,7 +107,8 @@ def profile(request):
             'email': result[4],
             'phone': result[5],
             'bankacc': result[8],
-            'creditcard': result[9]
+            'creditcard': result[9],
+            'update':'disabled'
         }
 
         return render(request, 'accounts/profile.html', data)
