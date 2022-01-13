@@ -3,6 +3,7 @@ import hashlib
 from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
+from django.template import RequestContext
 # from django.contrib.auth.models import User
 
 def signup(request):
@@ -89,11 +90,28 @@ def signin(request):
         else:
             """ user = auth.authenticate(username=username, password=password)
             auth.login(request, user) """
+            request.session['username'] = username
             return render(request, "pages/home.html")
-        
-        
-""" def logout(request):
-    if request.method == 'POST':
-        auth.logout(request)
-        return redirect('home')
-    return redirect('home') """
+
+def profile(request):
+    cursor = connection.cursor()
+    query = "SELECT * FROM USERS WHERE USERNAME=%s"
+    cursor.execute(query, [request.session['username']])
+    result = cursor.fetchone()
+    cursor.close()
+    
+    data = {
+        'username': result[1],
+        'firstname': result[2],
+        'lastname': result[3],
+        'email': result[4],
+        'phone': result[5],
+        'bankacc': result[8],
+        'creditcard': result[9]
+    }
+
+    return render(request, 'accounts/profile.html', data)
+
+def logout(request):
+    request.session.flush()
+    return redirect('home')

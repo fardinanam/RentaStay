@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+    Profile | {{ request.session.username }}
+{% endblock title %}
+
+{% block content %}
+    <div class="">
+        <p>Username: {{ username }}</p><br>
+        <p>First Name: {{ firstname }}</p><br>
+        <p>Last Name: {{ lastname }}</p><br>
+        <p>Email: {{ email }}</p><br>
+        <p>Phone No.: {{ phone }}</p><br>
+        <p>Bank Account No.: {{ bankacc }}</p><br>
+        <p>Credit Card No.: {{ creditcard }}</p><br>
+    </div>
+{% endblock content %}
+
