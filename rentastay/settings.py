@@ -135,3 +135,6 @@ MESSAGE_TAGS = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Expire session after 30 minutes of initialization
+SESSION_COOKIE_AGE = 30 * 60
