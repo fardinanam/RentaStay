@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+    Add Home | {{ request.session.username }}
+{% endblock title %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <h1 class="text-center">Profile</h1>
+        <form style="max-width:70%" method="POST">
+            {% csrf_token %}
+            
+            {% include 'includes/messages.html' %}
+            
+            <div class="mb-3 row">
+                <label for="housename" class="col-sm-2 col-form-label">House Name</label>
+                <div class="col-sm-10">
+                    <input type="text" id="housename" name="housename" value="{{ housename }}" class="form-control" aria-describedby="">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="housenumber" class="col-sm-2 col-form-label">House Number</label>
+                <div class="col-sm-10">
+                    <input type="text" id="housenumber" name="housenumber" value="{{ housenumber }}" class="form-control" aria-describedby="">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="description" class="col-sm-2 col-form-label">Description</label>
+                <div class="col-sm-10">
+                    <input type="textfield" id="description" name="description" value="{{ description }}" class="form-control" aria-describedby="">
+                </div>
+            </div>
+            
+        </form>
+    </div>
+{% endblock content %}
+

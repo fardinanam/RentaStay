@@ -119,3 +119,7 @@ def profile(request):
 def logout(request):
     request.session.flush()
     return redirect('home')
+
+
+def addhome(request):
+    return render(request, 'accounts/addhome.html')
