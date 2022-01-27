@@ -3,6 +3,7 @@ import hashlib
 from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
+from django.http import JsonResponse
 # from django.contrib.auth.models import User
 
 def signup(request):
@@ -122,4 +123,33 @@ def logout(request):
 
 
 def addhome(request):
-    return render(request, 'accounts/addhome.html')
+    cursor = connection.cursor()
+    query = "SELECT * FROM COUNTRIES"
+    cursor.execute(query)
+    result1 = cursor.fetchall()
+    result1 = [country[0] for country in result1]
+    query= "Select STATE_NAME from STATES"
+    cursor.execute(query)
+    result2 = cursor.fetchall()
+    result2 = [state[0] for state in result2]
+    query = "Select CITY_NAME from CITIES"
+    cursor.execute(query)
+    result3 = cursor.fetchall()
+    result3 = [state[0] for state in result3]
+    cursor.close()
+    data = {
+        'countries': result1,
+        'states': result2,
+        'cities': result3
+    }
+    return render(request, 'accounts/addhome.html', data)
+
+def fetch_states(request, key):
+    cursor = connection.cursor()
+    query = "select STATE_NAME from STATES where COUNTRY_NAME=%s"
+    cursor.execute(query,[key])
+    result = cursor.fetchall()
+    result = [state[0] for state in result]
+    #print(JsonResponse(result,safe=False))
+    cursor.close()
+    return JsonResponse(result, safe=False)
