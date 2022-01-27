@@ -2,7 +2,27 @@
 
 {% block title %} RentaStay {% endblock %}
 {% block content %}
+{% load static %}
 
-<h1>This is a home page</h1>
-
+    <div class="container">
+        <div class"row g-3">
+            {% for house in houses %}
+                <div class="p-2 col-12 col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                            <img src="{% static 'img/logos/black-logo.png' %}" class="img-fluid"/>
+                            <a href="#!">
+                            <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ house.2 }}</h5>
+                            <p class="card-text">{{ house.4 }}</p>
+                            <a href="#!" class="btn btn-primary">Button</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
