@@ -144,7 +144,7 @@ def addhome(request):
     }
     return render(request, 'accounts/addhome.html', data)
 
-def fetch_states(request, key):
+def fetch_statenames(request, key):
     cursor = connection.cursor()
     query = "select STATE_NAME from STATES where COUNTRY_NAME=%s"
     cursor.execute(query,[key])
@@ -152,4 +152,18 @@ def fetch_states(request, key):
     result = [state[0] for state in result]
     #print(JsonResponse(result,safe=False))
     cursor.close()
+    return JsonResponse(result, safe=False)
+
+def fetch_citynames(request, key1,key2):
+    cursor = connection.cursor()
+    query = "SELECT STATE_ID FROM STATES WHERE STATE_NAME=%s AND COUNTRY_NAME=%s "
+    cursor.execute(query,[key2, key1])
+    state_id = cursor.fetchone()
+    query = "SELECT CITY_NAME FROM CITIES WHERE STATE_ID=%s"
+    cursor.execute(query,[str(state_id[0])])
+    result = cursor.fetchall()
+    result = [city[0] for city in result]
+    #print(JsonResponse(result,safe=False))
+    cursor.close()
+    print(result)
     return JsonResponse(result, safe=False)
