@@ -128,19 +128,19 @@ def addhome(request):
     cursor.execute(query)
     result1 = cursor.fetchall()
     result1 = [country[0] for country in result1]
-    query= "Select STATE_NAME from STATES"
+    """ query= "Select STATE_NAME from STATES"
     cursor.execute(query)
     result2 = cursor.fetchall()
     result2 = [state[0] for state in result2]
     query = "Select CITY_NAME from CITIES"
     cursor.execute(query)
     result3 = cursor.fetchall()
-    result3 = [state[0] for state in result3]
+    result3 = [state[0] for state in result3] """
     cursor.close()
     data = {
         'countries': result1,
-        'states': result2,
-        'cities': result3
+        #'states': result2,
+        #'cities': result3
     }
     return render(request, 'accounts/addhome.html', data)
 
