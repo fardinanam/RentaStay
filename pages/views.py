@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.db import connection, IntegrityError
 from rentastay import definitions
+from django.http import JsonResponse
 # Create your views here.
-
-def home(request):
+def getHouses():
     cursor = connection.cursor()
-    query = """SELECT HOUSE_NAME, CITY_NAME, STATE_NAME, COUNTRY_NAME
+    query = """SELECT HOUSE_ID, HOUSE_NAME, CITY_NAME, STATE_NAME, COUNTRY_NAME
                 FROM HOUSES JOIN ADDRESSES USING(ADDRESS_ID) 
                 JOIN CITIES USING(CITY_ID) 
                 JOIN STATES USING(STATE_ID) 
@@ -13,6 +13,27 @@ def home(request):
     cursor.execute(query)
     result = definitions.dictfetchall(cursor)
     cursor.close()
-    data = {'houses':result}
-    
+
+    return result
+
+def home(request):
+    houses = getHouses()
+    data = {'houses':houses}
+    print(houses)
     return render(request, 'pages/home.html', data)
+
+def getJsonHouseData(request):
+    houses = getHouses()
+
+    return JsonResponse({'data':houses})
+
+def house(request):
+    houseId = request.GET['houseId']
+    print(f"house id from GET is {houseId}")
+    cursor = connection.cursor()
+    query = "SELECT * FROM HOUSES WHERE HOUSE_ID = %s"
+    cursor.execute(query, [houseId])
+    result = definitions.dictfetchone(cursor)
+    cursor.close()
+
+    return render(request, 'pages/house.html', {'house':result[0]})
