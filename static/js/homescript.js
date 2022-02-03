@@ -1,5 +1,3 @@
-console.log('hello from home')
-
 const houseCardTemplate = document.querySelector("[house-card-template]")
 const houseCardsContainer = document.querySelector("[house-cards-container]")
 const searchInput = document.querySelector("[houses-search]")
