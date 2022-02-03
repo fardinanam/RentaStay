@@ -31,9 +31,11 @@ def house(request):
     houseId = request.GET['houseId']
     # print(f"house id from GET is {houseId}")
     cursor = connection.cursor()
-    query = "SELECT * FROM HOUSES WHERE HOUSE_ID = %s"
+    query = """SELECT * 
+            FROM HOUSES JOIN USERS USING(USER_ID)
+            WHERE HOUSE_ID = %s"""
     cursor.execute(query, [houseId])
     result = definitions.dictfetchone(cursor)
     cursor.close()
 
-    return render(request, 'pages/house.html', {'house':result[0]})
+    return render(request, 'pages/house.html', {'house':result})

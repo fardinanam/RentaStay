@@ -1,2 +1,8 @@
-<h1>In House.html</h1>
-<h4> {{ house.HOUSE_NAME }} </h4>
+{% extends 'base/base.html' %}
+{% block content %}
+    <div class="container">
+
+        <h1 class="text-center">In House.html</h1>
+        <h4 class="text-center"> {{ house.HOUSE_NAME }} hosted by {{ house.FIRST_NAME }} {{ house.LAST_NAME }} </h4>
+    </div>
+{% endblock content %}
