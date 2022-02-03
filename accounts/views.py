@@ -54,9 +54,9 @@ def signup(request):
                 hashed_password = hashlib.sha256(password1.encode()).hexdigest()
                 cursor = connection.cursor()
                 query = "INSERT INTO USERS(USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NO, PASSWORD, BANK_ACC_NO, CREDIT_CARD_NO) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-                cursor.execute(query,
-                               [data['username'], data['firstname'], data['lastname'], data['email'], 
-                               data['phone'], hashed_password, data['bankacc'], data['creditcard']])
+                cursor.execute( query,
+                                [data['username'], data['firstname'], data['lastname'], data['email'], 
+                                data['phone'], hashed_password, data['bankacc'], data['creditcard']])
                 cursor.close()
             except IntegrityError:
                 messages.error(request, 'This email already has an account')

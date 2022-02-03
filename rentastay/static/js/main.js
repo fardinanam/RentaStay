@@ -1,3 +1,5 @@
+console.log("hello");
+
 function validateSignupForm() {
     console.log("okay");
     let password1 = document.getElementById('password').value;
@@ -14,3 +16,4 @@ function validateSignupForm() {
 setTimeout(function(){
     $('#message').fadeOut('slow');
 }, 4000)
+
