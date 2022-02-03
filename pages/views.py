@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db import connection, IntegrityError
 from rentastay import definitions
 from django.http import JsonResponse
-# Create your views here.
+
 def getHouses():
     cursor = connection.cursor()
     query = """SELECT HOUSE_ID, HOUSE_NAME, CITY_NAME, STATE_NAME, COUNTRY_NAME
@@ -19,7 +19,7 @@ def getHouses():
 def home(request):
     houses = getHouses()
     data = {'houses':houses}
-    print(houses)
+    # print(houses)
     return render(request, 'pages/home.html', data)
 
 def getJsonHouseData(request):
@@ -29,7 +29,7 @@ def getJsonHouseData(request):
 
 def house(request):
     houseId = request.GET['houseId']
-    print(f"house id from GET is {houseId}")
+    # print(f"house id from GET is {houseId}")
     cursor = connection.cursor()
     query = "SELECT * FROM HOUSES WHERE HOUSE_ID = %s"
     cursor.execute(query, [houseId])

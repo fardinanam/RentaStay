@@ -1,5 +1,3 @@
-console.log("hello");
-
 $(function () {
     'use strict';
     // Showing page loader
