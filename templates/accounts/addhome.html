@@ -9,9 +9,6 @@
     <div class="container">
         <div class="row justify-content-center">
             <h1 class="text-center">Add Home</h1>
-            <form style="max-width:70%" action="{% url 'addhome' %}" method="POST">
-        <div class="row justify-content-center">
-            <h1 class="text-center">Add Home</h1>
             <form style="max-width:70%" action="{% url 'addhome' %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 

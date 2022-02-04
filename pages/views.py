@@ -5,7 +5,7 @@ from django.http import JsonResponse
 
 def getHouses():
     cursor = connection.cursor()
-    query = """SELECT HOUSE_ID, HOUSE_NAME, CITY_NAME, STATE_NAME, COUNTRY_NAME
+    query = """SELECT HOUSE_ID, HOUSE_NAME, CITY_NAME, STATE_NAME, COUNTRY_NAME, PHOTOS_PATH
                 FROM HOUSES JOIN ADDRESSES USING(ADDRESS_ID) 
                 JOIN CITIES USING(CITY_ID) 
                 JOIN STATES USING(STATE_ID) 

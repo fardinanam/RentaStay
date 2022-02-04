@@ -21,9 +21,11 @@ fetch("/housesdata/")
             const card = houseCardTemplate.content.cloneNode(true).children[0]
             const title = card.querySelector("[house-name]")
             const address = card.querySelector("[house-address]")
+            const image = card.querySelector("[house-image]")
 
             title.textContent = house.HOUSE_NAME
             address.textContent = house.CITY_NAME + ', ' + house.COUNTRY_NAME
+            image.src = house.PHOTOS_PATH
             card.onclick = function() {
                 location.href = "/house/?houseId=" + house.HOUSE_ID
             }
