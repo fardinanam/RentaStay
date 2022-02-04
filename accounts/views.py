@@ -1,9 +1,12 @@
+from asyncio.windows_events import NULL
+from audioop import add
 import hashlib
 
 from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import JsonResponse
+from matplotlib.style import use
 # from django.contrib.auth.models import User
 
 def signup(request):
@@ -123,6 +126,66 @@ def logout(request):
 
 
 def addhome(request):
+    if request.method=='POST':
+        countryname = request.POST['countryname']
+        statename = request.POST['statename']
+        cityname = request.POST['cityname']
+        streetname = request.POST['streetname']
+        postalcode = request.POST['postalcode']
+        housename = request.POST['housename']
+        housenumber = request.POST['housenumber']
+        description = request.POST['description']
+        #print(countryname + " " + statename + " " + cityname + " " + streetname + " " + postalcode + " " + housename + " " + housenumber + " " + description + " " + request.session['username'])
+        cursor = connection.cursor()
+        query = "SELECT USER_ID FROM USERS WHERE USERNAME=%s"
+        cursor.execute(query,[request.session['username']])
+        user_id = cursor.fetchone()
+        if user_id is None:
+            messages.error(request, 'Please login to your account!!')
+            return redirect('addhome')
+        user_id = user_id[0]
+        #print("User id: " + str(user_id))
+        
+        query = "SELECT STATE_ID FROM STATES WHERE STATE_NAME=%s AND COUNTRY_NAME=%s"
+        cursor.execute(query,[statename, countryname])
+        state_id = cursor.fetchone()
+        if state_id is None:
+            messages.error(request, 'Can\'t find the state in your chosen country!!')
+            return redirect('addhome')
+        state_id = state_id[0]
+        #print("State id: " + str(state_id))
+        
+        query = "SELECT CITY_ID FROM CITIES WHERE CITY_NAME=%s AND STATE_ID=%s"
+        cursor.execute(query,[cityname, str(state_id)])
+        city_id = cursor.fetchone()
+        if city_id is None:
+            messages.error(request, 'Can\'t find the city in your chosen state!!')
+            return redirect('addhome')
+        city_id = city_id[0]
+        #print("City id: " + str(city_id))
+        
+        query = "SELECT ADDRESS_ID FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"
+        cursor.execute(query,[streetname, postalcode ,str(city_id)])
+        address_id = cursor.fetchone()
+        if address_id is None:
+            query = "INSERT INTO ADDRESSES(STREET,POST_CODE,CITY_ID) VALUES(%s,%s,%s)"
+            cursor.execute(query,[streetname, postalcode , str(city_id)])
+            #cursor.commit()
+            query = "SELECT ADDRESS_ID FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"
+            cursor.execute(query,[streetname, postalcode ,str(city_id)])
+            address_id = cursor.fetchone()
+            if address_id is None:
+                messages.error(request, 'Can\'t find the address!!')
+                return redirect('addhome')
+        address_id = address_id[0]
+        #print("Address id: " + str(address_id))
+        
+        query = "INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION,PHOTOS_PATH) VALUES(%s,%s,%s,%s,%s,%s)"
+        cursor.execute(query,[str(user_id), str(address_id), housename, str(housenumber), description, NULL]) # We have to handle the photo path 
+        #cursor.commit()
+        messages.success(request,'House added successfully!!')
+        return redirect('home')
+        
     cursor = connection.cursor()
     query = "SELECT * FROM COUNTRIES"
     cursor.execute(query)

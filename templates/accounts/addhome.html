@@ -5,9 +5,10 @@
 {% endblock title %}
 
 {% block content %}
+    {% if request.session.username %}
     <div class="row justify-content-center">
         <h1 class="text-center">Add Home</h1>
-        <form style="max-width:70%" action="" method="POST">
+        <form style="max-width:70%" action="{% url 'addhome' %}" method="POST">
             {% csrf_token %}
             
             {% include 'includes/messages.html' %}
@@ -104,5 +105,10 @@
             </div>
         </form>
     </div>
+    {% else %}
+        <div class="row justify-content-center">
+            <h3> You must be logged in to add a home!! </h3>
+        </div>
+    {% endif %}
 {% endblock content %}
 
