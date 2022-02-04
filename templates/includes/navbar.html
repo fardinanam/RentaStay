@@ -27,26 +27,25 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Contact</a>
                     </li>
-                    </li> 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-user"></i>
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                {% if request.session.username %}
-                    
-                                <li><a href="{% url 'profile' %}" class="dropdown-item" role="button"><i class="fa fa-user"></i>   {{ request.session.username }}</a></li>
-                                
-                                <li><a href="{% url 'logout' %}" class="dropdown-item" role="button"><i class="fa fa-sign-out"></i>   Logout</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-user"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if request.session.username %}
+                
+                            <li><a href="{% url 'profile' %}" class="dropdown-item" role="button"><i class="fa fa-user"></i>   {{ request.session.username }}</a></li>
                             
-                                {% else %}
-                                
-                                <li><a href="{% url 'signin' %}" class="dropdown-item" role="button"><i class="fa fa-sign-in"></i>  Login</a></li>
-                                
-                                <li><a href="{% url 'signup' %}" class="dropdown-item" role="button"><i class="fa fa-user"></i>  Register</a></li>              
+                            <li><a href="{% url 'logout' %}" class="dropdown-item" role="button"><i class="fa fa-sign-out"></i>   Logout</a></li>
+                        
+                            {% else %}
+                            
+                            <li><a href="{% url 'signin' %}" class="dropdown-item" role="button"><i class="fa fa-sign-in"></i>  Login</a></li>
+                            
+                            <li><a href="{% url 'signup' %}" class="dropdown-item" role="button"><i class="fa fa-user"></i>  Register</a></li>              
                             {% endif %}
-                            </ul>
-                        </li> 
+                        </ul>
+                    </li> 
                         {% comment %} <li class="nav-item">
                             <a class="nav-link disabled">Disabled</a>
                         </li> 
@@ -56,7 +55,6 @@
                             </a>
                         </li>
                         {% endcomment %}
-                    </li>
                 </ul>
                 {% comment %} <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">

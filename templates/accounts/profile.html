@@ -5,6 +5,7 @@
 {% endblock title %}
 
 {% block content %}
+<div class="container">
     {% comment %} <div class="">
         <p>Username: {{ username }}</p><br>
         <p>First Name: {{ firstname }}</p><br>
@@ -67,5 +68,6 @@
 
         <a href="{% url 'addhome' %}"><button class="btn btn-primary"> Add Home </button></a>
     </div>
+</div>
 {% endblock content %}
 

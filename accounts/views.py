@@ -71,9 +71,9 @@ def signup(request):
                 hashed_password = hashlib.sha256(password1.encode()).hexdigest()
                 cursor = connection.cursor()
                 query = "INSERT INTO USERS(USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NO, PASSWORD, BANK_ACC_NO, CREDIT_CARD_NO) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-                cursor.execute(query,
-                               [data['username'], data['firstname'], data['lastname'], data['email'], 
-                               data['phone'], hashed_password, data['bankacc'], data['creditcard']])
+                cursor.execute( query,
+                                [data['username'], data['firstname'], data['lastname'], data['email'], 
+                                data['phone'], hashed_password, data['bankacc'], data['creditcard']])
                 cursor.close()
             except IntegrityError:
                 messages.error(request, 'This email already has an account')
@@ -196,7 +196,7 @@ def addhome(request):
         query = "INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION,PHOTOS_PATH) VALUES(%s,%s,%s,%s,%s,%s)"
         cursor.execute(query,[str(user_id), str(address_id), housename, str(housenumber), description, NULL]) # We have to handle the photo path 
         #cursor.commit()
-        messages.success(request,'House added successfully!!')
+        #messages.success(request,'House added successfully!!')
         return redirect('home')
         
     cursor = connection.cursor()
