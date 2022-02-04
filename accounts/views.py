@@ -6,8 +6,21 @@ from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import JsonResponse
-from matplotlib.style import use
 # from django.contrib.auth.models import User
+
+def toLower(s):
+    word=''
+    for i in s:
+        if((i>='a' and i<= 'z') or (i>='A' and i<='Z')):
+            if i.isupper()==True:
+                word+=(i.lower())
+            elif i.islower()==True:
+                word+=i
+            elif i.isspace==True:
+                word+=i
+        else:
+            word+=i
+    return word
 
 def signup(request):
     data = {
@@ -142,7 +155,7 @@ def addhome(request):
         user_id = cursor.fetchone()
         if user_id is None:
             messages.error(request, 'Please login to your account!!')
-            return redirect('addhome')
+            return redirect('signin')
         user_id = user_id[0]
         #print("User id: " + str(user_id))
         
@@ -165,14 +178,14 @@ def addhome(request):
         #print("City id: " + str(city_id))
         
         query = "SELECT ADDRESS_ID FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"
-        cursor.execute(query,[streetname, postalcode ,str(city_id)])
+        cursor.execute(query,[toLower(streetname), toLower(postalcode) ,str(city_id)])
         address_id = cursor.fetchone()
         if address_id is None:
             query = "INSERT INTO ADDRESSES(STREET,POST_CODE,CITY_ID) VALUES(%s,%s,%s)"
-            cursor.execute(query,[streetname, postalcode , str(city_id)])
+            cursor.execute(query,[toLower(streetname), toLower(postalcode) , str(city_id)])
             #cursor.commit()
             query = "SELECT ADDRESS_ID FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"
-            cursor.execute(query,[streetname, postalcode ,str(city_id)])
+            cursor.execute(query,[toLower(streetname), toLower(postalcode) ,str(city_id)])
             address_id = cursor.fetchone()
             if address_id is None:
                 messages.error(request, 'Can\'t find the address!!')
