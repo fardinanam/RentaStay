@@ -7,6 +7,9 @@ from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import JsonResponse
 from rentastay import definitions
+from django.core.files.storage import FileSystemStorage
+
+from rentastay.settings import MEDIA_ROOT
 # from django.contrib.auth.models import User
 
 def toLower(s):
@@ -35,6 +38,9 @@ def IsInputsValid(request,countryname,statename,cityname,streetname,postalcode,h
         return False
     elif streetname=="" or postalcode=="" or housename=="" or housenumber=="":
         messages.error(request,'Please fill up all the field!!')
+        return False
+    elif not request.FILES.get('upload1',False):
+        messages.error(request, 'Please upload an image file of your house!!')
         return False
     return True
 
@@ -100,7 +106,7 @@ def signup(request):
             user.save()
             auth.login(request, user) """
             # TODO: redirect to home
-            return render(request, "pages/home.html")
+            return redirect('home')
         
         
 def signin(request):
@@ -123,7 +129,7 @@ def signin(request):
             """ user = auth.authenticate(username=username, password=password)
             auth.login(request, user) """
             request.session['username'] = username
-            return render(request, "pages/home.html")
+            return redirect('home')
 
 def profile(request):
     if(request.session.has_key('username')):
@@ -173,6 +179,7 @@ def addhome(request):
         user_id = definitions.dictfetchone(cursor)
         if not bool(user_id):
             messages.error(request, 'Please login to your account!!')
+            cursor.close()
             return redirect('signin')
         user_id = user_id["USER_ID"]
         #print("User id: " + str(user_id))
@@ -201,6 +208,7 @@ def addhome(request):
             address_id = definitions.dictfetchone(cursor)
             if not bool(address_id):
                 messages.error(request, 'Can\'t find the address!!')
+                cursor.close()
                 return redirect('addhome')
         address_id = address_id["ADDRESS_ID"]
         #print("Address id: " + str(address_id))
@@ -209,6 +217,22 @@ def addhome(request):
         cursor.execute(query,[str(user_id), str(address_id), housename, str(housenumber), description, NULL]) # We have to handle the photo path 
         #cursor.commit()
         #messages.success(request,'House added successfully!!')
+        query = "SELECT HOUSE_ID FROM HOUSES WHERE USER_ID=%s AND ADDRESS_ID=%s AND HOUSE_NAME=%s AND HOUSE_NO=%s"
+        cursor.execute(query,[str(user_id), str(address_id), housename, str(housenumber)])
+        house_id = definitions.dictfetchone(cursor)
+        if not bool(house_id):
+            messages.error(request, 'Can\'t find the house!!')
+            cursor.close()
+            return redirect('addhome')
+        house_id = house_id["HOUSE_ID"]
+        
+        if request.FILES.get('upload1',False):
+            folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/'
+            upload1 = request.FILES['upload1']
+            fss = FileSystemStorage(location=folder)
+            file = fss.save(upload1.name, upload1)
+            #file_url = fss.url(file)
+        cursor.close()
         return redirect('home')
         
     cursor = connection.cursor()
@@ -216,14 +240,14 @@ def addhome(request):
     cursor.execute(query)
     result1 = cursor.fetchall()
     result1 = [country[0] for country in result1]
-    """ query= "Select STATE_NAME from STATES"
-    cursor.execute(query)
-    result2 = cursor.fetchall()
-    result2 = [state[0] for state in result2]
-    query = "Select CITY_NAME from CITIES"
-    cursor.execute(query)
-    result3 = cursor.fetchall()
-    result3 = [state[0] for state in result3] """
+    # query= "Select STATE_NAME from STATES"
+    # cursor.execute(query)
+    # result2 = cursor.fetchall()
+    # result2 = [state[0] for state in result2]
+    # query = "Select CITY_NAME from CITIES"
+    # cursor.execute(query)
+    # result3 = cursor.fetchall()
+    # result3 = [state[0] for state in result3]
     cursor.close()
     data = {
         'countries': result1,

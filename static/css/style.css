@@ -138,6 +138,10 @@ span {
     padding: 0;
 }
 
+.bg-color-navbar{
+    background: transparent;
+}
+
 /** Media **/
 @media (max-width: 1200px) {
     .main-header .navbar-expand-lg .navbar-nav .nav-link {
