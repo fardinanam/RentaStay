@@ -215,6 +215,8 @@ span {
     }
 }
 
+/** Main header end **/
+
 .hide {
     display: none;
 }
@@ -222,34 +224,32 @@ span {
 .round-search-icon {
     background: white;
     border-right: none;
-    border-radius: 20px 0 0 20px;
+    border-radius: .5rem 0 0 .5rem;
 }
 .form-control {
-    border-radius: 20px;
-}
-
-.form-control:active {
-    box-shadow: none;
+    border-radius: .5rem;
 }
 
 .search-bar {
     border-left: none;
 }
 
+/** Card styles start **/
+
 .card {
     border-radius: .5rem;
-    -webkit-transition: .3s ease-in-out;
-    -moz-transition: .3s ease-in-out;
-    -o-transition: .3s ease-in-out;
-    transition: .3s ease-in-out;
+    -webkit-transition: .2s ease-in-out;
+    -moz-transition: .2s ease-in-out;
+    -o-transition: .2s ease-in-out;
+    transition: .2s ease-in-out;
 }
 
 .card:hover {
-    -webkit-transform: scale(1.05);
-    -moz-transform: scale(1.05);
-    -o-transform: scale(1.05);
-    -ms-transform: scale(1.05);
-    transform: scale(1.05);
+    -webkit-transform: scale(1.01);
+    -moz-transform: scale(1.01);
+    -o-transform: scale(1.01);
+    -ms-transform: scale(1.01);
+    transform: scale(1.01);
 
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -265,3 +265,5 @@ span {
 .img-fluid {
     border-radius: .5rem;
 }
+
+/** Card styles end **/

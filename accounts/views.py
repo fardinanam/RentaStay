@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import JsonResponse
-from matplotlib.style import use
+from rentastay import definitions
 # from django.contrib.auth.models import User
 
 def signup(request):
