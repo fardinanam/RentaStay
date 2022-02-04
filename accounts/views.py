@@ -1,6 +1,7 @@
 from asyncio.windows_events import NULL
 from audioop import add
 import hashlib
+from sqlite3 import Cursor
 
 from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
@@ -77,7 +78,8 @@ def signup(request):
             return render(request, "accounts/signup.html", data)
 
         cursor = connection.cursor()
-        query = "SELECT USERNAME FROM USERS WHERE USERNAME=%s"
+        query = """SELECT USERNAME 
+                FROM USERS WHERE USERNAME=%s"""
         cursor.execute(query, [data['username']])
         result = cursor.fetchone()
         cursor.close()
@@ -92,7 +94,8 @@ def signup(request):
             try:
                 hashed_password = hashlib.sha256(password1.encode()).hexdigest()
                 cursor = connection.cursor()
-                query = "INSERT INTO USERS(USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NO, PASSWORD, BANK_ACC_NO, CREDIT_CARD_NO) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
+                query = """INSERT INTO USERS(USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NO, PASSWORD, BANK_ACC_NO, CREDIT_CARD_NO) 
+                        VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"""
                 cursor.execute( query,
                                 [data['username'], data['firstname'], data['lastname'], data['email'], 
                                 data['phone'], hashed_password, data['bankacc'], data['creditcard']])
@@ -102,10 +105,6 @@ def signup(request):
                 data.update({'email' : None})
                 return render(request, "accounts/signup.html", data)
 
-            """ user = User.objects.create_user(first_name=firstname, last_name=lastname, email=email, username=username, password=password1)
-            user.save()
-            auth.login(request, user) """
-            # TODO: redirect to home
             return redirect('home')
         
         
@@ -118,7 +117,9 @@ def signin(request):
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
         cursor = connection.cursor()
-        query = "SELECT USERNAME FROM USERS WHERE USERNAME=%s AND PASSWORD=%s"
+        query = """SELECT USERNAME 
+                FROM USERS 
+                WHERE USERNAME=%s AND PASSWORD=%s"""
         cursor.execute(query, [username, hashed_password])
         result = cursor.fetchone()
         cursor.close()
@@ -126,15 +127,15 @@ def signin(request):
             messages.error(request,"Invalid login credentials!")
             return redirect('signin')
         else:
-            """ user = auth.authenticate(username=username, password=password)
-            auth.login(request, user) """
             request.session['username'] = username
             return redirect('home')
 
 def profile(request):
     if(request.session.has_key('username')):
         cursor = connection.cursor()
-        query = "SELECT * FROM USERS WHERE USERNAME=%s"
+        query = """SELECT * 
+                FROM USERS 
+                WHERE USERNAME=%s"""
         cursor.execute(query, [request.session['username']])
         result = cursor.fetchone()
         cursor.close()
@@ -174,7 +175,8 @@ def addhome(request):
         if IsInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description) == False:
             return redirect('addhome')
         cursor = connection.cursor()
-        query = "SELECT USER_ID FROM USERS WHERE USERNAME=%s"
+        query = """SELECT USER_ID 
+                FROM USERS WHERE USERNAME=%s"""
         cursor.execute(query,[request.session['username']])
         user_id = definitions.dictfetchone(cursor)
         if not bool(user_id):
@@ -184,27 +186,35 @@ def addhome(request):
         user_id = user_id["USER_ID"]
         #print("User id: " + str(user_id))
         
-        query = "SELECT STATE_ID FROM STATES WHERE STATE_NAME=%s AND COUNTRY_NAME=%s"
+        query = """SELECT STATE_ID 
+                FROM STATES 
+                WHERE STATE_NAME=%s AND COUNTRY_NAME=%s"""
         cursor.execute(query,[statename, countryname])
         state_id = definitions.dictfetchone(cursor)
         state_id = state_id["STATE_ID"]
         #print("State id: " + str(state_id))
         
-        query = "SELECT CITY_ID FROM CITIES WHERE CITY_NAME=%s AND STATE_ID=%s"
-        cursor.execute(query,[cityname, str(state_id)])
+        query = """SELECT CITY_ID 
+                FROM CITIES 
+                WHERE CITY_NAME=%s AND STATE_ID=%s"""
+        cursor.execute(query,[cityname, state_id])
         city_id = definitions.dictfetchone(cursor)
         city_id = city_id["CITY_ID"]
         #print("City id: " + str(city_id))
         
-        query = "SELECT ADDRESS_ID FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"
-        cursor.execute(query,[toLower(streetname), toLower(postalcode) ,str(city_id)])
+        query = """SELECT ADDRESS_ID 
+                FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
+        cursor.execute(query,[toLower(streetname), toLower(postalcode) ,city_id])
         address_id = definitions.dictfetchone(cursor)
         if not bool(address_id):
-            query = "INSERT INTO ADDRESSES(STREET,POST_CODE,CITY_ID) VALUES(%s,%s,%s)"
-            cursor.execute(query,[toLower(streetname), toLower(postalcode) , str(city_id)])
+            query = """INSERT INTO ADDRESSES(STREET,POST_CODE,CITY_ID) 
+                    VALUES(%s,%s,%s)"""
+            cursor.execute(query,[toLower(streetname), toLower(postalcode) , city_id])
             #cursor.commit()
-            query = "SELECT ADDRESS_ID FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"
-            cursor.execute(query,[toLower(streetname), toLower(postalcode) ,str(city_id)])
+            query = """SELECT ADDRESS_ID 
+                    FROM ADDRESSES 
+                    WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
+            cursor.execute(query,[toLower(streetname), toLower(postalcode) ,city_id])
             address_id = definitions.dictfetchone(cursor)
             if not bool(address_id):
                 messages.error(request, 'Can\'t find the address!!')
@@ -213,12 +223,15 @@ def addhome(request):
         address_id = address_id["ADDRESS_ID"]
         #print("Address id: " + str(address_id))
         
-        query = "INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION,PHOTOS_PATH) VALUES(%s,%s,%s,%s,%s,%s)"
-        cursor.execute(query,[str(user_id), str(address_id), housename, str(housenumber), description, NULL]) # We have to handle the photo path 
+        query = """INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION,PHOTOS_PATH) 
+                VALUES(%s,%s,%s,%s,%s,%s)"""
+        cursor.execute(query,[user_id, address_id, housename, housenumber, description, NULL])
         #cursor.commit()
         #messages.success(request,'House added successfully!!')
-        query = "SELECT HOUSE_ID FROM HOUSES WHERE USER_ID=%s AND ADDRESS_ID=%s AND HOUSE_NAME=%s AND HOUSE_NO=%s"
-        cursor.execute(query,[str(user_id), str(address_id), housename, str(housenumber)])
+        query = """SELECT HOUSE_ID 
+                FROM HOUSES 
+                WHERE USER_ID=%s AND ADDRESS_ID=%s AND HOUSE_NAME=%s AND HOUSE_NO=%s"""
+        cursor.execute(query,[user_id, address_id, housename, housenumber])
         house_id = definitions.dictfetchone(cursor)
         if not bool(house_id):
             messages.error(request, 'Can\'t find the house!!')
@@ -227,11 +240,17 @@ def addhome(request):
         house_id = house_id["HOUSE_ID"]
         
         if request.FILES.get('upload1',False):
-            folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/'
+            folder = MEDIA_ROOT + '\\Houses\\' + str(house_id) + '\\'
             upload1 = request.FILES['upload1']
             fss = FileSystemStorage(location=folder)
             file = fss.save(upload1.name, upload1)
+            photoPath = '../media/Houses/' + str(house_id) + upload1.name
             #file_url = fss.url(file)
+            query = """UPDATE HOUSES
+                    SET PHOTOS_PATH = %s
+                    WHERE HOUSE_ID = %s"""
+            cursor.execute(query, [photoPath, house_id])
+
         cursor.close()
         return redirect('home')
         
