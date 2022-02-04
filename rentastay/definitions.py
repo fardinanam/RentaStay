@@ -6,6 +6,7 @@ def dictfetchall(cursor):
     fetchedData = cursor.fetchall()
     if fetchedData is None:
         return None
+      
     columns = [col[0] for col in cursor.description]
     return [
         dict(zip(columns, row))
@@ -16,5 +17,6 @@ def dictfetchone(cursor):
     fetchedData = cursor.fetchone()
     if fetchedData is None:
         return None
+      
     columns = [col[0] for col in cursor.description]
     return dict(zip(columns, fetchedData))

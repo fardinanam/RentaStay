@@ -8,8 +8,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
-
 from rentastay.settings import MEDIA_ROOT
+
 # from django.contrib.auth.models import User
 
 def toLower(s):
