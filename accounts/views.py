@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import JsonResponse
+from rentastay import definitions
 # from django.contrib.auth.models import User
 
 def toLower(s):
@@ -21,6 +22,21 @@ def toLower(s):
         else:
             word+=i
     return word
+
+def IsInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description):
+    if countryname=="Country Name":
+        messages.error(request,'Please select a country!!')
+        return False
+    elif statename=="State Name":
+        messages.error(request,'Please select a state!!')
+        return False
+    elif cityname=="City name":
+        messages.error(request,'Please select a city!!')
+        return False
+    elif streetname=="" or postalcode=="" or housename=="" or housenumber=="":
+        messages.error(request,'Please fill up all the field!!')
+        return False
+    return True
 
 def signup(request):
     data = {
@@ -64,7 +80,7 @@ def signup(request):
             messages.error(request, 'Username already exists')
             data.update({'username' : None})
             #return redirect('signup', data)
-            print(data)
+            #print(data)
             return render(request, "accounts/signup.html", data)
         else:
             try:
@@ -149,48 +165,44 @@ def addhome(request):
         housenumber = request.POST['housenumber']
         description = request.POST['description']
         #print(countryname + " " + statename + " " + cityname + " " + streetname + " " + postalcode + " " + housename + " " + housenumber + " " + description + " " + request.session['username'])
+        if IsInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description) == False:
+            return redirect('addhome')
         cursor = connection.cursor()
         query = "SELECT USER_ID FROM USERS WHERE USERNAME=%s"
         cursor.execute(query,[request.session['username']])
-        user_id = cursor.fetchone()
-        if user_id is None:
+        user_id = definitions.dictfetchone(cursor)
+        if not bool(user_id):
             messages.error(request, 'Please login to your account!!')
             return redirect('signin')
-        user_id = user_id[0]
+        user_id = user_id["USER_ID"]
         #print("User id: " + str(user_id))
         
         query = "SELECT STATE_ID FROM STATES WHERE STATE_NAME=%s AND COUNTRY_NAME=%s"
         cursor.execute(query,[statename, countryname])
-        state_id = cursor.fetchone()
-        if state_id is None:
-            messages.error(request, 'Can\'t find the state in your chosen country!!')
-            return redirect('addhome')
-        state_id = state_id[0]
+        state_id = definitions.dictfetchone(cursor)
+        state_id = state_id["STATE_ID"]
         #print("State id: " + str(state_id))
         
         query = "SELECT CITY_ID FROM CITIES WHERE CITY_NAME=%s AND STATE_ID=%s"
         cursor.execute(query,[cityname, str(state_id)])
-        city_id = cursor.fetchone()
-        if city_id is None:
-            messages.error(request, 'Can\'t find the city in your chosen state!!')
-            return redirect('addhome')
-        city_id = city_id[0]
+        city_id = definitions.dictfetchone(cursor)
+        city_id = city_id["CITY_ID"]
         #print("City id: " + str(city_id))
         
         query = "SELECT ADDRESS_ID FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"
         cursor.execute(query,[toLower(streetname), toLower(postalcode) ,str(city_id)])
-        address_id = cursor.fetchone()
-        if address_id is None:
+        address_id = definitions.dictfetchone(cursor)
+        if not bool(address_id):
             query = "INSERT INTO ADDRESSES(STREET,POST_CODE,CITY_ID) VALUES(%s,%s,%s)"
             cursor.execute(query,[toLower(streetname), toLower(postalcode) , str(city_id)])
             #cursor.commit()
             query = "SELECT ADDRESS_ID FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"
             cursor.execute(query,[toLower(streetname), toLower(postalcode) ,str(city_id)])
-            address_id = cursor.fetchone()
-            if address_id is None:
+            address_id = definitions.dictfetchone(cursor)
+            if not bool(address_id):
                 messages.error(request, 'Can\'t find the address!!')
                 return redirect('addhome')
-        address_id = address_id[0]
+        address_id = address_id["ADDRESS_ID"]
         #print("Address id: " + str(address_id))
         
         query = "INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION,PHOTOS_PATH) VALUES(%s,%s,%s,%s,%s,%s)"
@@ -241,5 +253,5 @@ def fetch_citynames(request, key1,key2):
     result = [city[0] for city in result]
     #print(JsonResponse(result,safe=False))
     cursor.close()
-    print(result)
+    #print(result)
     return JsonResponse(result, safe=False)
