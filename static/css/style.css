@@ -147,81 +147,81 @@ span {
 }
 
 
-/** Heading car start **/
-.heading-car{
+/** Heading home start **/
+.heading-home{
     margin-bottom: 20px;
 }
 
-.heading-car h3{
+.heading-home h3{
     font-weight: 500;
     font-size: 25px;
     text-transform: uppercase;
     margin-bottom: 10px;
 }
 
-.heading-car h6{
+.heading-home h6{
     font-size: 15px;
     margin-bottom: 0;
     color: #535353;
 }
 
-.heading-car h6 i{
+.heading-home h6 i{
     margin-right: 3px;
 }
 
-.heading-car h3 span{
+.heading-home h3 span{
     float: right;
     margin-bottom: 5px;
 }
 
 
-/** Car details sliders start **/
-.car-details-sliders .carousel-indicators {
+/** home details sliders start **/
+.home-details-sliders .carousel-indicators {
     margin-left: initial;
     margin-top: 0;
 }
 
-.car-details-sliders .carousel-indicators a {
+.home-details-sliders .carousel-indicators a {
     cursor: pointer;
 }
 
-.car-details-sliders .carousel-indicators > li {
+.home-details-sliders .carousel-indicators > li {
     height: initial;
     text-indent: initial;
     margin-right: 0;
     margin-left: 0;
 }
 
-.dd.car-details-sliders .carousel-indicators > li {
+.dd.home-details-sliders .carousel-indicators > li {
     width: initial;
     height: initial;
     text-indent: initial;
 }
 
-.car-details-sliders .list-inline {
+.home-details-sliders .list-inline {
     width: 100%;
     bottom: 10px;
     position: absolute;
 }
 
-.car-details-sliders .list-inline a{
+.home-details-sliders .list-inline a{
     margin-right: 0;
 }
 
-.car-properties .list-inline-item {
+.home-properties .list-inline-item {
     width: 80px;
     margin: 5px!important;
     border-radius: 5%;
 }
 
-.car-properties .list-inline-item a img {
+.home-properties .list-inline-item a img {
     width: 100%;
     border: none;
     border-radius: 5%;
     box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.82);
 }
 
-.car-details-sliders .carousel-indicators > li.active img {
+.home-details-sliders .carousel-indicators > li.active img {
     opacity: 0.7;
 }
 
@@ -229,7 +229,7 @@ span {
     margin-right: 1px;
 }
 
-.car-properties {
+.home-properties {
     width: 100%;
 }
 
@@ -240,7 +240,7 @@ span {
     width: 100%;
 }
 
-.carousel-indicators-section .car-properties .list-inline-item {
+.carousel-indicators-section .home-properties .list-inline-item {
     width: 20%;
     margin: 0!important;
     border-radius: 0!important;
@@ -339,7 +339,7 @@ span {
         padding: 60px 0 30px;
     }
 
-    .heading-car h3{
+    .heading-home h3{
         font-size: 22px;
     }
 }
@@ -364,17 +364,17 @@ span {
 }
 
 @media (max-width: 580px) {
-    .heading-car .pull-left{
+    .heading-home .pull-left{
         display: inline-block;
         width: 100%;
         margin-bottom: 20px;
     }
 
-    .heading-car .pull-right{
+    .heading-home .pull-right{
         float: left;
     }
 
-    .heading-car h3 span{
+    .heading-home h3 span{
         float: left;
     }
 }
