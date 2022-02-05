@@ -138,6 +138,132 @@ span {
     border-radius: .5rem;
 }
 
+/** Heading home start **/
+.heading-home{
+    margin-bottom: 20px;
+}
+
+.heading-home h3{
+    font-weight: 500;
+    font-size: 25px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.heading-home h6{
+    font-size: 15px;
+    margin-bottom: 0;
+    color: #535353;
+}
+
+.heading-home h6 i{
+    margin-right: 3px;
+}
+
+.heading-home h3 span{
+    float: right;
+    margin-bottom: 5px;
+}
+
+
+/** home details sliders start **/
+.home-details-sliders .carousel-indicators {
+    margin-left: initial;
+    margin-top: 0;
+}
+
+.home-details-sliders .carousel-indicators a {
+    cursor: pointer;
+}
+
+.home-details-sliders .carousel-indicators > li {
+    height: initial;
+    text-indent: initial;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.dd.home-details-sliders .carousel-indicators > li {
+    width: initial;
+    height: initial;
+    text-indent: initial;
+}
+
+.home-details-sliders .list-inline {
+    width: 100%;
+    bottom: 10px;
+    position: absolute;
+}
+
+.home-details-sliders .list-inline a{
+    margin-right: 0;
+}
+
+.home-properties .list-inline-item {
+    width: 80px;
+    margin: 5px!important;
+    border-radius: 5%;
+}
+
+.home-properties .list-inline-item a img {
+    width: 100%;
+    border: none;
+    border-radius: 5%;
+    box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.82);
+}
+
+.home-details-sliders .carousel-indicators > li.active img {
+    opacity: 0.7;
+}
+
+.list-inline-item:not(:last-child) {
+    margin-right: 1px;
+}
+
+.home-properties {
+    width: 100%;
+}
+
+/** Carousel indicators section start **/
+.carousel-indicators-section{
+    background: red;
+    display: inline-block;
+    width: 100%;
+}
+
+.carousel-indicators-section .home-properties .list-inline-item {
+    width: 20%;
+    margin: 0!important;
+    border-radius: 0!important;
+}
+
+.carousel-indicators-section .list-inline-item a img {
+    border-radius: 0;
+}
+
+.carousel-item img{
+    width: 100%;
+}
+
+.carousel-indicators-section .carousel-indicators > li {
+    height: initial;
+    text-indent: initial;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.carousel-indicators-section .list-inline {
+    width: 100%;
+    bottom: inherit;
+    position: absolute;
+}
+
+.carousel-indicators-section .carousel-indicators {
+    margin-left: initial;
+    margin-top: 0;
+    position: relative;
+}
+
 /** Media **/
 @media (max-width: 1200px) {
     .main-header .navbar-expand-lg .navbar-nav .nav-link {
@@ -243,7 +369,9 @@ span {
 
     .profile-pic-container img {
         position: relative;
-        width: inherit;
+        height: auto;
+        max-width: 100%;
+        
     }
 }
 
