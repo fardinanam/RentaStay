@@ -264,6 +264,12 @@ span {
     position: relative;
 }
 
+.carousel-inner {
+    border-radius: .5rem;
+    height: 15rem;
+    overflow: hidden;
+}
+
 /** Media **/
 @media (max-width: 1200px) {
     .main-header .navbar-expand-lg .navbar-nav .nav-link {

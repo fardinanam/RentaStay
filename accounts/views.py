@@ -244,7 +244,7 @@ def addhome(request):
             upload1 = request.FILES['upload1']
             fss = FileSystemStorage(location=folder)
             file = fss.save(upload1.name, upload1)
-            photoPath = '../media/Houses/' + str(house_id) + upload1.name
+            photoPath = '../media/Houses/' + str(house_id) + '/' + upload1.name
             #file_url = fss.url(file)
             query = """UPDATE HOUSES
                     SET PHOTOS_PATH = %s
