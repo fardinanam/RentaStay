@@ -1,9 +1,7 @@
-{% extends 'base.html' %}
-
-{% block title %} | {{ }} {% endblock %}
+{% extends 'base/base.html' %}
+{% block title %}  {% endblock %}
 {% block content %}
 
-{% load humanize %}
 {% load static %}
 
 <!-- House details page start -->
@@ -16,90 +14,82 @@
                     <div class="heading-home clearfix">
                         {% include 'includes/messages.html' %}
                         <div class="pull-left">
-                            <h3>{{}}</h3>
+                            <h3>{{ housename }}</h3>
                             <h6>
-                                <i class="flaticon-pin"></i> {{ }}, {{ }}
+                                <i class="fa fa-map-marker"></i> {{ house_address }}
                             </h6>
                         </div>
                         <div class="pull-right">
-                            <h3><span>${{ }}</span></h3>
+                            <h3><span>Price range will be here</span></h3>
                         </div>
                     </div>
-                    <div id="homeDetailsSlider" class="carousel home-details-sliders slide mb-40">
+                    <div id="homeDetailsSlider" class="carousel home-details-sliders slide mb-40" data-ride="carousel">
                         <!-- main slider carousel items -->
                         <div class="carousel-inner">
                             <div class="active item carousel-item" data-slide-number="0">
-                                <img src="{{ }}" class="img-fluid" alt="slider-home">
+                                <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
                             </div>
-                            {% if photo_1 %}
-                                <div class="item carousel-item" data-slide-number="1">
-                                    <img src="{{ photo_1.url }}" class="img-fluid" alt="slider-home">
-                                </div>
-                            {% endif %}
-                            {% if photo_2 %}
-                                <div class="item carousel-item" data-slide-number="2">
-                                    <img src="{{ photo_2.url }}" class="img-fluid" alt="slider-home">
-                                </div>
-                            {% endif %}
-                            {% if photo_3 %}
-                                <div class="item carousel-item" data-slide-number="4">
-                                    <img src="{{ photo_3.url }}" class="img-fluid" alt="slider-home">
-                                </div>
-                            {% endif %}
-                            {% if photo_4 %}
-                                <div class="item carousel-item" data-slide-number="5">
-                                    <img src="{{ photo_4.url }}" class="img-fluid" alt="slider-home">
-                                </div>
-                            {% endif %}
+                            <div class="item carousel-item" data-slide-number="1">
+                                <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="slider-home">
+                            </div>
+                            <div class="item carousel-item" data-slide-number="2">
+                                <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
+                            </div>
+                            <div class="item carousel-item" data-slide-number="3">
+                                <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="slider-home">
+                            </div>
+                            <div class="item carousel-item" data-slide-number="4">
+                                <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
+                            </div>
                         </div>
                         <!-- main slider carousel nav controls -->
                         <div class="carousel-indicators-section clearfix">
                             <ul class="carousel-indicators home-properties list-inline nav nav-justified">
                                 <li class="list-inline-item active">
                                     <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#homeDetailsSlider">
-                                        <img src="{{ photo.url }}" class="img-fluid" alt="small-home">
+                                        <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
                                     </a>
                                 </li>
-                                {% if photo_1 %}
-                                    <li class="list-inline-item">
-                                        <a id="carousel-selector-1" data-slide-to="1" data-target="#homeDetailsSlider">
-                                            <img src="{{ photo_1.url }}" class="img-fluid" alt="small-home">
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                {% if photo_2 %}
-                                    <li class="list-inline-item">
-                                        <a id="carousel-selector-2" data-slide-to="2" data-target="#homeDetailsSlider">
-                                            <img src="{{ photo_2.url }}" class="img-fluid" alt="small-home">
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                {% if photo_3 %}
-                                    <li class="list-inline-item">
-                                        <a id="carousel-selector-3" data-slide-to="3" data-target="#homeDetailsSlider">
-                                            <img src="{{ photo_3.url }}" class="img-fluid" alt="small-home">
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                {% if photo_4 %}
-                                    <li class="list-inline-item">
-                                        <a id="carousel-selector-4" data-slide-to="4" data-target="#homeDetailsSlider">
-                                            <img src="{{ photo_4.url }}" class="img-fluid" alt="small-home">
-                                        </a>
-                                    </li>
-                                {% endif %}
+                                <li class="list-inline-item">
+                                    <a id="carousel-selector-1" data-slide-to="1" data-target="#homeDetailsSlider">
+                                        <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="small-home">
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a id="carousel-selector-2" data-slide-to="2" data-target="#homeDetailsSlider">
+                                        <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a id="carousel-selector-3" data-slide-to="3" data-target="#homeDetailsSlider">
+                                        <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="small-home">
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a id="carousel-selector-4" data-slide-to="4" data-target="#homeDetailsSlider">
+                                        <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
+                                    </a>
+                                </li>
                             </ul>
                         </div>
+                        <a href="#homeDetailsSlider" class="carousel-control-prev" role="button" data-slide="prev">
+                            <span class="sr-only">Previous</span>
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </a>
+                        <a href="#homeDetailsSlider" class="carousel-control-next" role="button" data-slide="next">
+                            <span class="sr-only">Next</span>
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </a>
                     </div>
                     
                     <!-- Tabbing box start -->
                     <div class="tabbing tabbing-box mb-40">
                         <ul class="nav nav-tabs" id="homeTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active show" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="one" aria-selected="false">Vehicle overview</a>
+                                <a class="nav-link active show" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="one" aria-selected="false" style="color: #212121;">House overview</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="two" aria-selected="false">Features</a>
+                                <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="two" aria-selected="false" style="color: #212121;">Features</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="homeTabContent">
@@ -120,7 +110,13 @@
                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                             <ul>
                                                 <li>
-                                                    {{ features}}
+                                                    <span>This</span>
+                                                </li>
+                                                <li>
+                                                    <span>This</span>
+                                                </li>
+                                                <li>
+                                                    <span>And This</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -129,6 +125,30 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="sidebar-right">
+                    <!-- Advanced search start -->
+                    <div class="widget advanced-search d-none-992">
+                        <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">Add House Pic</button>
+                    </div>   
+                </div>
+                <div class="sidebar-right">
+                    <!-- Advanced search start -->
+                    <div class="widget advanced-search d-none-992">
+                        <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">Add Room</button>
+                        <br><br>
+                        <h3 class="sidebar-title">Your Rooms</h3>
+                        <ul>
+                            <li>
+                                <a href="#"><span>Room No:</span>402</a>
+                            </li>
+                            <li>
+                                <a href="#"><span>Room No:</span>403</a>
+                            </li>
+                        </ul>
+                    </div>   
                 </div>
             </div>
         </div>

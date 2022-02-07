@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import JsonResponse
+from numpy import imag
 from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 
@@ -227,13 +228,28 @@ def addhome(request):
         house_id = house_id["HOUSE_ID"]
         
         if request.FILES.get('upload1',False):
-            folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/'
+            folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/HousePic/'
             upload1 = request.FILES['upload1']
             fss = FileSystemStorage(location=folder)
             file = fss.save(upload1.name, upload1)
-            #file_url = fss.url(file)
+            photoPath = '/media/Houses/' + str(house_id) + '/HousePic/'+upload1.name
+            file_url = fss.url(file)
+            query = """UPDATE HOUSES
+                    SET PHOTOS_PATH = %s
+                    WHERE HOUSE_ID = %s"""
+            cursor.execute(query, [photoPath, house_id])
+        images = [photoPath]
+        print(images)
         cursor.close()
-        return redirect('home')
+        data ={
+            'house_id': house_id,
+            'housename': housename,
+            'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
+            'description': description,
+            'photos_url': images,
+        }
+        
+        return render(request,'accounts/home_preview.html',data)
         
     cursor = connection.cursor()
     query = "SELECT * FROM COUNTRIES"
@@ -255,6 +271,17 @@ def addhome(request):
         #'cities': result3
     }
     return render(request, 'accounts/addhome.html', data)
+
+def homepreview(request):
+    images = ['/media/Houses/48/HousePic/layer-1.png']
+    data ={
+        'house_id': 48,
+        'housename': "Tree House",
+        'house_address': "are hbe kisu ekta",
+        'description': "Dia dilan ekta kisu",
+        'photos_url': images,
+    }
+    return render(request, 'accounts/home_preview.html',data)
 
 def fetch_statenames(request, key):
     cursor = connection.cursor()
