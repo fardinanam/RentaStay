@@ -14,6 +14,7 @@
                     <div class="heading-home clearfix">
                         {% include 'includes/messages.html' %}
                         <div class="pull-left">
+                            <input type="text" name="houseid" id="houseid" value="{{ house_id }}" hidden>
                             <h3>{{ housename }}</h3>
                             <h6>
                                 <i class="fa fa-map-marker"></i> {{ house_address }}
@@ -26,7 +27,7 @@
                     <div id="homeDetailsSlider" class="carousel home-details-sliders slide mb-40" data-ride="carousel">
                         <!-- main slider carousel items -->
                         <div class="carousel-inner">
-                            <div class="active item carousel-item" data-slide-number="0">
+                            <!-- <div class="active item carousel-item" data-slide-number="0">
                                 <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
                             </div>
                             <div class="item carousel-item" data-slide-number="1">
@@ -40,12 +41,23 @@
                             </div>
                             <div class="item carousel-item" data-slide-number="4">
                                 <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
-                            </div>
+                            </div> -->
+                            {% for photo in photos_url %}
+                                {% if forloop.first %}
+                                    <div class="active item carousel-item" data-slide-number="{{ forloop.counter0 }}">
+                                        <img src="{{ photo }}" class="img-fluid" alt="slider-home">
+                                    </div>
+                                {% else %}
+                                    <div class="item carousel-item" data-slide-number="{{ forloop.counter0 }}">
+                                        <img src="{{ photo }}" class="img-fluid" alt="slider-home">
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                         <!-- main slider carousel nav controls -->
                         <div class="carousel-indicators-section clearfix">
                             <ul class="carousel-indicators home-properties list-inline nav nav-justified">
-                                <li class="list-inline-item active">
+                                <!-- <li class="list-inline-item active">
                                     <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#homeDetailsSlider">
                                         <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
                                     </a>
@@ -69,7 +81,22 @@
                                     <a id="carousel-selector-4" data-slide-to="4" data-target="#homeDetailsSlider">
                                         <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
                                     </a>
-                                </li>
+                                </li> -->
+                                {% for photo in photos_url %}
+                                    {% if forloop.first %}
+                                        <li class="list-inline-item active">
+                                            <a id="carousel-selector-{{ forloop.counter0 }}" class="selected" data-slide-to="{{ forloop.counter0 }}" data-target="#homeDetailsSlider">
+                                                <img src="{{ photo }}" class="img-fluid" alt="small-home">
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="list-inline-item">
+                                            <a id="carousel-selector-{{ forloop.counter0 }}" data-slide-to="{{ forloop.counter0 }}" data-target="#homeDetailsSlider">
+                                                <img src="{{ photo }}" class="img-fluid" alt="small-home">
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
                             </ul>
                         </div>
                         <a href="#homeDetailsSlider" class="carousel-control-prev" role="button" data-slide="prev">
@@ -130,9 +157,12 @@
             <div class="col-lg-4 col-md-12">
                 <div class="sidebar-right">
                     <!-- Advanced search start -->
-                    <div class="widget advanced-search d-none-992">
-                        <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">Add House Pic</button>
-                    </div>   
+                    <div class="widget advanced-search d-none-992" id="addHousePic">
+                        <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit" id="addHousePicBtn">Add House Pic</button>
+                    </div>
+                    <form action="POST">
+                        <button class="btn btn-block btn-lg btn-theme btn-success"  style="width: 25%; height:50px; margin: auto; display: none;" id="addPicBtn">Add</button>
+                    </form>   
                 </div>
                 <div class="sidebar-right">
                     <!-- Advanced search start -->

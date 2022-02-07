@@ -242,7 +242,7 @@ def addhome(request):
         print(images)
         cursor.close()
         data ={
-            'house_id': house_id,
+            'house_id': str(house_id),
             'housename': housename,
             'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
             'description': description,
@@ -272,10 +272,10 @@ def addhome(request):
     }
     return render(request, 'accounts/addhome.html', data)
 
-def homepreview(request):
+def homepreview(request,house_id):
     images = ['/media/Houses/48/HousePic/layer-1.png']
     data ={
-        'house_id': 48,
+        'house_id': str(48),
         'housename': "Tree House",
         'house_address': "are hbe kisu ekta",
         'description': "Dia dilan ekta kisu",
@@ -305,4 +305,27 @@ def fetch_citynames(request, key1,key2):
     #print(JsonResponse(result,safe=False))
     cursor.close()
     #print(result)
+    return JsonResponse(result, safe=False)
+
+def fetch_no_of_house_pics(request, house_id):
+    cursor = connection.cursor()
+    query = "SELECT USER_ID FROM USERS WHERE USERNAME=%s"
+    cursor.execute(query,[request.session['username']])
+    user_id = definitions.dictfetchone(cursor)
+    if not bool(user_id):
+        messages.error(request, 'Please login to your account!!')
+        cursor.close()
+        return redirect('signin')
+    user_id = user_id["USER_ID"]
+    query = "SELECT PHOTOS_PATH FROM HOUSES WHERE HOUSE_ID=%s"
+    cursor.execute(query,[str(house_id)])
+    photos_path = definitions.dictfetchone(cursor)
+    if not bool(photos_path):
+        messages.error(request, 'Couldn\'t find any house photo!!')
+        cursor.close()
+        return redirect('home')
+    photos_path = photos_path["PHOTOS_PATH"]
+    photos = photos_path.split(":")
+    result = [len(photos)]
+    cursor.close()
     return JsonResponse(result, safe=False)
