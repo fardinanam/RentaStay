@@ -396,6 +396,7 @@ span {
 .btn-outline-success{
     border-width: 1.5px;
     border-radius: 5px;
+}
 
 .carousel-inner {
     border-radius: .5rem;
@@ -533,6 +534,7 @@ span {
 
     .header-shrink .navbar-expand-lg .navbar-nav .nav-link {
         color: #515151;
+    }
 
     .profile-pic-container {
     position:absolute;
