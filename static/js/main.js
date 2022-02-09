@@ -144,9 +144,19 @@ const addNewHousePic = value => {
         })
     }
 }
-addHousePic.onclick = () => addNewHousePic();
+try{
+    addHousePic.onclick = () => addNewHousePic();
+}
+catch{
+    console.log("On house preview page!!");
+}
 
-statename.onclick = () => checkForStateNames(countryname.value);
-statename.onchange = () => changeCityName();
-countryname.onchange = () => changeCityAndStateNames();
-cityname.onclick = () => checkForCityNames(countryname.value, statename.value);
+try{
+    statename.onclick = () => checkForStateNames(countryname.value);
+    statename.onchange = () => changeCityName();
+    countryname.onchange = () => changeCityAndStateNames();
+    cityname.onclick = () => checkForCityNames(countryname.value, statename.value);
+}
+catch{
+    console.log("On add home page!!")
+}
