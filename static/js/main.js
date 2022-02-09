@@ -1,3 +1,4 @@
+console.log("ASHCHE")
 $(function () {
     'use strict';
     // Showing page loader
@@ -19,6 +20,11 @@ setTimeout(function(){
 const countryname = document.getElementById('countryname');
 const statename = document.getElementById('statename');
 const cityname = document.getElementById('cityname');
+const addHousePic = document.getElementById('addHousePic');
+const houseId = document.getElementById('houseid');
+const addHousePicBtn = document.getElementById('addHousePicBtn');
+const addPicBtn = document.getElementById('addPicBtn');
+
 
 const addHtmlToElement = (element,html) => {
     element.innerHTML = html;
@@ -97,9 +103,50 @@ const checkForCityNames = (value1,value2) => {
     }
 }
 
+const addNewHousePic = value => {
+    if(addHousePicBtn.disabled != true){
+        addHousePicBtn.disabled = true;
+        addPicBtn.style.display="block";
+        console.log("Dhukse")
+        let idOfHouse = houseId.value 
+        const url = `/accounts/fetch_no_of_house_pics/${idOfHouse}/`;
+        fetch(url, {
+            method: "GET"
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            let noOfHouse = data[0]
+            console.log(noOfHouse)
+            var c=1;
+            var brk = document.createElement("span");
+            brk.innerHTML="<br><br>";
+            addHousePic.appendChild(brk);
+            for (var input = noOfHouse+1; input <= 5; input++) {
+                var newHousePicLabel = document.createElement("label");
+                newHousePicLabel.for = "upload"+input;
+                newHousePicLabel.innerHTML="House Pic " + c + ":";
+                addHousePic.appendChild(newHousePicLabel);
+                var newHousePic = document.createElement("input");
+                newHousePic.type="file";
+                newHousePic.accept="image/*";
+                newHousePic.name="upload"+input;
+                addHousePic.appendChild(newHousePic);
+                var brk = document.createElement("span");
+                brk.innerHTML="<br><br>";
+                addHousePic.appendChild(brk);
+                c++;
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+}
+addHousePic.onclick = () => addNewHousePic();
+
 statename.onclick = () => checkForStateNames(countryname.value);
 statename.onchange = () => changeCityName();
 countryname.onchange = () => changeCityAndStateNames();
 cityname.onclick = () => checkForCityNames(countryname.value, statename.value);
-
-

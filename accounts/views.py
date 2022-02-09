@@ -1,12 +1,17 @@
 from asyncio.windows_events import NULL
 from audioop import add
 import hashlib
+
+from unittest import result
+
 from sqlite3 import Cursor
+
 
 from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import JsonResponse
+from numpy import imag
 from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 from rentastay.settings import MEDIA_ROOT
@@ -240,19 +245,31 @@ def addhome(request):
         house_id = house_id["HOUSE_ID"]
         
         if request.FILES.get('upload1',False):
-            folder = MEDIA_ROOT + '\\Houses\\' + str(house_id) + '\\'
+            folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/HousePic/'
             upload1 = request.FILES['upload1']
             fss = FileSystemStorage(location=folder)
             file = fss.save(upload1.name, upload1)
-            photoPath = '../media/Houses/' + str(house_id) + '/' + upload1.name
-            #file_url = fss.url(file)
+            photoPath = '/media/Houses/' + str(house_id) + '/HousePic/'+upload1.name
+            file_url = fss.url(file)
+
             query = """UPDATE HOUSES
                     SET PHOTOS_PATH = %s
                     WHERE HOUSE_ID = %s"""
             cursor.execute(query, [photoPath, house_id])
 
+        images = [photoPath]
+        print(images)
+
         cursor.close()
-        return redirect('home')
+        data ={
+            'house_id': str(house_id),
+            'housename': housename,
+            'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
+            'description': description,
+            'photos_url': images,
+        }
+        
+        return render(request,'accounts/home_preview.html',data)
         
     cursor = connection.cursor()
     query = "SELECT * FROM COUNTRIES"
@@ -274,6 +291,49 @@ def addhome(request):
         #'cities': result3
     }
     return render(request, 'accounts/addhome.html', data)
+
+def homepreview(request,house_id):
+    cursor = connection.cursor()
+    query="SELECT ADDRESS_ID,HOUSE_NAME,DESCRIPTION,PHOTOS_PATH FROM HOUSES WHERE HOUSE_ID=%s"
+    cursor.execute(query,[str(house_id)])
+    result = definitions.dictfetchone(cursor)
+    if not bool(result):
+            messages.error(request, 'Can\'t find the house!!')
+            cursor.close()
+            return redirect('home')
+    address_id = result["ADDRESS_ID"]
+    housename = result["HOUSE_NAME"]
+    description = result["DESCRIPTION"]
+    photos_path = result["PHOTOS_PATH"]
+    print(address_id,housename,description,photos_path)
+    query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
+            from ADDRESSES a 
+            JOIN CITIES c 
+            ON (a.CITY_ID=c.CITY_ID)
+            join STATES s
+            ON (c.STATE_ID=s.STATE_ID)
+            WHERE a.ADDRESS_ID=%s"""
+    cursor.execute(query,[str(address_id)])
+    result = definitions.dictfetchone(cursor)
+    if not bool(result):
+        messages.error(request, 'Can\'t find the address of the house!!')
+        cursor.close()
+        return redirect('home')
+    streetname = result["STREET"]
+    cityname = result["CITY_NAME"]
+    statename = result["STATE_NAME"]
+    countryname = result["COUNTRY_NAME"]
+    #print(streetname)
+    images=[photos_path]
+    data ={
+            'house_id': str(house_id),
+            'housename': housename,
+            'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
+            'description': description,
+            'photos_url': images,
+        }
+    
+    return render(request, 'accounts/home_preview.html',data)
 
 def fetch_statenames(request, key):
     cursor = connection.cursor()
@@ -297,4 +357,27 @@ def fetch_citynames(request, key1,key2):
     #print(JsonResponse(result,safe=False))
     cursor.close()
     #print(result)
+    return JsonResponse(result, safe=False)
+
+def fetch_no_of_house_pics(request, house_id):
+    cursor = connection.cursor()
+    query = "SELECT USER_ID FROM USERS WHERE USERNAME=%s"
+    cursor.execute(query,[request.session['username']])
+    user_id = definitions.dictfetchone(cursor)
+    if not bool(user_id):
+        messages.error(request, 'Please login to your account!!')
+        cursor.close()
+        return redirect('signin')
+    user_id = user_id["USER_ID"]
+    query = "SELECT PHOTOS_PATH FROM HOUSES WHERE HOUSE_ID=%s"
+    cursor.execute(query,[str(house_id)])
+    photos_path = definitions.dictfetchone(cursor)
+    if not bool(photos_path):
+        messages.error(request, 'Couldn\'t find any house photo!!')
+        cursor.close()
+        return redirect('home')
+    photos_path = photos_path["PHOTOS_PATH"]
+    photos = photos_path.split(":")
+    result = [len(photos)]
+    cursor.close()
     return JsonResponse(result, safe=False)

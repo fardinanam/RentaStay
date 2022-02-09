@@ -122,6 +122,10 @@ span {
     text-transform: uppercase;
 }
 
+.main-header .navbar-expand-lg .navbar-nav .nav-link i {
+    margin-right: 5px;
+}
+
 .main-header .navbar {
     padding: 0;
 }
@@ -226,7 +230,6 @@ span {
 
 /** Carousel indicators section start **/
 .carousel-indicators-section{
-    background: red;
     display: inline-block;
     width: 100%;
 }
@@ -243,6 +246,14 @@ span {
 
 .carousel-item img{
     width: 100%;
+}
+
+.carousel-item .text-right {
+    float: right;
+}
+
+#modalCarousel .carousel-item {
+    max-height: 240px;
 }
 
 .carousel-indicators-section .carousel-indicators > li {
@@ -264,6 +275,128 @@ span {
     position: relative;
 }
 
+.carousel-indicators .active {
+    background-color: #61bfe4;
+}
+
+/** Tabbing box start **/
+.tabbing-box .tab-pane {
+    padding-top: 30px;
+}
+
+.tabbing-box .nav-tabs {
+    border-bottom: none;
+    background: #fff;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.1);
+}
+
+.tabbing-box .nav-tabs .nav-link {
+    display: block;
+    padding: 12px 17px 10px;
+}
+
+.tabbing-box .nav-tabs li {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.tabbing-box .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #fff !important;
+    border-radius: 0;
+}
+
+.tabbing-box .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link:hover {
+    border-radius: 0;
+    color: #fff;
+}
+
+.tabbing-box .nav-tabs .nav-link {
+    border: none;
+}
+
+/* Mb **/
+.mb-40 {
+    margin-bottom: 40px;
+}
+
+.mb-50 {
+    margin-bottom: 50px;
+}
+
+
+.heading-2 {
+    margin: 0 0 25px;
+    font-size: 22px;
+    font-weight: 400;
+    color: #212121;
+}
+
+/** Sidebar widget start **/
+.sidebar-right {
+    margin: 0 0 30px 0;
+    background: #fff;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+}
+
+.widget {
+    padding: 30px 20px;
+    border-bottom: solid 1px #efefef;
+}
+
+.advanced-search ul {
+    padding: 0;
+    margin: 0;
+}
+
+.advanced-search ul li {
+    list-style: none;
+    padding: 5px 0;
+    color: #787878;
+    font-size: 15px;
+    line-height: 30px!important;
+    border-bottom: 1px dotted #DDD;
+    text-align: right;
+    font-weight: 500;
+}
+
+.advanced-search ul li:last-child{
+    border-bottom: transparent;
+}
+
+.advanced-search ul span {
+    font-weight: 500;
+    float: left;
+    color: #474646;
+}
+
+.advanced-search ul a {
+    color: #474646;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sidebar-title {
+    font-size: 22px;
+    position: relative;
+    margin: 0 0 25px;
+    font-weight: 400;
+    color: #212121;
+}
+
+.bomd {
+    padding: 13px 26px;
+    letter-spacing: 1px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: .5s;
+    border-radius: 2px;
+}
+.btn-outline-success{
+    border-width: 1.5px;
+    border-radius: 5px;
+
 .carousel-inner {
     border-radius: .5rem;
     height: 15rem;
@@ -274,6 +407,10 @@ span {
 @media (max-width: 1200px) {
     .main-header .navbar-expand-lg .navbar-nav .nav-link {
         padding: 35px 10px;
+    }
+
+    .tabbing-box .nav-tabs .nav-link {
+        padding: 10px 14px;
     }
 }
 
@@ -312,6 +449,14 @@ span {
         padding: 80px 0 50px;
     }
 
+    .d-none-992{
+        display: none;
+    }
+
+    .sidebar-title {
+        margin: 0 0 20px;
+    }
+
     .profile-pic-container {
         display: none;
     }
@@ -339,8 +484,31 @@ span {
         padding: 60px 0 30px;
     }
 
-    .heading-car h3{
+    .heading-home h3{
         font-size: 22px;
+    }
+
+    .heading-home p{
+        font-size: 13px;
+    }
+
+    .heading-home h5{
+        font-size: 13px;
+    }
+
+    .home-properties .list-inline-item {
+        width: 45px;
+        margin: 3px!important;
+    }
+
+    .tabbing-box .nav-tabs .nav-link {
+        padding: 8px 14px;
+        font-size: 15px;
+    }
+
+    .tabbing-box .nav-tabs {
+        background: transparent;
+        border-bottom: transparent;
     }
 }
 
@@ -362,6 +530,10 @@ span {
         background: rgba(12,12,12,0.1);
     }
 
+
+    .header-shrink .navbar-expand-lg .navbar-nav .nav-link {
+        color: #515151;
+
     .profile-pic-container {
     position:absolute;
     top: 25%;
@@ -377,23 +549,22 @@ span {
         position: relative;
         height: auto;
         max-width: 100%;
-        
     }
 }
 
 /** Main header end **/
 @media (max-width: 580px) {
-    .heading-car .pull-left{
+    .heading-home .pull-left{
         display: inline-block;
         width: 100%;
         margin-bottom: 20px;
     }
 
-    .heading-car .pull-right{
+    .heading-home .pull-right{
         float: left;
     }
 
-    .heading-car h3 span{
+    .heading-home h3 span{
         float: left;
     }
 }
@@ -449,6 +620,26 @@ span {
 
 .img-fluid {
     border-radius: .5rem;
+}
+
+.tabbing-box .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
+    background-color: #61bfe4;
+    color: #fff !important;
+}
+
+a.nav-link.active{
+    color: #61bfe4 !important;
+}
+
+.features-info ul li {
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.features-info ul li strong {
+    margin-right: 5px;
+    font-weight: 500;
 }
 
 /** Card styles end **/
