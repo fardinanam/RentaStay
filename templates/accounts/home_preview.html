@@ -160,7 +160,8 @@
                     <div class="widget advanced-search d-none-992" id="addHousePic">
                         <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit" id="addHousePicBtn">Add House Pic</button>
                     </div>
-                    <form action="POST">
+                    <form action="{% url 'homepreview' house_id %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
                         <button class="btn btn-block btn-lg btn-theme btn-success"  style="width: 25%; height:50px; margin: auto; display: none;" id="addPicBtn">Add</button>
                     </form>   
                 </div>

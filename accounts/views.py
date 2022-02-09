@@ -274,6 +274,7 @@ def addhome(request):
     return render(request, 'accounts/addhome.html', data)
 
 def homepreview(request,house_id):
+    print("Eine aise")
     cursor = connection.cursor()
     query="SELECT ADDRESS_ID,HOUSE_NAME,DESCRIPTION,PHOTOS_PATH FROM HOUSES WHERE HOUSE_ID=%s"
     cursor.execute(query,[str(house_id)])
@@ -305,14 +306,32 @@ def homepreview(request,house_id):
     statename = result["STATE_NAME"]
     countryname = result["COUNTRY_NAME"]
     #print(streetname)
+    if request.method=="POST":
+        for i in range(2,6):
+            print('upload'+str(i))
+            if request.FILES.get('upload'+str(i),False):
+                print("file ase")
+                folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/HousePic/'
+                upload = request.FILES['upload'+str(i)]
+                fss = FileSystemStorage(location=folder)
+                file = fss.save(upload.name, upload)
+                photoPath = '/media/Houses/' + str(house_id) + '/HousePic/'+upload.name
+                file_url = fss.url(file)
+                query = """UPDATE HOUSES
+                        SET PHOTOS_PATH = %s
+                        WHERE HOUSE_ID = %s"""
+                photos_path+=':'+photoPath
+                cursor.execute(query, [photoPath, house_id])
+            else:
+                print("File nai")
     images=[photos_path]
     data ={
-            'house_id': str(house_id),
-            'housename': housename,
-            'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
-            'description': description,
-            'photos_url': images,
-        }
+        'house_id': str(house_id),
+        'housename': housename,
+        'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
+        'description': description,
+        'photos_url': images,
+    }
     
     return render(request, 'accounts/home_preview.html',data)
 
