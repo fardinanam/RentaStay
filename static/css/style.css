@@ -20,16 +20,6 @@ span {
     color: #535353;
 }
 
-.page_loader {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 999999;
-    background: url(../img/loader.gif) center no-repeat #fff;
-}
-
 /** Top header start **/
 .top-header{
     font-family: 'Roboto', sans-serif;
@@ -90,8 +80,6 @@ span {
 }
 
 .top-header .sign-in, .top-header .sign-in:hover
-
-
 .th-2 .sign-in, .top-header .sign-in:hover {
     line-height: 50px;
     color: #ececec;
@@ -150,6 +138,9 @@ span {
     padding: 100px 0 50px;
 }
 
+.dropdown-menu {
+    border-radius: .5rem;
+}
 
 /** Heading home start **/
 .heading-home{
@@ -405,6 +396,11 @@ span {
 .btn-outline-success{
     border-width: 1.5px;
     border-radius: 5px;
+
+.carousel-inner {
+    border-radius: .5rem;
+    height: 15rem;
+    overflow: hidden;
 }
 
 /** Media **/
@@ -459,6 +455,10 @@ span {
 
     .sidebar-title {
         margin: 0 0 20px;
+    }
+
+    .profile-pic-container {
+        display: none;
     }
 }
 
@@ -530,11 +530,29 @@ span {
         background: rgba(12,12,12,0.1);
     }
 
+
     .header-shrink .navbar-expand-lg .navbar-nav .nav-link {
         color: #515151;
+
+    .profile-pic-container {
+    position:absolute;
+    top: 25%;
+    left: 20%;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 1.75rem;
+    overflow: hidden;
+
+    }
+
+    .profile-pic-container img {
+        position: relative;
+        height: auto;
+        max-width: 100%;
     }
 }
 
+/** Main header end **/
 @media (max-width: 580px) {
     .heading-home .pull-left{
         display: inline-block;
@@ -558,34 +576,32 @@ span {
 .round-search-icon {
     background: white;
     border-right: none;
-    border-radius: 20px 0 0 20px;
+    border-radius: .5rem 0 0 .5rem;
 }
 .form-control {
-    border-radius: 20px;
-}
-
-.form-control:active {
-    box-shadow: none;
+    border-radius: .5rem;
 }
 
 .search-bar {
     border-left: none;
 }
 
+/** Card styles start **/
+
 .card {
     border-radius: .5rem;
-    -webkit-transition: .3s ease-in-out;
-    -moz-transition: .3s ease-in-out;
-    -o-transition: .3s ease-in-out;
-    transition: .3s ease-in-out;
+    -webkit-transition: .2s ease-in-out;
+    -moz-transition: .2s ease-in-out;
+    -o-transition: .2s ease-in-out;
+    transition: .2s ease-in-out;
 }
 
 .card:hover {
-    -webkit-transform: scale(1.05);
-    -moz-transform: scale(1.05);
-    -o-transform: scale(1.05);
-    -ms-transform: scale(1.05);
-    transform: scale(1.05);
+    -webkit-transform: scale(1.01);
+    -moz-transform: scale(1.01);
+    -o-transform: scale(1.01);
+    -ms-transform: scale(1.01);
+    transform: scale(1.01);
 
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -596,6 +612,10 @@ span {
     -o-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1);
+}
+
+.card-body:hover {
+    cursor: pointer;
 }
 
 .img-fluid {
@@ -622,3 +642,4 @@ a.nav-link.active{
     font-weight: 500;
 }
 
+/** Card styles end **/

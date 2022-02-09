@@ -19,12 +19,29 @@ fetch("/housesdata/")
     .then(data => {
         houses = data.data.map(house => {
             const card = houseCardTemplate.content.cloneNode(true).children[0]
+            const carouselSlide = card.querySelector("[carousel-slide]")
+            const cardBody = card.querySelector("[card-body]")
             const title = card.querySelector("[house-name]")
             const address = card.querySelector("[house-address]")
+            const image = card.querySelector("[house-image]")
 
+            carouselSlide.id = "carousel" + house.HOUSE_ID
+            
+            card.querySelectorAll("[data-bs-target]").forEach(element => {
+                element.setAttribute("data-bs-target", "#carousel" + house.HOUSE_ID)
+            })
+            
             title.textContent = house.HOUSE_NAME
             address.textContent = house.CITY_NAME + ', ' + house.COUNTRY_NAME
-            card.onclick = function() {
+            
+            if(house.PHOTOS_PATH)
+                image.src = house.PHOTOS_PATH
+            else
+            {
+                image.src = '../static/img/home-6.jpg'
+            }
+                
+            cardBody.onclick = function() {
                 location.href = "/house/?houseId=" + house.HOUSE_ID
             }
 
@@ -34,4 +51,8 @@ fetch("/housesdata/")
                     address: house.CITY_NAME + ', ' + house.COUNTRY_NAME,
                     element: card}
         })
+
+        $('.carousel').carousel({
+            interval: false,
+        });
     })

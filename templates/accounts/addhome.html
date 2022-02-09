@@ -6,6 +6,7 @@
 
 {% block content %}
     {% if request.session.username %}
+    <div class="container">
         <div class="row justify-content-center">
             <h1 class="text-center">Add Home</h1>
             <form style="max-width:70%" action="{% url 'addhome' %}" method="POST" enctype="multipart/form-data">
@@ -61,6 +62,7 @@
                 <div class="mb-3 row">
                     <label for="cityname" class="col-sm-2 col-form-label">City Name</label>
                     <div class="col-sm-10">
+                        <select class="form-control" name="cityname" id="cityname">
                         <select class="form-control search-fields" name="cityname" id="cityname">
                             <option selected="true" disabled="disabled">City Name</option>
                             <!-- {%for city in cities %}
@@ -111,6 +113,7 @@
                 </div>
             </form>
         </div>
+    </div>
     {% else %}
         <div class="row justify-content-center">
             <h3> You must be logged in to add a home!! </h3>
