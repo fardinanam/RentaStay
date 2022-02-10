@@ -38,6 +38,13 @@ def getJsonHousePhotosPath(request, house_id):
     
     return JsonResponse({'paths':result})
 
+def getJsonHousePriceRange(request, house_id):
+    cursor = connection.cursor()
+    minPrice = cursor.callfunc('GET_MIN_PRICE', float, [house_id])
+    maxPrice = cursor.callfunc('GET_MAX_PRICE', float, [house_id])
+
+    return JsonResponse({'minPrice':minPrice, 'maxPrice':maxPrice})
+
 def house(request, house_id):
     # print(f"house id from GET is {houseId}")
     cursor = connection.cursor()
