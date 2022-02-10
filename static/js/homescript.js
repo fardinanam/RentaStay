@@ -22,6 +22,7 @@ fetch("/housesdata/")
             const carouselSlide = card.querySelector("[carousel-slide]")
             const cardBody = card.querySelector("[card-body]")
             const title = card.querySelector("[house-name]")
+            const priceRange = card.querySelector("[price-range]")
             const address = card.querySelector("[house-address]")
 
             /** Taking the image template of a single card */
@@ -35,6 +36,22 @@ fetch("/housesdata/")
             
             title.textContent = house.HOUSE_NAME
             address.textContent = house.CITY_NAME + ', ' + house.COUNTRY_NAME
+
+            fetch("/housePriceRange/" + house.HOUSE_ID)
+            .then(responsePrice => responsePrice.json())
+            .then(prices => {
+                let minPrice = prices.minPrice
+                let maxPrice = prices.maxPrice
+                let price = ''
+                
+                if(minPrice && maxPrice)
+                    if(minPrice == maxPrice)
+                        price = '$' + minPrice
+                    else
+                        price = '$' + minPrice + '-' + maxPrice
+
+                priceRange.textContent = price
+            })
 
             /** Iterate throgh all the images of a house */
             fetch("/housePhotosPath/" + house.HOUSE_ID)
