@@ -1,3 +1,4 @@
+from sqlite3 import Cursor
 from django.shortcuts import render
 from django.db import connection, IntegrityError
 from rentastay import definitions
@@ -5,7 +6,7 @@ from django.http import JsonResponse
 
 def getHouses():
     cursor = connection.cursor()
-    query = """SELECT HOUSE_ID, HOUSE_NAME, CITY_NAME, STATE_NAME, COUNTRY_NAME, PHOTOS_PATH
+    query = """SELECT HOUSE_ID, HOUSE_NAME, CITY_NAME, STATE_NAME, COUNTRY_NAME
                 FROM HOUSES JOIN ADDRESSES USING(ADDRESS_ID) 
                 JOIN CITIES USING(CITY_ID) 
                 JOIN STATES USING(STATE_ID) 
@@ -27,14 +28,23 @@ def getJsonHouseData(request):
 
     return JsonResponse({'data':houses})
 
-def house(request):
-    houseId = request.GET['houseId']
+def getJsonHousePhotosPath(request, house_id):
+    cursor = connection.cursor()
+    query = """SELECT PATH
+            FROM HOUSE_PHOTOS_PATH
+            WHERE HOUSE_ID = %s;"""
+    cursor.execute(query, [house_id])
+    result = definitions.dictfetchall(cursor)
+    
+    return JsonResponse({'paths':result})
+
+def house(request, house_id):
     # print(f"house id from GET is {houseId}")
     cursor = connection.cursor()
     query = """SELECT * 
             FROM HOUSES JOIN USERS USING(USER_ID)
             WHERE HOUSE_ID = %s"""
-    cursor.execute(query, [houseId])
+    cursor.execute(query, [house_id])
     result = definitions.dictfetchone(cursor)
     cursor.close()
 
