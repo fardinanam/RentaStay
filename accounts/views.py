@@ -1,36 +1,29 @@
 from asyncio.windows_events import NULL
 from audioop import add
 import hashlib
-
-from unittest import result
-
-from sqlite3 import Cursor
-
-
 from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import JsonResponse
-# from numpy import imag
 from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 from rentastay.settings import MEDIA_ROOT
 
 # from django.contrib.auth.models import User
 
-def toLower(s):
-    word=''
-    for i in s:
-        if((i>='a' and i<= 'z') or (i>='A' and i<='Z')):
-            if i.isupper()==True:
-                word+=(i.lower())
-            elif i.islower()==True:
-                word+=i
-            elif i.isspace==True:
-                word+=i
-        else:
-            word+=i
-    return word
+# def toLower(s):
+#     word=''
+#     for i in s:
+#         if((i>='a' and i<= 'z') or (i>='A' and i<='Z')):
+#             if i.isupper()==True:
+#                 word+=(i.lower())
+#             elif i.islower()==True:
+#                 word+=i
+#             elif i.isspace==True:
+#                 word+=i
+#         else:
+#             word+=i
+#     return word
 
 def IsInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description):
     if countryname=="Country Name":
@@ -209,17 +202,20 @@ def addhome(request):
         
         query = """SELECT ADDRESS_ID 
                 FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
-        cursor.execute(query,[toLower(streetname), toLower(postalcode) ,city_id])
+        cursor.execute(
+            query, [str(streetname).lower(), str(postalcode).lower(), city_id])
         address_id = definitions.dictfetchone(cursor)
         if not bool(address_id):
             query = """INSERT INTO ADDRESSES(STREET,POST_CODE,CITY_ID) 
                     VALUES(%s,%s,%s)"""
-            cursor.execute(query,[toLower(streetname), toLower(postalcode) , city_id])
+            cursor.execute(
+                query, [str(streetname).lower(), str(postalcode).lower(), city_id])
             #cursor.commit()
             query = """SELECT ADDRESS_ID 
                     FROM ADDRESSES 
                     WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
-            cursor.execute(query,[toLower(streetname), toLower(postalcode) ,city_id])
+            cursor.execute(
+                query, [str(streetname).lower(), str(postalcode).lower(), city_id])
             address_id = definitions.dictfetchone(cursor)
             if not bool(address_id):
                 messages.error(request, 'Can\'t find the address!!')
