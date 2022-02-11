@@ -224,9 +224,9 @@ def addhome(request):
         address_id = address_id["ADDRESS_ID"]
         #print("Address id: " + str(address_id))
         
-        query = """INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION,PHOTOS_PATH) 
-                VALUES(%s,%s,%s,%s,%s,%s)"""
-        cursor.execute(query,[user_id, address_id, housename, housenumber, description, NULL])
+        query = """INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION) 
+                VALUES(%s,%s,%s,%s,%s)"""
+        cursor.execute(query,[user_id, address_id, housename, housenumber, description])
         #cursor.commit()
         #messages.success(request,'House added successfully!!')
         query = """SELECT HOUSE_ID 
@@ -248,10 +248,8 @@ def addhome(request):
             photoPath = '/media/Houses/' + str(house_id) + '/HousePic/'+upload1.name
             file_url = fss.url(file)
 
-            query = """UPDATE HOUSES
-                    SET PHOTOS_PATH = %s
-                    WHERE HOUSE_ID = %s"""
-            cursor.execute(query, [photoPath, house_id])
+            query = """INSERT INTO HOUSE_PHOTOS_PATH VALUES (%s, %s)"""
+            cursor.execute(query, [house_id, photoPath])
 
         images = [photoPath]
         print(images)
@@ -290,17 +288,21 @@ def addhome(request):
 
 def homepreview(request,house_id):
     cursor = connection.cursor()
-    query="SELECT ADDRESS_ID,HOUSE_NAME,DESCRIPTION,PHOTOS_PATH FROM HOUSES WHERE HOUSE_ID=%s"
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, PATH 
+            FROM HOUSES JOIN HOUSE_PHOTOS_PATH USING(HOUSE_ID)
+            WHERE HOUSE_ID=%s"""
     cursor.execute(query,[str(house_id)])
     result = definitions.dictfetchone(cursor)
+
     if not bool(result):
             messages.error(request, 'Can\'t find the house!!')
             cursor.close()
             return redirect('home')
+
     address_id = result["ADDRESS_ID"]
     housename = result["HOUSE_NAME"]
     description = result["DESCRIPTION"]
-    photos_path = result["PHOTOS_PATH"]
+    photos_path = result["PATH"]
     print(address_id,housename,description,photos_path)
     query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
             from ADDRESSES a 
@@ -311,10 +313,12 @@ def homepreview(request,house_id):
             WHERE a.ADDRESS_ID=%s"""
     cursor.execute(query,[str(address_id)])
     result = definitions.dictfetchone(cursor)
+
     if not bool(result):
         messages.error(request, 'Can\'t find the address of the house!!')
         cursor.close()
         return redirect('home')
+
     streetname = result["STREET"]
     cityname = result["CITY_NAME"]
     statename = result["STATE_NAME"]
@@ -360,20 +364,23 @@ def fetch_no_of_house_pics(request, house_id):
     query = "SELECT USER_ID FROM USERS WHERE USERNAME=%s"
     cursor.execute(query,[request.session['username']])
     user_id = definitions.dictfetchone(cursor)
+
     if not bool(user_id):
         messages.error(request, 'Please login to your account!!')
         cursor.close()
         return redirect('signin')
+
     user_id = user_id["USER_ID"]
-    query = "SELECT PHOTOS_PATH FROM HOUSES WHERE HOUSE_ID=%s"
+    query = "SELECT PATH FROM HOUSE_PHOTOS_PATH WHERE HOUSE_ID=%s"
     cursor.execute(query,[str(house_id)])
-    photos_path = definitions.dictfetchone(cursor)
-    if not bool(photos_path):
+    photos_paths = definitions.dictfetchall(cursor)
+
+    if not bool(photos_paths):
         messages.error(request, 'Couldn\'t find any house photo!!')
         cursor.close()
         return redirect('home')
-    photos_path = photos_path["PHOTOS_PATH"]
-    photos = photos_path.split(":")
-    result = [len(photos)]
+
+    # photos_path = [photo["PATH"] for photo in photos_paths]
+    result = [len(photos_paths)]
     cursor.close()
     return JsonResponse(result, safe=False)
