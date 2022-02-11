@@ -37,18 +37,19 @@ fetch("/housesdata/")
             title.textContent = house.HOUSE_NAME
             address.textContent = house.CITY_NAME + ', ' + house.COUNTRY_NAME
 
+            let minPrice = 0, maxPrice = 0
+
             fetch("/housePriceRange/" + house.HOUSE_ID)
             .then(responsePrice => responsePrice.json())
             .then(prices => {
-                let minPrice = prices.minPrice
-                let maxPrice = prices.maxPrice
+                minPrice = prices.minPrice
+                maxPrice = prices.maxPrice
                 let price = ''
                 
-                if(minPrice && maxPrice)
-                    if(minPrice == maxPrice)
-                        price = '$' + minPrice
-                    else
-                        price = '$' + minPrice + '-' + maxPrice
+                if(minPrice == maxPrice)
+                    price = '$' + minPrice
+                else
+                    price = '$' + minPrice + '-' + maxPrice
 
                 priceRange.textContent = price
             })
@@ -60,7 +61,7 @@ fetch("/housesdata/")
                 let active = true
                 
                 let count = 0
-                paths = values.paths.map(path => {
+                values.paths.forEach(path => {
                     const imageDiv = imageTemplate.content.cloneNode(true).children[0]
                     const image = imageDiv.querySelector("[house-image]")
                     const button = carouselIndicatorTemplate.content.cloneNode(true).children[0]
@@ -80,8 +81,6 @@ fetch("/housesdata/")
 
                     carouselIndicatorContainer.append(button)
                     cardImageContainer.append(imageDiv)
-
-                    return {housePath: path.PATH}
                 })
             })
             
@@ -98,7 +97,7 @@ fetch("/housesdata/")
 
             return {name: house.HOUSE_NAME, 
                     address: house.CITY_NAME + ', ' + house.COUNTRY_NAME,
-                    element: card}
+                    element: card, minPrice: minPrice, maxPrice: maxPrice}
         })
 
         $('.carousel').carousel({
