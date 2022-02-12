@@ -246,6 +246,7 @@ span {
 
 .carousel-item img{
     width: 100%;
+    object-fit: contain;
 }
 
 .carousel-item .text-right {
@@ -400,7 +401,16 @@ span {
 
 .carousel-inner.carousel-height-15 {
     border-radius: .5rem;
+    height: 15rem;
     overflow: hidden;
+}
+
+.carousel-inner{
+    border-radius: .5rem;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background-size: cover;
+    background-position: center;
 }
 
 /** Media **/

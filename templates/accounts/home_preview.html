@@ -4,148 +4,150 @@
 
 {% load static %}
 
+{% if request.session.username %}
 <!-- House details page start -->
-<div class="content-area-6">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-md-12 col-xs-12">
-                <div class="home-details-section">
-                    <!-- Heading start -->
-                    <div class="heading-home clearfix">
-                        {% include 'includes/messages.html' %}
-                        <div class="pull-left">
-                            <input type="text" name="houseid" id="houseid" value="{{ house_id }}" hidden>
-                            <h3>{{ housename }}</h3>
-                            <h6>
-                                <i class="fa fa-map-marker"></i> {{ house_address }}
-                            </h6>
+    <div class="content-area-6">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-12 col-xs-12">
+                    <div class="home-details-section">
+                        <!-- Heading start -->
+                        <div class="heading-home clearfix">
+                            {% include 'includes/messages.html' %}
+                            <div class="pull-left">
+                                <input type="text" name="houseid" id="houseid" value="{{ house_id }}" hidden>
+                                <h3>{{ housename }}</h3>
+                                <h6>
+                                    <i class="fa fa-map-marker"></i> {{ house_address }}
+                                </h6>
+                            </div>
+                            <div class="pull-right">
+                                <h3><span>Price range will be here</span></h3>
+                            </div>
                         </div>
-                        <div class="pull-right">
-                            <h3><span>Price range will be here</span></h3>
-                        </div>
-                    </div>
-                    <div id="homeDetailsSlider" class="carousel home-details-sliders slide mb-40" data-ride="carousel">
-                        <!-- main slider carousel items -->
-                        <div class="carousel-inner">
-                            <!-- <div class="active item carousel-item" data-slide-number="0">
-                                <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
-                            </div>
-                            <div class="item carousel-item" data-slide-number="1">
-                                <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="slider-home">
-                            </div>
-                            <div class="item carousel-item" data-slide-number="2">
-                                <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
-                            </div>
-                            <div class="item carousel-item" data-slide-number="3">
-                                <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="slider-home">
-                            </div>
-                            <div class="item carousel-item" data-slide-number="4">
-                                <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
-                            </div> -->
-                            {% for photo in photos_url %}
-                                {% if forloop.first %}
-                                    <div class="active item carousel-item" data-slide-number="{{ forloop.counter0 }}">
-                                        <img src="{{ photo }}" class="img-fluid" alt="slider-home">
-                                    </div>
-                                {% else %}
-                                    <div class="item carousel-item" data-slide-number="{{ forloop.counter0 }}">
-                                        <img src="{{ photo }}" class="img-fluid" alt="slider-home">
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <!-- main slider carousel nav controls -->
-                        <div class="carousel-indicators-section clearfix">
-                            <ul class="carousel-indicators home-properties list-inline nav nav-justified">
-                                <!-- <li class="list-inline-item active">
-                                    <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#homeDetailsSlider">
-                                        <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a id="carousel-selector-1" data-slide-to="1" data-target="#homeDetailsSlider">
-                                        <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="small-home">
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a id="carousel-selector-2" data-slide-to="2" data-target="#homeDetailsSlider">
-                                        <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a id="carousel-selector-3" data-slide-to="3" data-target="#homeDetailsSlider">
-                                        <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="small-home">
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a id="carousel-selector-4" data-slide-to="4" data-target="#homeDetailsSlider">
-                                        <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
-                                    </a>
-                                </li> -->
+                        <div id="homeDetailsSlider" class="carousel home-details-sliders slide mb-40" data-ride="carousel">
+                            <!-- main slider carousel items -->
+                            <div class="carousel-inner">
+                                <!-- <div class="active item carousel-item" data-slide-number="0">
+                                    <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
+                                </div>
+                                <div class="item carousel-item" data-slide-number="1">
+                                    <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="slider-home">
+                                </div>
+                                <div class="item carousel-item" data-slide-number="2">
+                                    <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
+                                </div>
+                                <div class="item carousel-item" data-slide-number="3">
+                                    <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="slider-home">
+                                </div>
+                                <div class="item carousel-item" data-slide-number="4">
+                                    <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
+                                </div> -->
                                 {% for photo in photos_url %}
                                     {% if forloop.first %}
-                                        <li class="list-inline-item active">
-                                            <a id="carousel-selector-{{ forloop.counter0 }}" class="selected" data-slide-to="{{ forloop.counter0 }}" data-target="#homeDetailsSlider">
-                                                <img src="{{ photo }}" class="img-fluid" alt="small-home">
-                                            </a>
-                                        </li>
+                                        <div class="active item carousel-item" data-slide-number="{{ forloop.counter0 }}">
+                                            <center><img src="{{ photo }}" class="img-fluid" alt="slider-home"></center>
+                                        </div>
                                     {% else %}
-                                        <li class="list-inline-item">
-                                            <a id="carousel-selector-{{ forloop.counter0 }}" data-slide-to="{{ forloop.counter0 }}" data-target="#homeDetailsSlider">
-                                                <img src="{{ photo }}" class="img-fluid" alt="small-home">
-                                            </a>
-                                        </li>
+                                        <div class="item carousel-item" data-slide-number="{{ forloop.counter0 }}">
+                                            <center><img src="{{ photo }}" class="img-fluid" alt="slider-home"></center>
+                                        </div>
                                     {% endif %}
                                 {% endfor %}
-                            </ul>
-                        </div>
-                        <a href="#homeDetailsSlider" class="carousel-control-prev" role="button" data-slide="prev">
-                            <span class="sr-only">Previous</span>
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        </a>
-                        <a href="#homeDetailsSlider" class="carousel-control-next" role="button" data-slide="next">
-                            <span class="sr-only">Next</span>
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        </a>
-                    </div>
-                    
-                    <!-- Tabbing box start -->
-                    <div class="tabbing tabbing-box mb-40">
-                        <ul class="nav nav-tabs" id="homeTab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active show" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="one" aria-selected="false" style="color: #212121;">House overview</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="two" aria-selected="false" style="color: #212121;">Features</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="homeTabContent">
-                            <div class="tab-pane fade active show" id="one" role="tabpanel" aria-labelledby="one-tab">
-                                <div class="home-description mb-50">
-                                    <h3 class="heading-2">
-                                        Description
-                                    </h3>
-                                    <p>
-                                        {{ description }}
-                                    </p>
-                                </div>
                             </div>
-                            <div class="tab-pane fade" id="two" role="tabpanel" aria-labelledby="two-tab">
-                                <div class="features-info mb-50">
-                                    <h3 class="heading-2">Features</h3>
-                                    <div class="row">
-                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                                            <ul>
-                                                <li>
-                                                    <span>This</span>
-                                                </li>
-                                                <li>
-                                                    <span>This</span>
-                                                </li>
-                                                <li>
-                                                    <span>And This</span>
-                                                </li>
-                                            </ul>
+                            <!-- main slider carousel nav controls -->
+                            <div class="carousel-indicators-section clearfix">
+                                <ul class="carousel-indicators home-properties list-inline nav nav-justified">
+                                    <!-- <li class="list-inline-item active">
+                                        <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#homeDetailsSlider">
+                                            <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a id="carousel-selector-1" data-slide-to="1" data-target="#homeDetailsSlider">
+                                            <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="small-home">
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a id="carousel-selector-2" data-slide-to="2" data-target="#homeDetailsSlider">
+                                            <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a id="carousel-selector-3" data-slide-to="3" data-target="#homeDetailsSlider">
+                                            <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="small-home">
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a id="carousel-selector-4" data-slide-to="4" data-target="#homeDetailsSlider">
+                                            <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
+                                        </a>
+                                    </li> -->
+                                    {% for photo in photos_url %}
+                                        {% if forloop.first %}
+                                            <li class="list-inline-item active">
+                                                <a id="carousel-selector-{{ forloop.counter0 }}" class="selected" data-slide-to="{{ forloop.counter0 }}" data-target="#homeDetailsSlider">
+                                                    <img src="{{ photo }}" class="img-fluid" alt="small-home">
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="list-inline-item">
+                                                <a id="carousel-selector-{{ forloop.counter0 }}" data-slide-to="{{ forloop.counter0 }}" data-target="#homeDetailsSlider">
+                                                    <img src="{{ photo }}" class="img-fluid" alt="small-home">
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <a href="#homeDetailsSlider" class="carousel-control-prev" role="button" data-slide="prev">
+                                <span class="sr-only">Previous</span>
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            </a>
+                            <a href="#homeDetailsSlider" class="carousel-control-next" role="button" data-slide="next">
+                                <span class="sr-only">Next</span>
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                        
+                        <!-- Tabbing box start -->
+                        <div class="tabbing tabbing-box mb-40">
+                            <ul class="nav nav-tabs" id="homeTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="one" aria-selected="false" style="color: #212121;">House overview</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="two" aria-selected="false" style="color: #212121;">Features</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="homeTabContent">
+                                <div class="tab-pane fade active show" id="one" role="tabpanel" aria-labelledby="one-tab">
+                                    <div class="home-description mb-50">
+                                        <h3 class="heading-2">
+                                            Description
+                                        </h3>
+                                        <p>
+                                            {{ description }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="two" role="tabpanel" aria-labelledby="two-tab">
+                                    <div class="features-info mb-50">
+                                        <h3 class="heading-2">Features</h3>
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                <ul>
+                                                    <li>
+                                                        <span>This</span>
+                                                    </li>
+                                                    <li>
+                                                        <span>This</span>
+                                                    </li>
+                                                    <li>
+                                                        <span>And This</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -153,36 +155,43 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-12">
-                <div class="sidebar-right">
-                    <!-- Advanced search start -->
-                    <div class="widget advanced-search d-none-992" id="addHousePic">
-                        <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit" id="addHousePicBtn">Add House Pic</button>
+                <div class="col-lg-4 col-md-12">
+                    <div class="sidebar-right">
+                        <!-- Advanced search start -->
+                        <div class="widget advanced-search d-none-992">
+                            <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit" id="addHousePicBtn">Add House Pic</button>
+                        </div>
+                        <form action="{% url 'homepreview' house_id %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div id="addHousePic">
+
+                            </div>
+                            <button class="btn btn-block btn-lg btn-theme btn-success"  style="width: 25%; height:50px; margin: auto; display: none;" id="addPicBtn">Add</button>
+                        </form>   
                     </div>
-                    <form action="{% url 'homepreview' house_id %}" method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <button class="btn btn-block btn-lg btn-theme btn-success"  style="width: 25%; height:50px; margin: auto; display: none;" id="addPicBtn">Add</button>
-                    </form>   
-                </div>
-                <div class="sidebar-right">
-                    <!-- Advanced search start -->
-                    <div class="widget advanced-search d-none-992">
-                        <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">Add Room</button>
-                        <br><br>
-                        <h3 class="sidebar-title">Your Rooms</h3>
-                        <ul>
-                            <li>
-                                <a href="#"><span>Room No:</span>402</a>
-                            </li>
-                            <li>
-                                <a href="#"><span>Room No:</span>403</a>
-                            </li>
-                        </ul>
-                    </div>   
+                    <div class="sidebar-right">
+                        <!-- Advanced search start -->
+                        <div class="widget advanced-search d-none-992">
+                            <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">Add Room</button>
+                            <br><br>
+                            <h3 class="sidebar-title">Your Rooms</h3>
+                            <ul>
+                                <li>
+                                    <a href="#"><span>Room No:</span>402</a>
+                                </li>
+                                <li>
+                                    <a href="#"><span>Room No:</span>403</a>
+                                </li>
+                            </ul>
+                        </div>   
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+{% else %}
+    <div class="row justify-content-center">
+        <h3> You must be logged in to add preview a house!! </h3>
+    </div>
+{% endif %}
 {% endblock %}
