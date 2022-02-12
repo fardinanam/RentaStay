@@ -6,6 +6,7 @@
 
 {% block content %}
     {% if request.session.username %}
+    <div class="container">
         <div class="row justify-content-center">
             <h1 class="text-center">Add Home</h1>
             <form style="max-width:70%" action="{% url 'addhome' %}" method="POST" enctype="multipart/form-data">
@@ -111,6 +112,7 @@
                 </div>
             </form>
         </div>
+    </div>
     {% else %}
         <div class="row justify-content-center">
             <h3> You must be logged in to add a home!! </h3>
