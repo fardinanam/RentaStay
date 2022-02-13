@@ -398,12 +398,6 @@ span {
     border-radius: 5px;
 }
 
-.carousel-inner.carousel-height-15 {
-    border-radius: .5rem;
-    height: 15rem;
-    overflow: hidden;
-}
-
 /** Media **/
 @media (max-width: 1200px) {
     .main-header .navbar-expand-lg .navbar-nav .nav-link {
@@ -538,11 +532,12 @@ span {
 
     .profile-pic-container {
         position:absolute;
-        top: 25%;
-        left: 20%;
         width: 2.5rem;
         height: 2.5rem;
         border-radius: 1.75rem;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         overflow: hidden;
     }
 
@@ -591,10 +586,10 @@ span {
 
 .card {
     border-radius: .5rem;
-    -webkit-transition: .2s ease-in-out;
-    -moz-transition: .2s ease-in-out;
-    -o-transition: .2s ease-in-out;
-    transition: .2s ease-in-out;
+    -webkit-transition: .1s ease-in-out;
+    -moz-transition: .1s ease-in-out;
+    -o-transition: .1s ease-in-out;
+    transition: .1s ease-in-out;
 }
 
 .card:hover {
@@ -619,8 +614,19 @@ span {
     cursor: pointer;
 }
 
-.img-fluid {
+.carousel-height-15 {
     border-radius: .5rem;
+    height: 15rem;
+    overflow: hidden;
+}
+
+.home-card-carousel .img-fluid {
+    border-radius: .5rem;
+    float: left;
+    height: 15rem;
+    width: auto; 
+    object-fit: cover;
+    /* background-size: cover; */
 }
 
 .tabbing-box .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
