@@ -1,4 +1,3 @@
-console.log("ASHCHE")
 $(function () {
     'use strict';
     // Showing page loader
@@ -107,7 +106,6 @@ const addNewHousePic = value => {
     if(addHousePicBtn.disabled != true){
         addHousePicBtn.disabled = true;
         addPicBtn.style.display="block";
-        console.log("Dhukse")
         let idOfHouse = houseId.value 
         const url = `/accounts/fetch_no_of_house_pics/${idOfHouse}/`;
         fetch(url, {
@@ -118,20 +116,22 @@ const addNewHousePic = value => {
         })
         .then(data => {
             let noOfHouse = data[0]
-            console.log(noOfHouse)
+            //console.log(noOfHouse)
             var c=1;
             var brk = document.createElement("span");
-            brk.innerHTML="<br><br>";
+            brk.innerHTML="<br>";
             addHousePic.appendChild(brk);
             for (var input = noOfHouse+1; input <= 5; input++) {
                 var newHousePicLabel = document.createElement("label");
                 newHousePicLabel.for = "upload"+input;
                 newHousePicLabel.innerHTML="House Pic " + c + ":";
+                newHousePicLabel.style="padding-left: 5%;"
                 addHousePic.appendChild(newHousePicLabel);
                 var newHousePic = document.createElement("input");
                 newHousePic.type="file";
                 newHousePic.accept="image/*";
                 newHousePic.name="upload"+input;
+                newHousePic.style="padding-left: 5%;"
                 addHousePic.appendChild(newHousePic);
                 var brk = document.createElement("span");
                 brk.innerHTML="<br><br>";
@@ -144,11 +144,12 @@ const addNewHousePic = value => {
         })
     }
 }
+
 try{
-    addHousePic.onclick = () => addNewHousePic();
+    addHousePicBtn.onclick = () => addNewHousePic();
 }
 catch{
-    console.log("On house preview page!!");
+    //console.log("On house preview page!!");
 }
 
 try{
@@ -158,5 +159,5 @@ try{
     cityname.onclick = () => checkForCityNames(countryname.value, statename.value);
 }
 catch{
-    console.log("On add home page!!")
+    //console.log("On add home page!!")
 }

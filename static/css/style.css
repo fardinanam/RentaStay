@@ -246,6 +246,7 @@ span {
 
 .carousel-item img{
     width: 100%;
+    object-fit: contain;
 }
 
 .carousel-item .text-right {
@@ -396,6 +397,14 @@ span {
 .btn-outline-success{
     border-width: 1.5px;
     border-radius: 5px;
+}
+
+.carousel-inner{
+    border-radius: .5rem;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background-size: cover;
+    background-position: center;
 }
 
 /** Media **/

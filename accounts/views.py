@@ -1,5 +1,3 @@
-from asyncio.windows_events import NULL
-from audioop import add
 import hashlib
 from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
@@ -252,7 +250,7 @@ def addhome(request):
             cursor.execute(query, [house_id, photoPath])
 
         images = [photoPath]
-        print(images)
+        #print(images)
 
         cursor.close()
         data ={
@@ -288,8 +286,8 @@ def addhome(request):
 
 def homepreview(request,house_id):
     cursor = connection.cursor()
-    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, PATH 
-            FROM HOUSES JOIN HOUSE_PHOTOS_PATH USING(HOUSE_ID)
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION
+            FROM HOUSES
             WHERE HOUSE_ID=%s"""
     cursor.execute(query,[str(house_id)])
     result = definitions.dictfetchone(cursor)
@@ -302,8 +300,6 @@ def homepreview(request,house_id):
     address_id = result["ADDRESS_ID"]
     housename = result["HOUSE_NAME"]
     description = result["DESCRIPTION"]
-    photos_path = result["PATH"]
-    print(address_id,housename,description,photos_path)
     query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
             from ADDRESSES a 
             JOIN CITIES c 
@@ -324,14 +320,33 @@ def homepreview(request,house_id):
     statename = result["STATE_NAME"]
     countryname = result["COUNTRY_NAME"]
     #print(streetname)
-    images=[photos_path]
+    if request.method=="POST":
+        for i in range(2,6):
+            #print('upload'+str(i))
+            if request.FILES.get('upload'+str(i),False):
+                folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/HousePic/'
+                upload = request.FILES['upload'+str(i)]
+                fss = FileSystemStorage(location=folder)
+                file = fss.save(upload.name, upload)
+                photoPath = '/media/Houses/' + str(house_id) + '/HousePic/'+upload.name
+                file_url = fss.url(file)
+                query = """INSERT INTO HOUSE_PHOTOS_PATH VALUES (%s, %s)"""
+                cursor.execute(query, [str(house_id), photoPath])
+                
+    query="""SELECT PATH FROM HOUSE_PHOTOS_PATH WHERE HOUSE_ID=%s"""
+    cursor.execute(query,[str(house_id)])
+    result = cursor.fetchall()
+    photos_path = [photo[0] for photo in result]
+    #print(address_id,housename,description)
+    #print(photos_path)
+    
     data ={
-            'house_id': str(house_id),
-            'housename': housename,
-            'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
-            'description': description,
-            'photos_url': images,
-        }
+        'house_id': str(house_id),
+        'housename': housename,
+        'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
+        'description': description,
+        'photos_url': photos_path,
+    }
     
     return render(request, 'accounts/home_preview.html',data)
 

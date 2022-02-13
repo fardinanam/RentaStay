@@ -1,4 +1,3 @@
-from sqlite3 import Cursor
 from django.shortcuts import render
 from django.db import connection, IntegrityError
 from rentastay import definitions
