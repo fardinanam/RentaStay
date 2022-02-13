@@ -23,6 +23,7 @@ const addHousePic = document.getElementById('addHousePic');
 const houseId = document.getElementById('houseid');
 const addHousePicBtn = document.getElementById('addHousePicBtn');
 const addPicBtn = document.getElementById('addPicBtn');
+const addRoomBtn = document.getElementById('addRoomBtn');
 
 
 const addHtmlToElement = (element,html) => {
@@ -161,3 +162,4 @@ try{
 catch{
     //console.log("On add home page!!")
 }
+

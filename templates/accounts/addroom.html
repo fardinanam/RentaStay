@@ -1,0 +1,74 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+    Add Room | {{ request.session.username }}
+{% endblock title %}
+
+{% block content %}
+    {% if request.session.username %}
+        <div class="container">
+            <div class="row justify-content-center">
+                <h1 class="text-center">Add Room</h1>
+                <form action="{% url 'addroom' house_id %}" method="POST" enctype="multipart/form-data" >
+                    {% csrf_token %}
+                    
+                    {% include 'includes/messages.html' %}
+                    <input type="text" name="houseid" id="houseid" value="{{ house_id }}" hidden>
+                    <div class="mb-3 row">
+                        <label for="roomhousename" class="col-sm-2 col-form-label">House Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="roomhousename" name="roomhousename" value="{{ housename }}" class="form-control" aria-describedby="" disabled>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="roomnumber" class="col-sm-2 col-form-label">Room No.</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="roomnumber" name="roomnumber" value="{{ roomnumber }}" class="form-control" aria-describedby="">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="maxcapacity" class="col-sm-2 col-form-label">Maximum Capacity</label>
+                        <div class="col-sm-10">
+                            <select class="form-control search-fields" name="maxcapacity" id="maxcapacity">
+                                <option selected="true" disabled="disabled">Capacity</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="description" class="col-sm-2 col-form-label">Description</label>
+                        <div class="col-sm-10">
+                            <input type="textfield" id="description" name="description" value="{{ description }}" class="form-control" aria-describedby="">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="roomprice" class="col-sm-2 col-form-label">Price (In doller)</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="roomprice" name="roomprice" value="{{ roomprice }}" class="form-control" aria-describedby="">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="upload1" class="col-sm-2 col-form-label">Room Photo:</label>
+                        <div class="col-sm-10">
+                            <input type="file" name="uploadroom1" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <button class="btn button-theme btn-md btn-success" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <div class="row justify-content-center">
+            <h3> You must be logged in to add a Room!! </h3>
+        </div>
+    {% endif %}
+{% endblock content %}
+
