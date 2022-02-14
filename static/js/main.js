@@ -22,7 +22,7 @@ const cityname = document.getElementById('cityname');
 const addHousePic = document.getElementById('addHousePic');
 const houseId = document.getElementById('houseid');
 const addHousePicBtn = document.getElementById('addHousePicBtn');
-const addPicBtn = document.getElementById('addPicBtn');
+const addPicBtn = document.getElementById('addBtnHouse');
 const addRoomBtn = document.getElementById('addRoomBtn');
 
 

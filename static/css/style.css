@@ -167,6 +167,7 @@ span {
 .heading-home h3 span{
     float: right;
     margin-bottom: 5px;
+    color: #61bfe4;
 }
 
 
@@ -576,6 +577,7 @@ span {
 
     .heading-home h3 span{
         float: left;
+        color: #61bfe4;
     }
 }
 
