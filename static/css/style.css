@@ -591,9 +591,9 @@ span {
     border-left: none;
 }
 
-/** Card styles start **/
+/** house-card styles start **/
 
-.card {
+.house-card {
     border-radius: .5rem;
     -webkit-transition: .1s ease-in-out;
     -moz-transition: .1s ease-in-out;
@@ -601,7 +601,7 @@ span {
     transition: .1s ease-in-out;
 }
 
-.card:hover {
+.house-card:hover {
     -webkit-transform: scale(1.01);
     -moz-transform: scale(1.01);
     -o-transform: scale(1.01);
@@ -611,7 +611,7 @@ span {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.card:active {
+.house-card:active {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
     -o-transform: scale(1);
@@ -619,7 +619,7 @@ span {
     transform: scale(1);
 }
 
-.card-body:hover {
+.house-card-body:hover {
     cursor: pointer;
 }
 
@@ -629,7 +629,7 @@ span {
     overflow: hidden;
 }
 
-.home-card-carousel .img-fluid {
+.home-house-card-carousel .img-fluid {
     border-radius: .5rem;
     float: left;
     height: 15rem;
@@ -658,4 +658,62 @@ a.nav-link.active{
     font-weight: 500;
 }
 
-/** Card styles end **/
+.house-owner-profile-pic-container {
+        /* position:absolute; */
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 1.75rem;
+        /* top: 50%;
+        left: 50%; */
+        /* transform: translate(-50%, -50%); */
+        overflow: hidden;
+}
+
+.house-owner-profile-pic-container img {
+        position: relative;
+        height: auto;
+        max-width: 100%;
+}
+
+/** house-card styles end **/
+
+/** Room Card styles start */
+
+.room-card {
+    border-radius: .5rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.room-card .card-header {
+    border-radius: .5rem .5rem .25rem .25rem;
+}
+
+.room-card li {
+    cursor: pointer;
+    -webkit-transition: .1s ease-in-out;
+    -moz-transition: .1s ease-in-out;
+    -o-transition: .1s ease-in-out;
+    transition: .1s ease-in-out;
+}
+
+.room-card li:hover {
+    border-radius: .5rem;
+    -webkit-transform: scale(1.01);
+    -moz-transform: scale(1.01);
+    -o-transform: scale(1.01);
+    -ms-transform: scale(1.01);
+    transform: scale(1.01);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.room-card h6 {
+    padding: 0;
+    margin: 0;
+}
+
+.room-card p {
+    padding: 0;
+    margin: 0;
+}
+
+/** Room Card styles end */
