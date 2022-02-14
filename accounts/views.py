@@ -416,6 +416,32 @@ def fetch_no_of_house_pics(request, house_id):
     cursor.close()
     return JsonResponse(result, safe=False)
 
+def fetch_no_of_room_pics(request, house_id, roomnumber):
+    cursor = connection.cursor()
+    query = "SELECT USER_ID FROM USERS WHERE USERNAME=%s"
+    cursor.execute(query,[request.session['username']])
+    user_id = definitions.dictfetchone(cursor)
+
+    if not bool(user_id):
+        messages.error(request, 'Please login to your account!!')
+        cursor.close()
+        return redirect('signin')
+
+    user_id = user_id["USER_ID"]
+    query = "SELECT PATH FROM ROOM_PHOTOS_PATH WHERE HOUSE_ID=%s AND ROOM_NO=%s"
+    cursor.execute(query,[str(house_id),str(roomnumber)])
+    photos_paths = definitions.dictfetchall(cursor)
+
+    if not bool(photos_paths):
+        messages.error(request, 'Couldn\'t find any house photo!!')
+        cursor.close()
+        return redirect('home')
+
+    # photos_path = [photo["PATH"] for photo in photos_paths]
+    result = [len(photos_paths)]
+    cursor.close()
+    return JsonResponse(result, safe=False)
+
 def addroom(request,house_id):
     cursor = connection.cursor()
     query = "SELECT HOUSE_NAME FROM HOUSES WHERE HOUSE_ID=%s"
@@ -555,7 +581,7 @@ def roompreview(request,house_id,roomnumber):
                 file = fss.save(upload.name, upload)
                 photoPath = '/media/Houses/' + str(house_id) + '/Rooms/' + str(roomnumber) + '/' + upload.name
                 file_url = fss.url(file)
-                query = """INSERT INTO ROOM_PHOTOS_PATH VALUES (%s, %s)"""
+                query = """INSERT INTO ROOM_PHOTOS_PATH VALUES (%s, %s,%s)"""
                 cursor.execute(query, [str(house_id),str(roomnumber),photoPath])
                 
     query="""SELECT PATH FROM ROOM_PHOTOS_PATH WHERE HOUSE_ID=%s AND ROOM_NO=%s"""

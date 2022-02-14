@@ -16,7 +16,8 @@
                         <div class="heading-home clearfix">
                             {% include 'includes/messages.html' %}
                             <div class="pull-left">
-                                <input type="text" name="houseid" id="houseid" value="{{ house_id }}" hidden>
+                                <input type="text" name="roomhouseid" id="roomhouseid" value="{{ house_id }}" hidden>
+                                <input type="text" name="roomnumberid" id="roomnumberid" value="{{ roomnumber }}" hidden>
                                 <h3>{{ housename }}</h3>
                                 <h6>
                                     <i class="fa fa-map-marker"></i> {{ house_address }}
@@ -118,7 +119,18 @@
                         <!-- Advanced search start -->
                         <div class="widget advanced-search d-none-992">
                             <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit" id="addRoomPicBtn">Add Room Pic</button>
-                            <br><br>
+                        </div>
+                        <form action="{% url 'roompreview' house_id roomnumber %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div id="addRoomPic">
+
+                            </div>
+                            <button class="btn btn-block btn-lg btn-theme btn-success"  style="width: 25%; height:50px; margin: auto; display: none;" id="addBtnRoom">Add</button>
+                        </form>   
+                    </div>
+                    <div class="sidebar-right">
+                        <!-- Advanced search start -->
+                        <div class="widget advanced-search d-none-992">
                             <h3 class="sidebar-title">More Information</h3>
                             <ul>
                                 <li>
@@ -135,14 +147,6 @@
                                 </li>
                             </ul>
                         </div>
-                        </div>
-                        <form action="{% url 'roompreview' house_id roomnumber %}" method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div id="addRoomPic">
-
-                            </div>
-                            <button class="btn btn-block btn-lg btn-theme btn-success"  style="width: 25%; height:50px; margin: auto; display: none;" id="addBtnRoom">Add</button>
-                        </form>   
                     </div>
                 </div>
             </div>
