@@ -11,4 +11,7 @@ urlpatterns = [
     path('fetch_statenames/<str:key>/', views.fetch_statenames, name='fetch_statenames'),
     path('fetch_citynames/<str:key1>/<str:key2>/', views.fetch_citynames, name='fetch_citynames'),
     path('fetch_no_of_house_pics/<int:house_id>/', views.fetch_no_of_house_pics, name='fetch_no_of_house_pics'),
+    path('addroom/<int:house_id>/', views.addroom, name='addroom'),
+    path('roompreview/<int:house_id>/<int:roomnumber>/', views.roompreview, name='roompreview'),
+    path('fetch_no_of_room_pics/<int:house_id>/<int:roomnumber>/', views.fetch_no_of_room_pics, name='fetch_no_of_room_pics'),
 ]
