@@ -6,10 +6,10 @@ from django.http import JsonResponse
 def getHouses():
     cursor = connection.cursor()
     query = """SELECT HOUSE_ID, HOUSE_NAME, CITY_NAME, STATE_NAME, COUNTRY_NAME
-                FROM HOUSES JOIN ADDRESSES USING(ADDRESS_ID) 
-                JOIN CITIES USING(CITY_ID) 
-                JOIN STATES USING(STATE_ID) 
-                JOIN COUNTRIES USING(COUNTRY_NAME)"""
+            FROM HOUSES JOIN ADDRESSES USING(ADDRESS_ID) 
+            JOIN CITIES USING(CITY_ID) 
+            JOIN STATES USING(STATE_ID) 
+            JOIN COUNTRIES USING(COUNTRY_NAME)"""
     cursor.execute(query)
     result = definitions.dictfetchall(cursor)
     cursor.close()
@@ -49,9 +49,34 @@ def house(request, house_id):
     cursor = connection.cursor()
     query = """SELECT * 
             FROM HOUSES JOIN USERS USING(USER_ID)
+            JOIN ADDRESSES USING (ADDRESS_ID)
+            JOIN CITIES USING (CITY_ID)
+            JOIN STATES USING (STATE_ID)
+            JOIN COUNTRIES USING(COUNTRY_NAME)
             WHERE HOUSE_ID = %s"""
     cursor.execute(query, [house_id])
     result = definitions.dictfetchone(cursor)
+
+    minPrice = cursor.callfunc('GET_MIN_PRICE', float, [house_id])
+    maxPrice = cursor.callfunc('GET_MAX_PRICE', float, [house_id])
+
+    result.update({
+        'MIN_PRICE': minPrice,
+        'MAX_PRICE': maxPrice
+    })
+
+    query = """SELECT * 
+            FROM ROOMS
+            WHERE HOUSE_ID = %s"""
+    cursor.execute(query, [house_id])
+    rooms = definitions.dictfetchall(cursor)
+    rooms = sorted(rooms, key=lambda i: i['ROOM_NO'])
+
+    query = """SELECT PATH
+            FROM HOUSE_PHOTOS_PATH
+            WHERE HOUSE_ID = %s"""
+    cursor.execute(query, [house_id])
+    photosPath = definitions.dictfetchall(cursor)
     cursor.close()
 
-    return render(request, 'pages/house.html', {'house':result})
+    return render(request, 'pages/house.html', {'house':result, 'rooms': rooms, 'photos_url': photosPath})

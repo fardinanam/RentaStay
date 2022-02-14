@@ -3,7 +3,7 @@
 {% block title %} RentaStay {% endblock %}
 {% block content %}
 {% load static %}
-    <div class="container">
+    <div class="container-lg">
         {% include 'includes/messages.html' %}
         <div class="input-group col-12 col-lg-8 p-2 start-50 translate-middle-x">
             <span class="input-group-text round-search-icon" id="basic-addon1">
@@ -16,7 +16,7 @@
         <div class="row g-3 justify-content-center" house-cards-container>
             <template house-card-template>
                 <div class="p-2 col-12 col-md-4 col-lg-3">
-                    <div class="card">
+                    <div class="card house-card">
                         <div class="bg-image">
                             <div id="" class="carousel slide carousel-fade" data-interval="false" carousel-slide>
                                 <div class="carousel-indicators" indicators-container>
