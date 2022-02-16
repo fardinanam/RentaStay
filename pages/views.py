@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db import connection, IntegrityError
 from rentastay import definitions
 from django.http import JsonResponse
+from django.contrib import messages
 
 def getHouses():
     cursor = connection.cursor()
@@ -11,10 +12,48 @@ def getHouses():
             JOIN STATES USING(STATE_ID) 
             JOIN COUNTRIES USING(COUNTRY_NAME)"""
     cursor.execute(query)
+    #print(cursor.fetchone())
     result = definitions.dictfetchall(cursor)
+    #print(result)
     cursor.close()
 
     return result
+
+def getYourHouses(request):
+    cursor = connection.cursor()
+    query = "SELECT USER_ID FROM USERS WHERE USERNAME=%s"
+    cursor.execute(query,[request.session['username']])
+    user_id = definitions.dictfetchone(cursor)
+    if not bool(user_id):
+        messages.error(request, 'Please login to your account!!')
+        cursor.close()
+        return redirect('signin')
+    user_id = user_id["USER_ID"]
+    query = "SELECT HOUSE_ID FROM HOUSES WHERE USER_ID=%s"
+    cursor.execute(query,[str(user_id)])
+    result1 = cursor.fetchall()
+    result1 = [house_id[0] for house_id in result1]
+    fetchedData = []
+    for i in result1:
+        query = """SELECT HOUSE_ID, HOUSE_NAME, CITY_NAME, STATE_NAME, COUNTRY_NAME
+            FROM HOUSES JOIN ADDRESSES USING(ADDRESS_ID) 
+            JOIN CITIES USING(CITY_ID) 
+            JOIN STATES USING(STATE_ID) 
+            JOIN COUNTRIES USING(COUNTRY_NAME)
+            WHERE HOUSE_ID=%s"""
+        cursor.execute(query,[str(i)])
+        fetchedData.append(cursor.fetchone())
+        columns = [col[0] for col in cursor.description]
+        
+    cursor.close()
+    if len(fetchedData)==0:
+        newlst=None
+    else:
+        newlst = [
+            dict(zip(columns, row))
+            for row in fetchedData
+        ]
+    return newlst
 
 def home(request):
     houses = getHouses()
@@ -22,9 +61,18 @@ def home(request):
     # print(houses)
     return render(request, 'pages/home.html', data)
 
+def yourhouses(request):
+    houses = getYourHouses(request)
+    data = {'houses':houses}
+    # print(houses)
+    return render(request,'pages/yourhouses.html',data)
+
 def getJsonHouseData(request):
     houses = getHouses()
+    return JsonResponse({'data':houses})
 
+def getJsonYourHouseData(request):
+    houses = getYourHouses(request)
     return JsonResponse({'data':houses})
 
 def getJsonHousePhotosPath(request, house_id):

@@ -66,6 +66,7 @@ const checkForStateNames = value => {
             return response.json();
         })
         .then(data => {
+            data.sort();
             let html='';
             html += `<option selected="true" disabled="disabled">State Name</option>`;
             for(let d of data){
@@ -96,6 +97,7 @@ const checkForCityNames = (value1,value2) => {
             return response.json();
         })
         .then(data => {
+            data.sort();
             let html='';
             html += `<option selected="true" disabled="disabled">City Name</option>`;
             for(let d of data){
