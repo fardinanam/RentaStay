@@ -128,3 +128,33 @@ def house(request, house_id):
     cursor.close()
 
     return render(request, 'pages/house.html', {'house':result, 'rooms': rooms, 'photos_url': photosPath})
+
+def reservation(request, house_id, room_no, check_in, check_out, guests):
+    # if request.session.get('username') is None:
+    #     messages.error(request, 'Please Login to continue')
+    #     return render(request, 'accounts/signin')
+    if request.method == 'GET':
+        data = {
+            'house_id': house_id, 
+            'room_no': room_no, 
+            'check_in': check_in, 
+            'check_out': check_out,
+            'guests': guests
+        }
+
+        if request.session.get('username') is not None:
+            cursor = connection.cursor()
+            query = """SELECT *
+                    FROM USERS
+                    WHERE USERNAME = %s"""
+            cursor.execute(query, [request.session['username']])
+            result = definitions.dictfetchone(cursor)
+            cursor.close()
+            data.update(result)
+
+        return render(request, 'pages/reservation.html', data)
+
+    elif request.method == 'POST':
+        # this needs to be handled
+        pass
+
