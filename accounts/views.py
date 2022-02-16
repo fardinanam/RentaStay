@@ -177,9 +177,6 @@ def logout(request):
 def addhome(request):
     datas ={
         'countries': None,
-        'countryname': None,
-        'statename': None,
-        'cityname': None,
         'streetname': None,
         'postalcode': None,
         'house_id': None,
@@ -187,7 +184,6 @@ def addhome(request):
         'house_address': None,
         'housenumber':  None,
         'description': None,
-        'photos_url': None,
     }
     cursor = connection.cursor()
     query = "SELECT * FROM COUNTRIES"
@@ -207,10 +203,10 @@ def addhome(request):
         return render(request, 'accounts/addhome.html', data)
     
     if request.method=='POST':
+        countryname = request.POST.get('countryname','Country Name')
+        statename = request.POST.get('statename','State Name')
+        cityname = request.POST.get('cityname','City Name')
         datas.update({
-            'countryname': request.POST.get('countryname','Country Name'),
-            'statename': request.POST.get('statename','State Name'),
-            'cityname': request.POST.get('cityname','City Name'),
             'streetname': request.POST['streetname'],
             'postalcode': request.POST['postalcode'],
             'housename': request.POST['housename'],
@@ -218,7 +214,7 @@ def addhome(request):
             'description': request.POST['description'],
         })
         #print(countryname + " " + statename + " " + cityname + " " + streetname + " " + postalcode + " " + housename + " " + housenumber + " " + description + " " + request.session['username'])
-        if IsHouseInputsValid(request,datas['countryname'],datas['statename'],datas['cityname'],datas['streetname'],datas['postalcode'],datas['housename'],datas['housenumber'],datas['description']) == False:
+        if IsHouseInputsValid(request,countryname,statename,cityname,datas['streetname'],datas['postalcode'],datas['housename'],datas['housenumber'],datas['description']) == False:
             return render(request,'accounts/addhome.html',datas)
         cursor = connection.cursor()
         query = """SELECT USER_ID 
@@ -234,33 +230,33 @@ def addhome(request):
         query = """SELECT STATE_ID 
                 FROM STATES 
                 WHERE STATE_NAME=%s AND COUNTRY_NAME=%s"""
-        cursor.execute(query,[datas['statename'], datas['countryname']])
+        cursor.execute(query,[statename, countryname])
         state_id = definitions.dictfetchone(cursor)
         state_id = state_id["STATE_ID"]
         #print("State id: " + str(state_id))
         query = """SELECT CITY_ID 
                 FROM CITIES 
                 WHERE CITY_NAME=%s AND STATE_ID=%s"""
-        cursor.execute(query,[datas['cityname'], state_id])
+        cursor.execute(query,[cityname, str(state_id)])
         city_id = definitions.dictfetchone(cursor)
         city_id = city_id["CITY_ID"]
         #print("City id: " + str(city_id))
         query = """SELECT ADDRESS_ID 
                 FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
         cursor.execute(
-            query, [str(datas['streetname']).lower(), str(datas['postalcode']).lower(), city_id])
+            query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
         address_id = definitions.dictfetchone(cursor)
         if not bool(address_id):
             query = """INSERT INTO ADDRESSES(STREET,POST_CODE,CITY_ID) 
                     VALUES(%s,%s,%s)"""
             cursor.execute(
-                query, [str(datas['streetname']).lower(), str(datas['postalcode']).lower(), city_id])
+                query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
             #cursor.commit()
             query = """SELECT ADDRESS_ID 
                     FROM ADDRESSES 
                     WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
             cursor.execute(
-                query, [str(datas['streetname']).lower(), str(datas['postalcode']).lower(), city_id])
+                query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
             address_id = definitions.dictfetchone(cursor)
             if not bool(address_id):
                 messages.error(request, 'Can\'t find the address!!')
@@ -270,12 +266,12 @@ def addhome(request):
         #print("Address id: " + str(address_id))
         query = """INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION) 
                 VALUES(%s,%s,%s,%s,%s)"""
-        cursor.execute(query,[user_id, address_id, datas['housename'], datas['housenumber'], datas['description']])
+        cursor.execute(query,[str(user_id), str(address_id), datas['housename'], datas['housenumber'], datas['description']])
         #cursor.commit()
         query = """SELECT HOUSE_ID 
                 FROM HOUSES 
                 WHERE USER_ID=%s AND ADDRESS_ID=%s AND HOUSE_NAME=%s AND HOUSE_NO=%s"""
-        cursor.execute(query,[user_id, address_id, datas['housename'], datas['housenumber']])
+        cursor.execute(query,[str(user_id), str(address_id), datas['housename'], datas['housenumber']])
         house_id = definitions.dictfetchone(cursor)
         if not bool(house_id):
             messages.error(request, 'Can\'t find the house!!')
@@ -295,14 +291,7 @@ def addhome(request):
             file_url = fss.url(file)
 
             query = """INSERT INTO HOUSE_PHOTOS_PATH VALUES (%s, %s)"""
-            cursor.execute(query, [house_id, photoPath])
-
-        images = [photoPath]
-        #print(images)
-        datas.update({
-            'photos_url': images,
-            'house_address': str(datas['streetname']) + ", " +  str(datas['cityname']) + ", " + str(datas['statename']) + ", " + str(datas['countryname']),
-        })
+            cursor.execute(query, [str(house_id), photoPath])
 
         cursor.close()
         #return render(request,'accounts/home_preview.html',datas)
@@ -364,15 +353,21 @@ def homepreview(request,house_id):
     photos_path = [photo[0] for photo in result]
     #print(address_id,housename,description)
     #print(photos_path)
-    
+    query="""SELECT ROOM_NO FROM ROOMS 
+            WHERE HOUSE_ID=%s
+            ORDER BY ROOM_NO ASC"""
+    cursor.execute(query,[str(house_id)])
+    result = cursor.fetchall()
+    rooms = [room[0] for room in result]
     data ={
         'house_id': str(house_id),
         'housename': housename,
         'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
         'description': description,
         'photos_url': photos_path,
+        'rooms': rooms,
     }
-    
+    cursor.close()
     return render(request, 'accounts/home_preview.html',data)
 
 def fetch_statenames(request, key):
@@ -451,111 +446,14 @@ def fetch_no_of_room_pics(request, house_id, roomnumber):
     cursor.close()
     return JsonResponse(result, safe=False)
 
-# def addroom(request,house_id):
-#     cursor = connection.cursor()
-#     query = "SELECT HOUSE_NAME FROM HOUSES WHERE HOUSE_ID=%s"
-#     cursor.execute(query,[str(house_id)])
-#     house_name = definitions.dictfetchone(cursor)
-
-#     if not bool(house_name):
-#         messages.error(request, 'Can\'t find the house!!')
-#         cursor.close()
-#         return redirect('home')
-
-#     house_name = house_name["HOUSE_NAME"]
-    
-#     if request.method == 'POST':
-#         roomno = request.POST['roomnumber']
-#         maxcapacity = request.POST.get('maxcapacity','Capacity')
-#         description = request.POST['description']
-#         price = request.POST['roomprice']
-#         if IsRoomInputsValid(request,roomno,maxcapacity,price)==False:
-#             data={
-#                 'house_id': house_id,
-#                 'housename': house_name,
-#             }
-#             return render(request,'accounts/addroom.html',data)
-        
-#         query="""SELECT ADDRESS_ID, HOUSE_NAME
-#             FROM HOUSES
-#             WHERE HOUSE_ID=%s"""
-#         cursor.execute(query,[str(house_id)])
-#         result = definitions.dictfetchone(cursor)
-
-#         if not bool(result):
-#                 messages.error(request, 'Can\'t find the house!!')
-#                 cursor.close()
-#                 return redirect('home')
-
-#         address_id = result["ADDRESS_ID"]
-#         housename = result["HOUSE_NAME"]
-#         query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
-#                 from ADDRESSES a 
-#                 JOIN CITIES c 
-#                 ON (a.CITY_ID=c.CITY_ID)
-#                 join STATES s
-#                 ON (c.STATE_ID=s.STATE_ID)
-#                 WHERE a.ADDRESS_ID=%s"""
-#         cursor.execute(query,[str(address_id)])
-#         result = definitions.dictfetchone(cursor)
-
-#         if not bool(result):
-#             messages.error(request, 'Can\'t find the address of the house!!')
-#             cursor.close()
-#             return redirect('home')
-
-#         streetname = result["STREET"]
-#         cityname = result["CITY_NAME"]
-#         statename = result["STATE_NAME"]
-#         countryname = result["COUNTRY_NAME"]
-        
-#         query = """INSERT INTO ROOMS(HOUSE_ID,ROOM_NO,MAX_CAPACITY,DESCRIPTION,PRICE,OFFER_PCT) 
-#                 VALUES(%s,%s,%s,%s,%s,'0')"""
-#         cursor.execute(query,[str(house_id),str(roomno),str(maxcapacity),description,price])
-        
-#         if request.FILES.get('uploadroom1',False):
-#             folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/Rooms/' + str(roomno) + '/'
-#             upload = request.FILES['uploadroom1']
-#             fss = FileSystemStorage(location=folder)
-#             file = fss.save(upload.name, upload)
-#             photoPath = '/media/Houses/' + str(house_id) + '/Rooms/' + str(roomno) + '/' + upload.name
-#             file_url = fss.url(file)
-#             query = """INSERT INTO ROOM_PHOTOS_PATH VALUES (%s, %s, %s)"""
-#             cursor.execute(query, [house_id, roomno, photoPath])
-        
-#         images = [photoPath]
-#         cursor.close()
-#         data ={
-#             'house_id': str(house_id),
-#             'housename': house_name,
-#             'roomnumber': roomno,
-#             'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
-#             'capacity': maxcapacity,
-#             'price': price,
-#             'description': description,
-#             'offer_pct': '0',
-#             'photos_url': images,
-#         }
-#         return render(request,'accounts/room_preview.html',data)
-        
-#     data={
-#         'housename': house_name,
-#         'house_id': house_id,
-#     }
-#     return render(request,'accounts/addroom.html',data)
-
-
 def addroom(request,house_id):
     data ={
         'house_id': str(house_id),
         'housename': None,
         'roomnumber': None,
-        'house_address': None,
         'capacity': None,
         'roomprice': None,
         'description': None,
-        'offer_pct': None,
-        'photos_url': None,
     }
     cursor = connection.cursor()
     query = "SELECT HOUSE_NAME FROM HOUSES WHERE HOUSE_ID=%s"
@@ -589,39 +487,7 @@ def addroom(request,house_id):
         })
         if IsRoomInputsValid(request,data['roomnumber'],data['capacity'],data['roomprice'])==False:
             return render(request,'accounts/addroom.html',data)
-        
-        query="""SELECT ADDRESS_ID
-            FROM HOUSES
-            WHERE HOUSE_ID=%s"""
-        cursor.execute(query,[str(house_id)])
-        result = definitions.dictfetchone(cursor)
-
-        if not bool(result):
-                messages.error(request, 'Can\'t find the house!!')
-                cursor.close()
-                return redirect('home')
-
-        address_id = result["ADDRESS_ID"]
-        query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
-                from ADDRESSES a 
-                JOIN CITIES c 
-                ON (a.CITY_ID=c.CITY_ID)
-                join STATES s
-                ON (c.STATE_ID=s.STATE_ID)
-                WHERE a.ADDRESS_ID=%s"""
-        cursor.execute(query,[str(address_id)])
-        result = definitions.dictfetchone(cursor)
-
-        if not bool(result):
-            messages.error(request, 'Can\'t find the address of the house!!')
-            cursor.close()
-            return redirect('home')
-
-        streetname = result["STREET"]
-        cityname = result["CITY_NAME"]
-        statename = result["STATE_NAME"]
-        countryname = result["COUNTRY_NAME"]
-        
+               
         query = """INSERT INTO ROOMS(HOUSE_ID,ROOM_NO,MAX_CAPACITY,DESCRIPTION,PRICE,OFFER_PCT) 
                 VALUES(%s,%s,%s,%s,%s,'0')"""
         cursor.execute(query,[str(house_id),str(data['roomnumber']),str(data['capacity']),data['description'],data['roomprice']])
@@ -635,14 +501,9 @@ def addroom(request,house_id):
             query = """INSERT INTO ROOM_PHOTOS_PATH VALUES (%s, %s, %s)"""
             cursor.execute(query, [house_id, data['roomnumber'], photoPath])
         
-        images = [photoPath]
         cursor.close()
-        data.update({
-            'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
-            'offer_pct': '0',
-            'photos_url': images,
-        })
-        return render(request,'accounts/room_preview.html',data)
+        #return render(request,'accounts/room_preview.html',data)
+        return redirect('homepreview',house_id=str(house_id))
         
 
 def roompreview(request,house_id,roomnumber):
@@ -716,5 +577,5 @@ def roompreview(request,house_id,roomnumber):
         'price': price,
         'offer_pct': offer_pct,
     }
-    
+    cursor.close()
     return render(request, 'accounts/room_preview.html',data)
