@@ -9,4 +9,6 @@ urlpatterns = [
     path('housePhotosPath/<int:house_id>/', views.getJsonHousePhotosPath, name='housePhotosPath'),
     path('housePriceRange/<int:house_id>/', views.getJsonHousePriceRange, name='housePriceRange'),
     path('yourhouses/',views.yourhouses, name='yourhouses'),
+    path('reservation/<int:house_id>/<int:room_no>/<str:check_in>/<str:check_out>/<int:guests>',
+        views.reservation, name='reservation'),
 ]
