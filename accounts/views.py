@@ -334,8 +334,11 @@ def homepreview(request,house_id):
     statename = result["STATE_NAME"]
     countryname = result["COUNTRY_NAME"]
     #print(streetname)
+    query = """SELECT COUNT(*) FROM HOUSE_PHOTOS_PATH WHERE HOUSE_ID=%s"""
+    cursor.execute(query,[str(house_id)])
+    result = cursor.fetchone()
     if request.method=="POST":
-        for i in range(2,6):
+        for i in range(result[0],6):
             #print('upload'+str(i))
             if request.FILES.get('upload'+str(i),False):
                 folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/HousePic/'
@@ -410,10 +413,10 @@ def fetch_no_of_house_pics(request, house_id):
     cursor.execute(query,[str(house_id)])
     photos_paths = definitions.dictfetchall(cursor)
 
-    if not bool(photos_paths):
-        messages.error(request, 'Couldn\'t find any house photo!!')
-        cursor.close()
-        return redirect('home')
+    # if not bool(photos_paths):
+    #     messages.error(request, 'Couldn\'t find any house photo!!')
+    #     cursor.close()
+    #     return redirect('home')
 
     # photos_path = [photo["PATH"] for photo in photos_paths]
     result = [len(photos_paths)]
@@ -435,11 +438,11 @@ def fetch_no_of_room_pics(request, house_id, roomnumber):
     query = "SELECT PATH FROM ROOM_PHOTOS_PATH WHERE HOUSE_ID=%s AND ROOM_NO=%s"
     cursor.execute(query,[str(house_id),str(roomnumber)])
     photos_paths = definitions.dictfetchall(cursor)
-
-    if not bool(photos_paths):
-        messages.error(request, 'Couldn\'t find any house photo!!')
-        cursor.close()
-        return redirect('home')
+    
+    # if not bool(photos_paths):
+    #     messages.error(request, 'Couldn\'t find any house photo!!')
+    #     cursor.close()
+    #     return redirect('home')
 
     # photos_path = [photo["PATH"] for photo in photos_paths]
     result = [len(photos_paths)]
@@ -540,8 +543,11 @@ def roompreview(request,house_id,roomnumber):
     cityname = result["CITY_NAME"]
     statename = result["STATE_NAME"]
     countryname = result["COUNTRY_NAME"]
+    query = """SELECT COUNT(*) from ROOM_PHOTOS_PATH WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+    cursor.execute(query,[str(house_id),str(roomnumber)])
+    result = cursor.fetchone()
     if request.method=="POST":
-        for i in range(2,6):
+        for i in range(result[0]+1,6):
             #print('upload'+str(i))
             if request.FILES.get('uploadroom'+str(i),False):
                 folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/Rooms/' + str(roomnumber) + '/'
