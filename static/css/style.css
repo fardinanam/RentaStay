@@ -465,6 +465,24 @@ span {
     .profile-pic-container {
         display: none;
     }
+
+    .content-area {
+        padding: 80px 0 50px;
+    }
+
+    .main-title {
+        margin-bottom: 40px;
+    }
+
+    .main-title h1 {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .main-title p {
+        line-height:26px;
+        font-size: 16px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -514,6 +532,18 @@ span {
     .tabbing-box .nav-tabs {
         background: transparent;
         border-bottom: transparent;
+    }
+
+    .content-area {
+        padding: 60px 0 30px;
+    }
+
+    .main-title h1 {
+        font-size: 27px;
+    }
+
+    .main-title {
+        margin-bottom: 30px;
     }
 }
 
@@ -718,4 +748,12 @@ a.nav-link.active{
     margin: 0;
 }
 
-/** Room Card styles end */
+.addYourHouseBtn{
+    width: 10%;
+    margin: 0;
+    top: 50%;
+    margin-top: 50px;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
