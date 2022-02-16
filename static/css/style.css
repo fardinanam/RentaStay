@@ -651,7 +651,7 @@ span {
     transform: scale(1);
 }
 
-.house-card-body:hover {
+.card-body:hover {
     cursor: pointer;
 }
 
@@ -661,7 +661,7 @@ span {
     overflow: hidden;
 }
 
-.home-house-card-carousel .img-fluid {
+.house-card-carousel .img-fluid {
     border-radius: .5rem;
     float: left;
     height: 15rem;
@@ -757,3 +757,63 @@ a.nav-link.active{
     transform: translateY(-50%);
 }
 
+ul {
+    margin: 0;
+}
+
+.btn-reserve {
+    display: none;
+}
+
+li:hover .btn-reserve {
+    display: block;
+} */
+
+.date-picker {
+    border: 1px solid black;
+    border-radius: .5rem;
+}
+
+.date-picker input {
+    border: 0px;
+}
+
+#datepickerDiv {
+    background-color: white;
+}
+
+#checkInDiv {
+    width: 50%;
+    border-right: 1px solid black;
+    border-radius: .5rem 0rem 0rem .5rem;
+}
+
+#checkOutDiv {
+    width: 50%;
+    border-radius: 0rem .5rem .5rem 0rem;
+}
+
+.ui-widget.ui-widget-content {
+    border-radius: 0.5rem;
+}
+
+.ui-datepicker .ui-datepicker-header {
+    border-radius: .5rem;
+    /* background-color: black; */
+}
+
+.ui-state-default {
+    border: 0px;
+    border-radius: .25rem;
+}
+
+.ui-datepicker-year, .ui-datepicker-month {
+    border-radius: .5rem;
+    text-align: center;
+}
+
+.guests-dropdown {
+    width: 100%;
+    border-top: 1px solid black;
+}
+/** Room Card styles end */
