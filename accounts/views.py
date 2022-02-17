@@ -484,7 +484,7 @@ def addroom(request,house_id):
         })
         if IsRoomInputsValid(request,data['roomnumber'],data['capacity'],data['roomprice'])==False:
             return render(request,'accounts/addroom.html',data)
-               
+            
         query = """INSERT INTO ROOMS(HOUSE_ID,ROOM_NO,MAX_CAPACITY,DESCRIPTION,PRICE,OFFER_PCT) 
                 VALUES(%s,%s,%s,%s,%s,'0')"""
         cursor.execute(query,[str(house_id),str(data['roomnumber']),str(data['capacity']),data['description'],data['roomprice']])
