@@ -29,7 +29,7 @@ const addBtnHouse = document.getElementById('addBtnHouse');
 const addRoomPicBtn = document.getElementById('addRoomPicBtn');
 const addBtnRoom = document.getElementById('addBtnRoom');
 const addRoomBtn = document.getElementById('addRoomBtn');
-
+const picLimit = document.getElementById('picLimit');
 
 
 const addHtmlToElement = (element,html) => {
@@ -114,7 +114,6 @@ const checkForCityNames = (value1,value2) => {
 const addNewHousePic = value => {
     if(addHousePicBtn.disabled != true){
         addHousePicBtn.disabled = true;
-        addBtnHouse.style.display="block";
         let idOfHouse = houseId.value 
         const url = `/accounts/fetch_no_of_house_pics/${idOfHouse}/`;
         fetch(url, {
@@ -125,27 +124,33 @@ const addNewHousePic = value => {
         })
         .then(data => {
             let noOfHouse = data[0]
-            //console.log(noOfHouse)
-            var c=1;
-            var brk = document.createElement("span");
-            brk.innerHTML="<br>";
-            addHousePic.appendChild(brk);
-            for (var input = noOfHouse+1; input <= 5; input++) {
-                var newHousePicLabel = document.createElement("label");
-                newHousePicLabel.for = "upload"+input;
-                newHousePicLabel.innerHTML="House Pic " + c + ":";
-                newHousePicLabel.style="padding-left: 5%;"
-                addHousePic.appendChild(newHousePicLabel);
-                var newHousePic = document.createElement("input");
-                newHousePic.type="file";
-                newHousePic.accept="image/*";
-                newHousePic.name="upload"+input;
-                newHousePic.style="padding-left: 5%;"
-                addHousePic.appendChild(newHousePic);
+            if(noOfHouse==5){
+                picLimit.style.display="block";
+            }
+            else{
+                //console.log(noOfHouse)
+                addBtnHouse.style.display="block";
+                var c=1;
                 var brk = document.createElement("span");
-                brk.innerHTML="<br><br>";
+                brk.innerHTML="<br>";
                 addHousePic.appendChild(brk);
-                c++;
+                for (var input = noOfHouse+1; input <= 5; input++) {
+                    var newHousePicLabel = document.createElement("label");
+                    newHousePicLabel.for = "upload"+input;
+                    newHousePicLabel.innerHTML="House Pic " + c + ":";
+                    newHousePicLabel.style="padding-left: 5%;"
+                    addHousePic.appendChild(newHousePicLabel);
+                    var newHousePic = document.createElement("input");
+                    newHousePic.type="file";
+                    newHousePic.accept="image/*";
+                    newHousePic.name="upload"+input;
+                    newHousePic.style="padding-left: 5%;"
+                    addHousePic.appendChild(newHousePic);
+                    var brk = document.createElement("span");
+                    brk.innerHTML="<br><br>";
+                    addHousePic.appendChild(brk);
+                    c++;
+                }
             }
         })
         .catch(err => {
@@ -157,7 +162,6 @@ const addNewHousePic = value => {
 const addNewRoomPic = value => {
     if(addRoomPicBtn.disabled != true){
         addRoomPicBtn.disabled = true;
-        addBtnRoom.style.display="block";
         let idOfHouse = roomHouseId.value 
         let roomno = roomNumberId.value
         const url = `/accounts/fetch_no_of_room_pics/${idOfHouse}/${roomno}/`;
@@ -169,27 +173,33 @@ const addNewRoomPic = value => {
         })
         .then(data => {
             let noOfHouse = data[0]
-            //console.log(noOfHouse)
-            var c=1;
-            var brk = document.createElement("span");
-            brk.innerHTML="<br>";
-            addRoomPic.appendChild(brk);
-            for (var input = noOfHouse+1; input <= 5; input++) {
-                var newRoomPicLabel = document.createElement("label");
-                newRoomPicLabel.for = "uploadroom"+input;
-                newRoomPicLabel.innerHTML="Room Pic " + c + ":";
-                newRoomPicLabel.style="padding-left: 5%;"
-                addRoomPic.appendChild(newRoomPicLabel);
-                var newRoomPic = document.createElement("input");
-                newRoomPic.type="file";
-                newRoomPic.accept="image/*";
-                newRoomPic.name="uploadroom"+input;
-                newRoomPic.style="padding-left: 5%;"
-                addRoomPic.appendChild(newRoomPic);
+            if(noOfHouse==5){
+                picLimit.style.display = "block";
+            }
+            else{
+                addBtnRoom.style.display="block";
+                //console.log(noOfHouse)
+                var c=1;
                 var brk = document.createElement("span");
-                brk.innerHTML="<br><br>";
+                brk.innerHTML="<br>";
                 addRoomPic.appendChild(brk);
-                c++;
+                for (var input = noOfHouse+1; input <= 5; input++) {
+                    var newRoomPicLabel = document.createElement("label");
+                    newRoomPicLabel.for = "uploadroom"+input;
+                    newRoomPicLabel.innerHTML="Room Pic " + c + ":";
+                    newRoomPicLabel.style="padding-left: 5%;"
+                    addRoomPic.appendChild(newRoomPicLabel);
+                    var newRoomPic = document.createElement("input");
+                    newRoomPic.type="file";
+                    newRoomPic.accept="image/*";
+                    newRoomPic.name="uploadroom"+input;
+                    newRoomPic.style="padding-left: 5%;"
+                    addRoomPic.appendChild(newRoomPic);
+                    var brk = document.createElement("span");
+                    brk.innerHTML="<br><br>";
+                    addRoomPic.appendChild(brk);
+                    c++;
+                }
             }
         })
         .catch(err => {
