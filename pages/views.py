@@ -4,6 +4,8 @@ from rentastay import definitions
 from django.http import JsonResponse
 from django.contrib import messages
 
+from datetime import datetime
+
 def getHouses():
     cursor = connection.cursor()
     query = """SELECT HOUSE_ID, HOUSE_NAME, CITY_NAME, STATE_NAME, COUNTRY_NAME
@@ -130,31 +132,98 @@ def house(request, house_id):
     return render(request, 'pages/house.html', {'house':result, 'rooms': rooms, 'photos_url': photosPath})
 
 def reservation(request, house_id, room_no, check_in, check_out, guests):
-    # if request.session.get('username') is None:
-    #     messages.error(request, 'Please Login to continue')
-    #     return render(request, 'accounts/signin')
     if request.method == 'GET':
+        dateFormat = '%d-%b-%Y'
+        checkInDate = datetime.strptime(check_in, dateFormat)
+        checkOutDate = datetime.strptime(check_out, dateFormat)
+        noOfDays = (checkOutDate - checkInDate).days
+
         data = {
             'house_id': house_id, 
             'room_no': room_no, 
-            'check_in': check_in, 
-            'check_out': check_out,
+            'check_in': checkInDate.strftime(dateFormat), 
+            'check_out': checkOutDate.strftime(dateFormat),
             'guests': guests
         }
 
         if request.session.get('username') is not None:
             cursor = connection.cursor()
             query = """SELECT *
-                    FROM USERS
+                    FROM USERS 
                     WHERE USERNAME = %s"""
             cursor.execute(query, [request.session['username']])
             result = definitions.dictfetchone(cursor)
-            cursor.close()
             data.update(result)
 
+            query = """SELECT COUNTRY_NAME
+                    FROM COUNTRIES"""
+            cursor.execute(query, [])
+            result = definitions.dictfetchall(cursor)
+            data.update({
+                'countries': result
+            })
+
+            query = """SELECT HOUSE_NAME, PATH
+                    FROM HOUSES JOIN HOUSE_PHOTOS_PATH USING(HOUSE_ID)
+                    WHERE HOUSE_ID = %s"""
+            cursor.execute(query, [house_id])
+            result = definitions.dictfetchall(cursor)
+            data.update({
+                'house': result[0]
+            })
+
+            query = """SELECT PRICE, OFFER_PCT
+                    FROM ROOMS
+                    WHERE HOUSE_ID = %s AND ROOM_NO = %s"""
+            cursor.execute(query, [house_id, room_no])
+            result = definitions.dictfetchone(cursor)
+            pricePerNight = result['PRICE']
+            offer = result['OFFER_PCT']
+            data.update({
+                'room': result
+            })
+
+            totalPrice = pricePerNight * noOfDays
+            totalOffer = totalPrice * (offer / 100)
+            data.update({
+                'daysReserving': noOfDays,
+                'totalPrice':  totalPrice,
+                'totalOffer': totalOffer,
+                'totalPriceWithOffer': totalPrice - totalOffer
+            })
+            cursor.close()
+            
         return render(request, 'pages/reservation.html', data)
 
     elif request.method == 'POST':
-        # this needs to be handled
-        pass
+        amount = request.POST['price']
+        paymentMethod = request.POST.get(
+            'paymentMethod', 'Credit or debit card')
+        username = request.session['username']
+        houseId = request.POST['houseid']
+        roomno = request.POST['roomno']
+        checkInDate = request.POST['checkin']
+        checkOutDate = request.POST['checkout']
+        transactionTime = datetime.now().strftime("%d%m%Y%H%M%S")
+        # transaction id format = username-houseid-roomno-ddmmyyyyhhmmss
+        transactionId = str(username) + '-' + str(houseId) + '-' + str(roomno) + '-' + str(transactionTime)
 
+        cursor = connection.cursor()
+        query = """SELECT USER_ID FROM USERS WHERE USERNAME = %s"""
+        cursor.execute(query, [username])
+        userId = cursor.fetchone()[0]
+        print(userId, houseId, roomno, transactionId, checkInDate, checkOutDate)
+
+        query = """INSERT INTO PAYMENTS VALUES(%s, SYSDATE, %s, %s)"""
+        try:
+            cursor.execute(query, [transactionId, amount, paymentMethod])
+
+            query = """INSERT INTO RENTS(USER_ID, HOUSE_ID, ROOM_NO, TRANSACTION_ID, CHECKIN, CHECKOUT)
+                    VALUES(%s, %s, %s, %s, %s, %s)"""
+            cursor.execute(query, [userId, houseId, roomno, transactionId, checkInDate, checkOutDate])
+            messages.success(request, "Your reservation was successful")
+        except IntegrityError:
+            print('Transaction Id is not unique')
+            messages.error(request, "Server Error.")
+        
+        return redirect('home')
