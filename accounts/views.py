@@ -9,22 +9,6 @@ from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 from rentastay.settings import MEDIA_ROOT
 
-# from django.contrib.auth.models import User
-
-# def toLower(s):
-#     word=''
-#     for i in s:
-#         if((i>='a' and i<= 'z') or (i>='A' and i<='Z')):
-#             if i.isupper()==True:
-#                 word+=(i.lower())
-#             elif i.islower()==True:
-#                 word+=i
-#             elif i.isspace==True:
-#                 word+=i
-#         else:
-#             word+=i
-#     return word
-
 def IsHouseInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description):
     if countryname=="Country Name":
         messages.error(request,'Please select a country!!')
@@ -247,37 +231,50 @@ def addhome(request):
             query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
         address_id = definitions.dictfetchone(cursor)
         if not bool(address_id):
-            query = """INSERT INTO ADDRESSES(STREET,POST_CODE,CITY_ID) 
-                    VALUES(%s,%s,%s)"""
-            cursor.execute(
-                query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
+            # query = """INSERT INTO ADDRESSES(STREET,POST_CODE,CITY_ID) 
+            #         VALUES(%s,%s,%s)"""
+            # cursor.execute(
+            #     query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
             #cursor.commit()
-            query = """SELECT ADDRESS_ID 
-                    FROM ADDRESSES 
-                    WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
-            cursor.execute(
-                query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
-            address_id = definitions.dictfetchone(cursor)
+            # query = """SELECT ADDRESS_ID 
+            #         FROM ADDRESSES 
+            #         WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
+            # cursor.execute(
+            #     query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
+            # address_id = definitions.dictfetchone(cursor)
+
+            # following function will insert into addresses and return the address id
+            address_id = cursor.callfunc('INSERT_ADDRESS_RETURN_ADDRESS_ID', int,
+                [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
+            
             if not bool(address_id):
                 messages.error(request, 'Can\'t find the address!!')
                 cursor.close()
                 return render(request,'accounts/addhome.html',datas)
-        address_id = address_id["ADDRESS_ID"]
+        if isinstance(address_id, int) is False:
+            address_id = address_id["ADDRESS_ID"]
         #print("Address id: " + str(address_id))
-        query = """INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION) 
-                VALUES(%s,%s,%s,%s,%s)"""
-        cursor.execute(query,[str(user_id), str(address_id), datas['housename'], datas['housenumber'], datas['description']])
+        # query = """INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION) 
+        #         VALUES(%s,%s,%s,%s,%s)"""
+        # cursor.execute(query,[str(user_id), str(address_id), datas['housename'], datas['housenumber'], datas['description']])
+
+        
         #cursor.commit()
-        query = """SELECT HOUSE_ID 
-                FROM HOUSES 
-                WHERE USER_ID=%s AND ADDRESS_ID=%s AND HOUSE_NAME=%s AND HOUSE_NO=%s"""
-        cursor.execute(query,[str(user_id), str(address_id), datas['housename'], datas['housenumber']])
-        house_id = definitions.dictfetchone(cursor)
+        # query = """SELECT HOUSE_ID 
+        #         FROM HOUSES 
+        #         WHERE USER_ID=%s AND ADDRESS_ID=%s AND HOUSE_NAME=%s AND HOUSE_NO=%s"""
+        # cursor.execute(query,[str(user_id), str(address_id), datas['housename'], datas['housenumber']])
+        # house_id = definitions.dictfetchone(cursor)
+        
+        # following function will insert into houses and return the house id
+        house_id = cursor.callfunc('INSERT_HOUSE_RETURN_HOUSE_ID', int,
+            [str(user_id), str(address_id), datas['housename'], datas['housenumber'], datas['description']])
+        
         if not bool(house_id):
             messages.error(request, 'Can\'t find the house!!')
             cursor.close()
             return render(request,'accounts/addhome.html',datas)
-        house_id = house_id["HOUSE_ID"]
+        # house_id = house_id["HOUSE_ID"]
         datas.update({
             'house_id': str(house_id),
         })
@@ -490,7 +487,7 @@ def addroom(request,house_id):
         })
         if IsRoomInputsValid(request,data['roomnumber'],data['capacity'],data['roomprice'])==False:
             return render(request,'accounts/addroom.html',data)
-               
+            
         query = """INSERT INTO ROOMS(HOUSE_ID,ROOM_NO,MAX_CAPACITY,DESCRIPTION,PRICE,OFFER_PCT) 
                 VALUES(%s,%s,%s,%s,%s,'0')"""
         cursor.execute(query,[str(house_id),str(data['roomnumber']),str(data['capacity']),data['description'],data['roomprice']])

@@ -651,7 +651,7 @@ span {
     transform: scale(1);
 }
 
-.card-body:hover {
+.house-card .card-body:hover {
     cursor: pointer;
 }
 
@@ -767,10 +767,10 @@ ul {
 
 li:hover .btn-reserve {
     display: block;
-} */
+}
 
-.date-picker {
-    border: 1px solid black;
+.input-group-container {
+    border: 1px solid rgb(199, 199, 199);
     border-radius: .5rem;
 }
 
@@ -812,8 +812,26 @@ li:hover .btn-reserve {
     text-align: center;
 }
 
-.guests-dropdown {
+.guests-input {
     width: 100%;
-    border-top: 1px solid black;
+    border-top: 1px solid rgb(199, 199, 199) !important;
+    border-radius: 0rem 0rem .5rem .5rem;
 }
 /** Room Card styles end */
+.bi-credit-card-2-front {
+    border-radius: .5rem;
+}
+
+.price-card {
+    border-radius: .5rem !important;
+}
+
+.price-card .card-header p{
+    margin: 0px 0px 0px 1rem;
+}
+.image-sm {
+    border-radius: .5rem;
+    width: 8rem;
+    height: 5rem;
+    object-fit: cover;
+}

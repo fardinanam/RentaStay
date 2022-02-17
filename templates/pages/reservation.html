@@ -1,0 +1,113 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <div class="container-md p-5">
+        <h2>
+            <a href="{% url 'house' house_id=house_id %}"><i class="bi bi-arrow-left-circle"></i></a>
+            Confirm and pay
+        </h2>
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-8">
+                {% if request.session.username is not None %}
+                    <h5>Hi, you're logged in</h5>
+                    <p>Review your booking details to continue.</p>
+                {% endif %}
+                <h5>Your trip</h5>
+                <div>
+                    <b>Dates</b>
+                    <p>{{ check_in }} to {{ check_out }}</p>
+                </div>
+                <div>
+                    <b>Guests</b>
+                    <p>{{ guests }} guest{{ guests|pluralize }}</p>
+                </div>
+                <hr>
+                {% if request.session.username is None %}
+                    <p>Please <a href="{% url 'signup' %}">signup</a> or <a href="{% url 'signin' %}">signin</a> to continue </p>
+                {% else %}
+                    <h5>Pay with</h5>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <select class="form-control search-fields mb-3" name="paymentMethod" id="paymentMethod">
+                                <option selected="true" disabled="disabled">Credit or debit card</option>
+                                {% comment %} <option disabled="disabled">Bank account</option> {% endcomment %}
+                            </select>
+                        </div>
+                        <div class="input-group-container mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text" id="credit-card-input"><i class="bi bi-credit-card-2-front"></i></span>
+                                {% if CREDIT_CARD_NO %}
+                                    <input type="text" id="creditcard" name="creditcard" class="form-control" placeholder="Credit or debit card number" aria-label="Credit or debit card number" aria-describedby="credit-card-input" required>
+                                        {{ CREDIT_CARD_NO }}
+                                    </input>
+                                {% else %}
+                                    <input id="creditcard" name="creditcard" type="text" class="form-control" placeholder="Credit or debit card number" aria-label="Credit or debit card number" aria-describedby="credit-card-input" required>
+                                {% endif %}
+                            </div>
+                            <div class ="input-group">
+                                <input id="creditcardexp" name="creditcardexp" type="text" class="form-control" placeholder="Expiration" required>
+                                <input id="creditcardcvv" name="creditcardcvv" type="text" class="form-control" placeholder="CVV" required>
+                            </div>
+                        </div>
+                        <p><b>Billing address</b></p>
+                        <div class="input-group-container mb-3">
+                            <input id="street" name="street" type="text" class="form-control" placeholder="Street address" aria-label="Street address" required>
+                            <input id="houseno" name="houseno" type="text" class="form-control" placeholder="Apt or suite number" aria-label="Apt or suite number" required>
+                            <input id="cityname" name="cityname" type="text" class="form-control" placeholder="City" aria-label="City" required>
+                            <div class="input-group">
+                                <input id="statename" name="statename" type="text" class="form-control" placeholder="state" aria-label="state" required>
+                                <input id="zipcode" name="zipcode" type="text" class="form-control" placeholder="ZIP code" aria-label="ZIP code" required>
+                            </div>
+                        </div>
+                        <select class="form-control search-fields mb-3" name="countryname" id="countryname">
+                            <option selected="true" disabled="disabled">Country Name</option>
+                            {%for country in countries %}
+                                <option value="{{ country.COUNTRY_NAME }}">{{ country.COUNTRY_NAME }}</option>
+                            {% endfor %}
+                        </select>
+                        <input id="houseid" name="houseid" class="hide" value="{{ house_id }}"></input>
+                        <input id="price" name="price" class="hide" value="{{ room.PRICE }}"></input>
+                        <input id="roomno" name="roomno" class="hide" value="{{ room_no }}"></input>
+                        <input id="checkin" name="checkin" class="hide" value="{{ check_in }}"></input>
+                        <input id="checkout" name="checkout" class="hide" value="{{ check_out }}"></input>
+                        <button class="btn btn-success" type="submit">Confirm and pay</button>
+                    </form>
+                {% endif %}
+            </div>
+            <div class="col-12 col-md-12 col-lg-4">
+                <div class="card price-card">
+                    <div class="card-header">
+                        <div class="d-flex flex-row p-2">
+                            <div>
+                                <img src="{{ house.PATH }}" class="image-sm" alt="house photo">
+                            </div>
+                            <div>
+                                <p>{{ house.HOUSE_NAME }}</p>
+                                <p>Room no: {{ room_no }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="mb-3">Price details</h5>
+                        <div class="clearfix">
+                            <p class="pull-left">${{ room.PRICE }} X {{ daysReserving }} nights</p>
+                            <p class="pull-right">${{ totalPrice }}</p>
+                        </div>
+                        <div class="clearfix">
+                            <p class="pull-left">Discount ({{ room.OFFER_PCT }}%)</p>
+                            <p class="pull-right" style="color:green">-{{ totalOffer }}</p>
+                        </div>
+                        <div class="clearfix">
+                            <p class="pull-left"><b>Total</b></p>
+                            <p class="pull-right">${{ totalPriceWithOffer }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock content %}
