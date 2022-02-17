@@ -7,10 +7,10 @@
     <div class="container-lg">
         <div class="container-fluid p-2">
             <div>
-                <h3>{{ house.HOUSE_NAME }} hosted by {{ house.FIRST_NAME }} {{ house.LAST_NAME }}</h3>
+                <h3>{{ house.HOUSE_NAME | upper }} HOSTED BY {{ house.FIRST_NAME | upper }} {{ house.LAST_NAME | upper }}</h3>
                 <p>
                     <i class="fa fa-map-marker"></i> 
-                    {{ house.HOUSE_NO }}, {{ house.STREET }}, {{ house.CITY_NAME}}, {{ house.STATE_NAME }}, {{ house.COUNTRY_NAME }}
+                    {{ house.HOUSE_NO }}, {{ house.STREET | upper }}, {{ house.CITY_NAME | upper }}, {{ house.STATE_NAME | upper }}, {{ house.COUNTRY_NAME | upper }}
                 </p>
             </div>
             <div id="houseCarousel" class="carousel slide carousel-fade" data-interval="false" carousel-slide>
@@ -49,7 +49,7 @@
         <div class="row p-2">
             <div class="col-12 col-md-8 col-lg-8">
                 <div class="clearfix">
-                    <h5 class="pull-left">{{ house.HOUSE_NAME }} hosted by {{ house.FIRST_NAME }} {{ house.LAST_NAME }}</h5>
+                    <h5 class="pull-left">{{ house.HOUSE_NAME | upper }} HOSTED BY {{ house.FIRST_NAME | upper }} {{ house.LAST_NAME | upper }}</h5>
                     <div class="pull-right">
                         <div class="house-owner-profile-pic-container">
                             <img src="{% static 'img/profile_pic_thumbnail.png' %}">

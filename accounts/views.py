@@ -268,7 +268,7 @@ def addhome(request):
         
         # following function will insert into houses and return the house id
         house_id = cursor.callfunc('INSERT_HOUSE_RETURN_HOUSE_ID', int,
-            [str(user_id), str(address_id), datas['housename'], datas['housenumber'], datas['description']])
+            [str(user_id), str(address_id), datas['housename'].upper(), datas['housenumber'], datas['description']])
         
         if not bool(house_id):
             messages.error(request, 'Can\'t find the house!!')
@@ -361,8 +361,8 @@ def homepreview(request,house_id):
     rooms = [room[0] for room in result]
     data ={
         'house_id': str(house_id),
-        'housename': housename,
-        'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
+        'housename': housename.upper(),
+        'house_address': str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
         'description': description,
         'photos_url': photos_path,
         'rooms': rooms,
@@ -467,12 +467,12 @@ def addroom(request,house_id):
 
     house_name = house_name["HOUSE_NAME"]
     data.update({
-        'housename': house_name,
+        'housename': house_name.upper(),
     })
     
     data1 ={
         'house_id': str(house_id),
-        'housename': house_name,
+        'housename': house_name.upper(),
     }
     
     if request.method=='GET':
@@ -571,9 +571,9 @@ def roompreview(request,house_id,roomnumber):
     
     data ={
         'house_id': str(house_id),
-        'housename': housename,
+        'housename': housename.upper(),
         'roomnumber': roomnumber,
-        'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
+        'house_address': str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
         'description': description,
         'photos_url': photos_path,
         'capacity': capacity,

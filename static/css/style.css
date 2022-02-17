@@ -835,3 +835,27 @@ li:hover .btn-reserve {
     height: 5rem;
     object-fit: cover;
 }
+
+.featured-home.content-area{
+    background-size: cover;
+    width: 100%;
+}
+
+/** Main title start **/
+.main-title {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.main-title h1 {
+    font-size: 33px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.main-title p{
+    font-size: 18px;
+    margin-bottom: 0;
+    font-weight: 500;
+}

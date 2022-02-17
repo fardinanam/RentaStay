@@ -11,16 +11,7 @@
                 <h1 class="text-center">Add Home</h1>
                 <form style="max-width:70%" action="{% url 'addhome' %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
-                    
                     {% include 'includes/messages.html' %}
-                    
-                    {% comment %}<div class="mb-3 row">
-                        <label for="countryname" class="col-sm-2 col-form-label">Country Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" id="countryname" name="countryname" value="{{ countryname }}" class="form-control" aria-describedby="">
-                        </div>
-                    </div>
-                    {% endcomment %}
                     <div class="mb-3 row">
                         <label for="countryname" class="col-sm-2 col-form-label">Country Name</label>
                         <div class="col-sm-10">
@@ -32,41 +23,19 @@
                             </select>
                         </div>
                     </div>
-
-                    {% comment %}<div class="mb-3 row">
-                        <label for="statename" class="col-sm-2 col-form-label">State Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" id="statename" name="statename" value="{{ statename }}" class="form-control" aria-describedby="">
-                        </div>
-                    </div>{% endcomment %}
-
                     <div class="mb-3 row">
                         <label for="statename" class="col-sm-2 col-form-label">State Name</label>
                         <div class="col-sm-10">
                             <select class="form-control search-fields" name="statename" id="statename">
                                 <option selected="true" disabled="disabled">State Name</option>
-                                <!-- {%for state in states %}
-                                    <option value="{{ state }}">{{ state }}</option>
-                                {% endfor %} -->
                             </select>
                         </div>
                     </div>
-
-                    {% comment %}<div class="mb-3 row">
-                        <label for="cityname" class="col-sm-2 col-form-label">City Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" id="cityname" name="cityname" value="{{ cityname }}" class="form-control" aria-describedby="">
-                        </div>
-                    </div>{% endcomment %}
-
                     <div class="mb-3 row">
                         <label for="cityname" class="col-sm-2 col-form-label">City Name</label>
                         <div class="col-sm-10">
                             <select class="form-control search-fields" name="cityname" id="cityname">
                                 <option selected="true" disabled="disabled">City Name</option>
-                                <!-- {%for city in cities %}
-                                    <option value="{{ city }}">{{ city }}</option>
-                                {% endfor %} -->
                             </select>
                         </div>
                     </div>
@@ -115,7 +84,7 @@
         </div>
     {% else %}
         <div class="row justify-content-center">
-            <h3> You must be logged in to add a house!! </h3>
+            <h3> You must be logged in to bbecome a host!! </h3>
         </div>
     {% endif %}
 {% endblock content %}

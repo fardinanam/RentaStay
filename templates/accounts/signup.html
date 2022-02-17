@@ -9,15 +9,7 @@
     <h1 class="text-center">Sign Up</h1>
     <div class="row justify-content-center">
         <form style="max-width:70%" method="POST">
-            {% csrf_token %}
-            <!-- {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-danger text-center" role="alert">
-                        {{ message }}  
-                    </div>
-                {% endfor %}
-            {% endif %} -->
-            
+            {% csrf_token %}          
             {% include 'includes/messages.html' %}
             
             <div class="mb-3 row">

@@ -6,64 +6,79 @@
 {% endblock %}
 {% block content %}
 {% load static %}
-    <div class="container-lg">
-        {% include 'includes/messages.html' %}
-        <div class="input-group col-12 col-lg-8 p-2 start-50 translate-middle-x">
-            <span class="input-group-text round-search-icon" id="basic-addon1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
-                </svg>
-            </span>
-            <input type="search" id="search" class="search-bar form-control" placeholder="Where to go?" aria-label="Input group example" aria-describedby="basic-addon1" spellcheck="false" data-ms-editor="true" houses-search>
-        </div>
-        <div class="row g-3 justify-content-center" house-cards-container>
-            <template house-card-template>
-                <div class="p-2 col-12 col-md-4 col-lg-3">
-                    <div class="card house-card">
-                        <div class="bg-image">
-                            <div id="" class="carousel slide carousel-fade" data-interval="false" carousel-slide>
-                                <div class="carousel-indicators" indicators-container>
-                                    <template indicator-template>
-                                        <button type="button" data-bs-target="" data-bs-slide-to="" class="" aria-current="" aria-label="" indicator-button></button>
-                                    </template>
-                                </div>
-                                <div class="carousel-inner carousel-height-15" card-image-container>
-                                    <template house-image-template>
-                                        <div class="carousel-item home-card-carousel">
-                                            <img class="d-block w-100 img-fluid" alt="house photo" house-image>
-                                        </div>
-                                    </template>
-                                </div>
-                                <button class="carousel-control-prev" type="button" data-bs-target="" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Previous</span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Next</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body" card-body>
-                            <div class="card-title d-flex justify-content-between">
-                                <h5 house-name></h5>
-                                <h5 price-range></h5>
-                            </div>
-                            
-                            <p class="card-text" house-address></p>
-                        </div>
+    {% if request.session.username %}
+        <div class="container-lg">
+            {% include 'includes/messages.html' %}
+            <div class="input-group col-12 col-lg-8 p-2 start-50 translate-middle-x" hidden>
+                <span class="input-group-text round-search-icon" id="basic-addon1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                    </svg>
+                </span>
+                <input type="search" id="search" class="search-bar form-control" placeholder="Where to go?" aria-label="Input group example" aria-describedby="basic-addon1" spellcheck="false" data-ms-editor="true" houses-search>
+            </div>
+            <div class="featured-home content-area">
+                <div class="container">
+                    <!-- Main title -->
+                    <div class="main-title">
+                        <h1>Your <span>Houses</span></h1>
+                        <p>Add more if you want to accomodate others</p>
                     </div>
-                </div> 
-            </template>
+                </div>
+            </div>
+            <div class="row g-3 justify-content-center" house-cards-container>
+                <template house-card-template>
+                    <div class="p-2 col-12 col-md-4 col-lg-3">
+                        <div class="card house-card">
+                            <div class="bg-image">
+                                <div id="" class="carousel slide carousel-fade" data-interval="false" carousel-slide>
+                                    <div class="carousel-indicators" indicators-container>
+                                        <template indicator-template>
+                                            <button type="button" data-bs-target="" data-bs-slide-to="" class="" aria-current="" aria-label="" indicator-button></button>
+                                        </template>
+                                    </div>
+                                    <div class="carousel-inner carousel-height-15" card-image-container>
+                                        <template house-image-template>
+                                            <div class="carousel-item home-card-carousel">
+                                                <img class="d-block w-100 img-fluid" alt="house photo" house-image>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body" card-body>
+                                <div class="card-title d-flex justify-content-between">
+                                    <h5 house-name></h5>
+                                    <h5 price-range></h5>
+                                </div>
+                                
+                                <p class="card-text" house-address></p>
+                            </div>
+                        </div>
+                    </div> 
+                </template>
+            </div>
         </div>
-    </div>
-    <div class="widget advanced-search d-none-992" style="position: relative; text-align: center;">
-        <form action="{% url 'addhome' %}">
-            {% csrf_token %}
-            <button class="btn btn-outline-success bomd btn-block btn-lg addYourHouseBtn" data-toggle="modal">Add Home</button>
-        </form>
-    </div>
-{% endblock %}
+        <div class="widget advanced-search d-none-992" style="position: relative; text-align: center;">
+            <form action="{% url 'addhome' %}">
+                {% csrf_token %}
+                <button class="btn btn-outline-success bomd btn-block btn-lg addYourHouseBtn" data-toggle="modal">Add Home</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="row justify-content-center">
+            <h3> You must be logged in to add a house!! </h3>
+        </div>
+    {% endif %}
+{% endblock content %}
 {% block includejs %}
     <script src="{% static 'js/homescript.js' %}" defer></script>
 {% endblock includejs %}
