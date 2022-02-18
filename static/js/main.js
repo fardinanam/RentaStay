@@ -30,6 +30,7 @@ const addRoomPicBtn = document.getElementById('addRoomPicBtn');
 const addBtnRoom = document.getElementById('addBtnRoom');
 const addRoomBtn = document.getElementById('addRoomBtn');
 const picLimit = document.getElementById('picLimit');
+const deletePicBtn = document.getElementById('deletePicBtn');
 
 
 const addHtmlToElement = (element,html) => {
@@ -206,6 +207,23 @@ const addNewRoomPic = value => {
             console.log(err);
         })
     }
+}
+
+
+$(document).ready(function(){
+    $(".simg").magnificPopup({
+        type : 'image',
+        gallery : {
+            enabled: true
+        }
+    });
+})
+
+try{
+    deletePicBtn.onclick = () => setImageSession();
+}
+catch{
+    //console.log("On edit house page!!");
 }
 
 try{

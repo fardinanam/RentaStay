@@ -859,3 +859,50 @@ li:hover .btn-reserve {
     margin-bottom: 0;
     font-weight: 500;
 }
+
+.checkbox{
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.checkbox_input{
+    display: none;
+}
+
+.checkbox_box{
+    width: 1.5em;
+    height: 1.5em;
+    border: 2px solid #cccccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.checkbox_box::after{
+    content: '\2714';
+    color: #ffffff;
+    transform: scale(0);
+    transition: transform 0.15s;
+}
+
+.checkbox_input:checked + .checkbox_box{
+    background: #2266dc;
+    border-color: #2266dc;
+}
+
+.checkbox_input:checked + .checkbox_box::after{
+    transform: scale(1);
+}
+
+.edithomepicshow{
+    display: grid;
+    height: 20%;
+    width: 20%;
+}

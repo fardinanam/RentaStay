@@ -582,3 +582,60 @@ def roompreview(request,house_id,roomnumber):
     }
     cursor.close()
     return render(request, 'accounts/room_preview.html',data)
+
+def edithouseinfo(request,house_id):
+    cursor = connection.cursor()
+    if request.method=="POST":
+        if request.POST.get('deletedImg',False):
+            path = request.POST.get('deletedImg',False)
+            query="""DELETE FROM HOUSE_PHOTOS_PATH WHERE HOUSE_ID=%s AND PATH=%s"""
+            cursor.execute(query,[str(house_id),str(path)])          
+            
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION
+            FROM HOUSES
+            WHERE HOUSE_ID=%s"""
+    cursor.execute(query,[str(house_id)])
+    result = definitions.dictfetchone(cursor)
+
+    if not bool(result):
+            messages.error(request, 'Can\'t find the house!!')
+            cursor.close()
+            return redirect('home')
+
+    address_id = result["ADDRESS_ID"]
+    housename = result["HOUSE_NAME"]
+    description = result["DESCRIPTION"]
+    query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
+            from ADDRESSES a 
+            JOIN CITIES c 
+            ON (a.CITY_ID=c.CITY_ID)
+            join STATES s
+            ON (c.STATE_ID=s.STATE_ID)
+            WHERE a.ADDRESS_ID=%s"""
+    cursor.execute(query,[str(address_id)])
+    result = definitions.dictfetchone(cursor)
+
+    if not bool(result):
+        messages.error(request, 'Can\'t find the address of the house!!')
+        cursor.close()
+        return redirect('home')
+
+    streetname = result["STREET"]
+    cityname = result["CITY_NAME"]
+    statename = result["STATE_NAME"]
+    countryname = result["COUNTRY_NAME"]
+    
+    query="""SELECT PATH FROM HOUSE_PHOTOS_PATH WHERE HOUSE_ID=%s"""
+    cursor.execute(query,[str(house_id)])
+    result = cursor.fetchall()
+    photos_path = [photo[0] for photo in result]
+    
+    data ={
+        'house_id': str(house_id),
+        'housename': housename.upper(),
+        'house_address': str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'description': description,
+        'photos_url': photos_path,
+    }
+    cursor.close()
+    return render(request,'accounts/edithome.html',data)

@@ -1,0 +1,89 @@
+{% extends 'base/base.html' %}
+{% block title %}  {% endblock %}
+{% block content %}
+
+{% load static %}
+
+{% if request.session.username %}
+    <div class="content-area-6">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-8 col-md-12 col-xs-12">
+                    <div class="home-details-section">
+                        <!-- Heading start -->
+                        <div class="heading-home clearfix">
+                            {% include 'includes/messages.html' %}
+                            <input type="text" name="houseid" id="houseid" value="{{ house_id }}" hidden>
+                            <div class="mb-3 row">
+                                <label for="housename" class="col-sm-2 col-form-label">House Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" id="housename" name="housename" value="{{ housename }}" class="form-control" aria-describedby="" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="houseaddress" class="col-sm-2 col-form-label">House Address</label>
+                                <div class="col-sm-10">
+                                    <input type="text" id="houseaddress" name="houseaddress" value="{{ house_address }}" class="form-control" aria-describedby="" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="description" class="col-sm-2 col-form-label">Description</label>
+                                <div class="col-sm-10">
+                                    <input type="textfield" id="description" name="description" value="{{ description }}" class="form-control" aria-describedby="">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="homeDetailsSlider" class="carousel home-details-sliders slide mb-40" data-ride="carousel">                            
+                            <!-- main slider carousel nav controls -->
+                            <h3 style="margin-top: 50px; margin-bottom: 30px;">House Photos</h3>
+                            <div class="carousel-indicators-section clearfix" style="display: table-cell;">
+                                <ul class="carousel-indicators home-properties list-inline nav nav-justified edithomepicshow">
+                                    {% for photo in photos_url %}
+                                        <li class="list-inline-item" style="width:100%; display: inline-flex; vertical-align: middle; align-items: center;">
+                                            <label for="carousel-selector-{{ forloop.counter0 }}" class="col-form-label" style="font-weight: 600;">House Photo {{ forloop.counter }}:  </label>
+                                            <a name="carousel-selector-{{ forloop.counter0 }}" href="{{ photo }}" id="carousel-selector-{{ forloop.counter0 }}" data-slide-to="{{ forloop.counter0 }}" data-target="#homeDetailsSlider" class="simg">
+                                                <img src="{{ photo }}" class="img-fluid editimg" alt="small-home" style="margin-left: 20px; box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.5); margin-bottom: 25px; height: 40%; width: 40%;max-width: 350px; max-height: 350px;">
+                                            </a>
+                                            <form action="{% url 'edithouseinfo' house_id %}" method="POST" enctype="multipart/form-data" style=" margin-left: auto; margin-right: 0;">
+                                                {% csrf_token %}
+                                                <input type="text" value="{{ photo }}" name="deletedImg" hidden>
+                                                <button value="{{ photo }}" class="btn btn-block btn-lg btn-theme btn-success"  style="width: 125%; padding: 0px;" id="deletePicBtn">Delete</button>
+                                            </form>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>            
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4 col-md-12">
+                    <div class="sidebar-right">
+                        <div class="widget advanced-search d-none-992" style="display: grid;">
+                            <h3 class="sidebar-title">Features</h3>
+                            <label class="checkbox" for="myCheckboxId1" style="font-size: 18px">
+                                <input class="checkbox_input" type="checkbox" name="myCheckboxName1" id="myCheckboxId1">
+                                <div class="checkbox_box"></div>
+                                Yes. this feature
+                            </label>
+                            <label class="checkbox" for="myCheckboxId2" style="font-size: 18px">
+                                <input class="checkbox_input" type="checkbox" name="myCheckboxName2" id="myCheckboxId2">
+                                <div class="checkbox_box"></div>
+                                Yes. this feature
+                            </label>
+                            <label class="checkbox" for="myCheckboxId3" style="font-size: 18px">
+                                <input class="checkbox_input" type="checkbox" name="myCheckboxName3" id="myCheckboxId3">
+                                <div class="checkbox_box"></div>
+                                Yes. this feature
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="row justify-content-center">
+        <h3> You must be logged in to edit your home!! </h3>
+    </div>
+{% endif %}
+{% endblock %}

@@ -119,6 +119,9 @@
                     <div class="sidebar-right">
                         <!-- Advanced search start -->
                         <div class="widget advanced-search d-none-992">
+                            <form action="{% url 'edithouseinfo' house_id %}" style="margin-bottom: 15px;">
+                                <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit">Edit House Info</button>
+                            </form>
                             <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit" id="addHousePicBtn">Add House Pic</button>
                         </div>
                         <form action="{% url 'homepreview' house_id %}" method="POST" enctype="multipart/form-data">
