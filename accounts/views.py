@@ -303,7 +303,7 @@ def addhome(request):
 
 def homepreview(request,house_id):
     cursor = connection.cursor()
-    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, HOUSE_NO
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, HOUSE_NO, FEATURES
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
     cursor.execute(query,[str(house_id)])
@@ -318,6 +318,7 @@ def homepreview(request,house_id):
     housename = result["HOUSE_NAME"]
     description = result["DESCRIPTION"]
     house_no = result["HOUSE_NO"]
+    housefeatures = result["FEATURES"]
     query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
             from ADDRESSES a 
             JOIN CITIES c 
@@ -366,6 +367,14 @@ def homepreview(request,house_id):
     cursor.execute(query,[str(house_id)])
     result = cursor.fetchall()
     rooms = [room[0] for room in result]
+    
+    if((housefeatures is None) or (housefeatures is NULL)):
+        fhouse = None
+    else:
+        x = housefeatures.split("\\")
+        del x[-1]
+        fhouse = x
+        
     data ={
         'house_id': str(house_id),
         'housename': housename.upper(),
@@ -373,6 +382,7 @@ def homepreview(request,house_id):
         'description': description,
         'photos_url': photos_path,
         'rooms': rooms,
+        'features' : fhouse,
     }
     cursor.close()
     return render(request, 'accounts/home_preview.html',data)
