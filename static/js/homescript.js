@@ -8,7 +8,7 @@ searchInput.addEventListener("input", e => {
     const value = e.target.value.toLowerCase().trim()
 
     houses.forEach(house => {
-        const isVisible = house.name.toLowerCase().includes(value) || 
+        const isVisible = house.name.toLowerCase().includes(value) ||
                         house.address.toLowerCase().includes(value)
         house.element.classList.toggle("hide", !isVisible)
     })
