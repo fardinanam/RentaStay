@@ -95,17 +95,17 @@
                                         <h3 class="heading-2">Features</h3>
                                         <div class="row">
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                                                <ul>
-                                                    <li>
-                                                        <span>This</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>This</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>And This</span>
-                                                    </li>
-                                                </ul>
+                                                {% if features is None %}
+                                                    <h5> No features to preview!! </h5>
+                                                {% else %}
+                                                    <ul>
+                                                        {% for feature in features %}
+                                                            <li>
+                                                                <span>{{ feature }}</span>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -118,6 +118,9 @@
                     <div class="sidebar-right">
                         <!-- Advanced search start -->
                         <div class="widget advanced-search d-none-992">
+                            <form action="{% url 'editroominfo' house_id roomnumber %}" style="margin-bottom: 15px;">
+                                <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit">Edit Room Info</button>
+                            </form>
                             <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit" id="addRoomPicBtn">Add Room Pic</button>
                         </div>
                         <form action="{% url 'roompreview' house_id roomnumber %}" method="POST" enctype="multipart/form-data">

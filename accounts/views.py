@@ -10,8 +10,11 @@ from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 from rentastay.settings import MEDIA_ROOT
 
-features = ['Kitchen', 'Free Parking', 'Backyard', 'WiFi', 'Dryer', 'Washer', 'Pets Allowed', 'Balcony', 'Refrigerator', 
+hfeatures = ['Kitchen', 'Free Parking', 'Backyard', 'WiFi', 'Dryer', 'Washer', 'Pets Allowed', 'Balcony', 'Refrigerator', 
             'Security Cameras', 'Fire extinguisher', 'First Aid Kit', 'Microwave', '24/7 Electricity']
+
+rfeatures = ['EV Charger', 'Extra Pillow and Blanket', 'Portable Fans', 'TV', 'Air Conditioner (AC)', 'Heater', 'Separate Bathroom', 'Common Bathroom',
+             'Lockbox','Almirah']
 
 selected_features = []
 
@@ -579,13 +582,21 @@ def roompreview(request,house_id,roomnumber):
     result = cursor.fetchall()
     photos_path = [photo[0] for photo in result]
     
-    query="""SELECT DESCRIPTION,MAX_CAPACITY,PRICE,OFFER_PCT FROM ROOMS WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+    query="""SELECT DESCRIPTION,MAX_CAPACITY,PRICE,OFFER_PCT,FEATURES FROM ROOMS WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
     cursor.execute(query,[str(house_id),str(roomnumber)])
     result = definitions.dictfetchone(cursor)
     description = result['DESCRIPTION']
     capacity = result['MAX_CAPACITY']
     price = result['PRICE']
     offer_pct = result['OFFER_PCT']
+    roomfeatures = result['FEATURES']
+    
+    if((roomfeatures is None) or (roomfeatures is NULL)):
+        froom = None
+    else:
+        x = roomfeatures.split("\\")
+        del x[-1]
+        froom = x
     
     data ={
         'house_id': str(house_id),
@@ -597,6 +608,7 @@ def roompreview(request,house_id,roomnumber):
         'capacity': capacity,
         'price': price,
         'offer_pct': offer_pct,
+        'features' : froom,
     }
     cursor.close()
     return render(request, 'accounts/room_preview.html',data)
@@ -619,7 +631,7 @@ def edithouseinfo(request,house_id):
         else:
             selected_features.clear()
             text = ""
-            for feature in features:
+            for feature in hfeatures:
                 if request.POST.get(feature, False):
                     selected_features.append(feature)
                     text+=(feature+"\\")
@@ -681,8 +693,117 @@ def edithouseinfo(request,house_id):
         'house_address': str(house_no).upper() + ", " +  str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
         'description': description,
         'photos_url': photos_path,
-        'features' : features,
+        'features' : hfeatures,
         'sfeatures': fhouse,
     }
     cursor.close()
     return render(request,'accounts/edithome.html',data)
+
+
+def editroominfo(request,house_id, roomnumber):
+    cursor = connection.cursor()
+    if request.method=="POST":
+        if request.POST.get('deletedImg',False):
+            path = request.POST.get('deletedImg',False)
+            query="""DELETE FROM ROOM_PHOTOS_PATH WHERE HOUSE_ID=%s AND ROOM_NO=%s AND PATH=%s"""
+            cursor.execute(query,[str(house_id), str(roomnumber), str(path)]) 
+        
+        elif request.POST.get('description',False):
+            description = request.POST['description']
+            price = request.POST['roomprice']
+            maxcap = request.POST.get('maxcapacity','Capacity')
+            offer = request.POST['offer_pct']
+            query="""UPDATE ROOMS SET 
+                    DESCRIPTION=%s, 
+                    PRICE=%s,
+                    OFFER_PCT=%s
+                    WHERE ROOM_NO=%s AND HOUSE_ID=%s"""
+            cursor.execute(query,[description, str(price), str(offer), str(roomnumber) , str(house_id)])
+            if maxcap!='Capacity':
+                query="""UPDATE ROOMS SET 
+                        MAX_CAPACITY=%s
+                        WHERE ROOM_NO=%s AND HOUSE_ID=%s"""
+                cursor.execute(query,[str(maxcap), str(roomnumber) , str(house_id)])
+                
+        else:
+            selected_features.clear()
+            text = ""
+            for feature in rfeatures:
+                if request.POST.get(feature, False):
+                    selected_features.append(feature)
+                    text+=(feature+"\\")
+            if(len(selected_features)!=0):
+                query="""UPDATE ROOMS SET FEATURES=%s WHERE ROOM_NO=%s AND HOUSE_ID=%s"""
+                cursor.execute(query,[str(text), str(roomnumber), str(house_id)])
+                 
+            
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, HOUSE_NO
+            FROM HOUSES
+            WHERE HOUSE_ID=%s"""
+    cursor.execute(query,[str(house_id)])
+    result = definitions.dictfetchone(cursor)
+
+    if not bool(result):
+            messages.error(request, 'Can\'t find the house!!')
+            cursor.close()
+            return redirect('home')
+
+    address_id = result["ADDRESS_ID"]
+    housename = result["HOUSE_NAME"]
+    house_no = result["HOUSE_NO"]
+    query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
+            from ADDRESSES a 
+            JOIN CITIES c 
+            ON (a.CITY_ID=c.CITY_ID)
+            join STATES s
+            ON (c.STATE_ID=s.STATE_ID)
+            WHERE a.ADDRESS_ID=%s"""
+    cursor.execute(query,[str(address_id)])
+    result = definitions.dictfetchone(cursor)
+
+    if not bool(result):
+        messages.error(request, 'Can\'t find the address of the house!!')
+        cursor.close()
+        return redirect('home')
+
+    streetname = result["STREET"]
+    cityname = result["CITY_NAME"]
+    statename = result["STATE_NAME"]
+    countryname = result["COUNTRY_NAME"]
+    
+    query="""SELECT PATH FROM ROOM_PHOTOS_PATH WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+    cursor.execute(query,[str(house_id),str(roomnumber)])
+    result = cursor.fetchall()
+    photos_path = [photo[0] for photo in result]
+        
+    query="""SELECT DESCRIPTION,MAX_CAPACITY,PRICE,OFFER_PCT,FEATURES FROM ROOMS WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+    cursor.execute(query,[str(house_id),str(roomnumber)])
+    result = definitions.dictfetchone(cursor)
+    description = result['DESCRIPTION']
+    capacity = result['MAX_CAPACITY']
+    price = result['PRICE']
+    offer_pct = result['OFFER_PCT']
+    roomfeatures = result['FEATURES']
+    
+    if((roomfeatures is None) or (roomfeatures is NULL)):
+        froom = None
+    else:
+        x = roomfeatures.split("\\")
+        del x[-1]
+        froom = x
+    
+    data ={
+        'house_id': str(house_id),
+        'housename': housename.upper(),
+        'roomnumber': roomnumber,
+        'house_address': str(house_no).upper() + ", " +  str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'description': description,
+        'photos_url': photos_path,
+        'capacity': str(capacity),
+        'price': price,
+        'offer_pct': offer_pct,
+        'features' : rfeatures,
+        'sfeatures': froom,
+    }
+    cursor.close()
+    return render(request,'accounts/editroom.html',data)

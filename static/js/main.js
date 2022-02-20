@@ -30,8 +30,6 @@ const addRoomPicBtn = document.getElementById('addRoomPicBtn');
 const addBtnRoom = document.getElementById('addBtnRoom');
 const addRoomBtn = document.getElementById('addRoomBtn');
 const picLimit = document.getElementById('picLimit');
-const deletePicBtn = document.getElementById('deletePicBtn');
-
 
 const addHtmlToElement = (element,html) => {
     element.innerHTML = html;
@@ -219,12 +217,6 @@ $(document).ready(function(){
     });
 })
 
-try{
-    deletePicBtn.onclick = () => setImageSession();
-}
-catch{
-    //console.log("On edit house page!!");
-}
 
 try{
     addHousePicBtn.onclick = () => addNewHousePic();
