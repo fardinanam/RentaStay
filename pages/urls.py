@@ -11,4 +11,6 @@ urlpatterns = [
     path('yourhouses/',views.yourhouses, name='yourhouses'),
     path('reservation/<int:house_id>/<int:room_no>/<str:check_in>/<str:check_out>/<int:guests>',
         views.reservation, name='reservation'),
+    path('availableRooms/<int:house_id>/<str:check_in>/<str:check_out>/<int:guests>',
+        views.getJsonAvailableRoomsData, name='availableRooms')
 ]

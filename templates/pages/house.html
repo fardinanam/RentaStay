@@ -82,23 +82,26 @@
                     
                     <ul id="rooms" class="list-group list-group-flush">
                         {% comment %} {% for room in rooms %} {% endcomment %}
-                        <template room-minicard-template>
-                            <li class="list-group-item">
-                                <div class="clearfix">
-                                    <div class="pull-left">
-                                        <h6 >Room No {{ room.ROOM_NO }}</h6>
-                                        <p>{{ room.MAX_CAPACITY }} guests</p>
-                                    </div>
-                                    <div class="pull-right">
-                                        <div class="d-flex">
-                                            <h6> ${{ room.PRICE }}</h6>
-                                            <p>/night</p>
+                        <div id="info" data-house-id="{{ house.HOUSE_ID }}"></div>
+                        <div room-minicard-container>
+                            <template room-minicard-template>
+                                <li class="list-group-item" data-room-no="" room-minicard>
+                                    <div class="clearfix">
+                                        <div class="pull-left">
+                                            <h6 room-no>Room No {{ room.ROOM_NO }}</h6>
+                                            <p guests></p>
+                                        </div>
+                                        <div class="pull-right">
+                                            <div class="d-flex">
+                                                <h6 room-price></h6>
+                                                <p>/night</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <button id="reserveButton-{{ house.HOUSE_ID }}-{{ room.ROOM_NO }}" class="btn btn-outline-success btn-block btn-reserve" reservation-button>Reserve</button>
-                            </li>
-                        </template>
+                                    <button class="btn btn-outline-success btn-block btn-reserve" data-room-no="" reservation-button>Reserve</button>
+                                </li>
+                            </template>
+                        </div>
                         {% comment %} {% endfor %} {% endcomment %}
                     </ul>
                 </div>

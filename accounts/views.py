@@ -4,8 +4,6 @@ from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
-from django.urls import reverse
-from soupsieve import select
 from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 from rentastay.settings import MEDIA_ROOT
@@ -14,9 +12,22 @@ hfeatures = ['Kitchen', 'Free Parking', 'Backyard', 'WiFi', 'Dryer', 'Washer', '
             'Security Cameras', 'Fire extinguisher', 'First Aid Kit', 'Microwave', '24/7 Electricity']
 
 rfeatures = ['EV Charger', 'Extra Pillow and Blanket', 'Portable Fans', 'TV', 'Air Conditioner (AC)', 'Heater', 'Separate Bathroom', 'Common Bathroom',
-             'Lockbox','Almirah']
+            'Lockbox','Almirah']
 
 selected_features = []
+
+def is_username_unique(username):
+    cursor = connection.cursor()
+    query = """SELECT USERNAME 
+                FROM USERS WHERE USERNAME=%s"""
+    cursor.execute(query, [username])
+    result = cursor.fetchone()
+    cursor.close()
+
+    if result is not None:
+        return False
+
+    return True
 
 def IsHouseInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description):
     if countryname=="Country Name":
@@ -83,18 +94,9 @@ def signup(request):
             messages.error(request, "Passwords did not match")
             return render(request, "accounts/signup.html", data)
 
-        cursor = connection.cursor()
-        query = """SELECT USERNAME 
-                FROM USERS WHERE USERNAME=%s"""
-        cursor.execute(query, [data['username']])
-        result = cursor.fetchone()
-        cursor.close()
-
-        if result is not None:
+        if is_username_unique(data['username']):
             messages.error(request, 'Username already exists')
             data.update({'username' : None})
-            #return redirect('signup', data)
-            #print(data)
             return render(request, "accounts/signup.html", data)
         else:
             try:
@@ -144,27 +146,77 @@ def signin(request):
                 return redirect(request.GET['next'])
 
 def profile(request):
+    data = {
+        'username': '',
+        'firstname': '',
+        'lastname': '',
+        'email': '',
+        'phone': '',
+        'bankacc': '',
+        'creditcard': ''
+    }
+
     if(request.session.has_key('username')):
         cursor = connection.cursor()
-        query = """SELECT * 
-                FROM USERS 
-                WHERE USERNAME=%s"""
+        query = """SELECT *
+                    FROM USERS
+                    WHERE USERNAME=%s"""
         cursor.execute(query, [request.session['username']])
-        result = cursor.fetchone()
+        result = definitions.dictfetchone(cursor)
         cursor.close()
-        
-        data = {
-            'username': result[1],
-            'firstname': result[2],
-            'lastname': result[3],
-            'email': result[4],
-            'phone': result[5],
-            'bankacc': result[8],
-            'creditcard': result[9],
-            'update':'disabled'
-        }
 
-        return render(request, 'accounts/profile.html', data)
+        data.update({
+            'username': result['USERNAME'],
+            'firstname': result['FIRST_NAME'],
+            'lastname': result['LAST_NAME'],
+            'email': result['EMAIL'],
+            'phone': result['PHONE_NO'],
+            'bankacc': result['BANK_ACC_NO'],
+            'creditcard': result['CREDIT_CARD_NO']
+        })
+
+        if request.method == 'GET':
+            return render(request, 'accounts/profile.html', data)
+        elif request.method == 'POST':
+            data.update({
+                'firstname': request.POST.get('firstname'),
+                'lastname': request.POST.get('lastname'),
+                'phone': request.POST.get('phonenumber'),
+                'bankacc': request.POST.get('bankaccount'),
+                'creditcard': request.POST.get('creditcard')
+            })
+
+            if data['username'] != request.POST.get('username') and is_username_unique(data['username']) is False:
+                messages.error(
+                    request, 'Can not change to new username because the new username already exists')
+                return render(request, "accounts/profile.html", data)
+                
+            data.update({
+                'username': request.POST.get('username')
+            })
+
+            cursor = connection.cursor()
+            query = """UPDATE USERS
+                    SET FIRST_NAME = %s, 
+                    LAST_NAME = %s,
+                    PHONE_NO = %s,
+                    BANK_ACC_NO = %s,
+                    CREDIT_CARD_NO = %s
+                    WHERE USERNAME = %s"""
+            cursor.execute(query, [data['firstname'], data['lastname'], 
+                data['phone'], data['bankacc'], data['creditcard'], request.session.get('username')])
+            
+            query = """SELECT EMAIL 
+                    FROM USERS
+                    WHERE USERNAME = %s"""
+            cursor.execute(query, [data['username']])
+            result = cursor.fetchone()
+            data.update({
+                'email': result[0]
+            })
+            cursor.close()
+            
+            return render(request, 'accounts/profile.html', data)
     else:
         messages.error(request, "Session Expired")
         return render(request, 'accounts/signin.html')
@@ -199,6 +251,17 @@ def addhome(request):
     }
     
     if request.method=='GET':
+        cursor = connection.cursor()
+        query = """SELECT BANK_ACC_NO
+                FROM USERS WHERE USERNAME = %s"""
+        cursor.execute(query, [request.session.get('username')])
+        result = cursor.fetchone()
+        cursor.close()
+
+        if result[0] is None:
+            messages.error(request, "Please update your bank account to become a host")
+            return redirect('/accounts/profile/')
+
         return render(request, 'accounts/addhome.html', data)
     
     if request.method=='POST':
