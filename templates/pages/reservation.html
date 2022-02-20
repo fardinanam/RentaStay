@@ -25,7 +25,7 @@
                 </div>
                 <hr>
                 {% if request.session.username is None %}
-                    <p>Please <a href="{% url 'signup' %}">signup</a> or <a href="{% url 'signin' %}">signin</a> to continue </p>
+                    <p>Please <a href="{% url 'signup' %}?next={{ request.path }}">signup</a> or <a href="{% url 'signin' %}?next={{ request.path }}">signin</a> to continue </p>
                 {% else %}
                     <h5>Pay with</h5>
                     <form method="POST">
@@ -54,9 +54,15 @@
                         </div>
                         <p><b>Billing address</b></p>
                         <div class="input-group-container mb-3">
-                            <input id="street" name="street" type="text" class="form-control" placeholder="Street address" aria-label="Street address" required>
-                            <input id="houseno" name="houseno" type="text" class="form-control" placeholder="Apt or suite number" aria-label="Apt or suite number" required>
-                            <input id="cityname" name="cityname" type="text" class="form-control" placeholder="City" aria-label="City" required>
+                            <div class="input-group">
+                                <input id="street" name="street" type="text" class="form-control" placeholder="Street address" aria-label="Street address" required>
+                            </div>
+                            <div class="input-group">
+                                <input id="houseno" name="houseno" type="text" class="form-control" placeholder="Apt or suite number" aria-label="Apt or suite number" required>
+                            </div>
+                            <div class="input-group">
+                                <input id="cityname" name="cityname" type="text" class="form-control" placeholder="City" aria-label="City" required>
+                            </div>
                             <div class="input-group">
                                 <input id="statename" name="statename" type="text" class="form-control" placeholder="state" aria-label="state" required>
                                 <input id="zipcode" name="zipcode" type="text" class="form-control" placeholder="ZIP code" aria-label="ZIP code" required>
@@ -68,11 +74,11 @@
                                 <option value="{{ country.COUNTRY_NAME }}">{{ country.COUNTRY_NAME }}</option>
                             {% endfor %}
                         </select>
-                        <input id="houseid" name="houseid" class="hide" value="{{ house_id }}"></input>
-                        <input id="price" name="price" class="hide" value="{{ room.PRICE }}"></input>
-                        <input id="roomno" name="roomno" class="hide" value="{{ room_no }}"></input>
-                        <input id="checkin" name="checkin" class="hide" value="{{ check_in }}"></input>
-                        <input id="checkout" name="checkout" class="hide" value="{{ check_out }}"></input>
+                        <input id="houseid" name="houseid" class="hide" value="{{ house_id }}" hidden></input>
+                        <input id="price" name="price" class="hide" value="{{ room.PRICE }}" hidden></input>
+                        <input id="roomno" name="roomno" class="hide" value="{{ room_no }}" hidden></input>
+                        <input id="checkin" name="checkin" class="hide" value="{{ check_in }}" hidden></input>
+                        <input id="checkout" name="checkout" class="hide" value="{{ check_out }}" hidden></input>
                         <button class="btn btn-success" type="submit">Confirm and pay</button>
                     </form>
                 {% endif %}

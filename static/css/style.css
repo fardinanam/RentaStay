@@ -717,7 +717,7 @@ a.nav-link.active{
 }
 
 .room-card .card-header {
-    border-radius: .5rem .5rem .25rem .25rem;
+    border-radius: .5rem;
 }
 
 .room-card li {
@@ -769,17 +769,38 @@ li:hover .btn-reserve {
     display: block;
 }
 
-.input-group-container {
+/* .input-group-container {
     border: 1px solid rgb(199, 199, 199);
     border-radius: .5rem;
+} */
+
+.input-group-container .input-group:first-child {
+    padding-bottom: 0;
+}
+.input-group-container .input-group:first-child * {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;    
+}
+.input-group-container .input-group:last-child {
+    padding-top: 0;
+}
+.input-group-container .input-group:last-child * {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.input-group-container .input-group:not(:last-child):not(:first-child) {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.input-group-container .input-group:not(:last-child):not(:first-child) * {
+    border-radius: 0;
+}  
+.input-group-container .input-group:not(:first-child) * {
+    border-top: 0;
 }
 
 .date-picker input {
     border: 0px;
-}
-
-#datepickerDiv {
-    background-color: white;
 }
 
 #checkInDiv {
@@ -812,11 +833,15 @@ li:hover .btn-reserve {
     text-align: center;
 }
 
-.guests-input {
+.room-search-btn {
+    border-radius: .5rem;
+}
+
+/* .guests-input {
     width: 100%;
     border-top: 1px solid rgb(199, 199, 199) !important;
     border-radius: 0rem 0rem .5rem .5rem;
-}
+} */
 /** Room Card styles end */
 .bi-credit-card-2-front {
     border-radius: .5rem;
@@ -829,6 +854,7 @@ li:hover .btn-reserve {
 .price-card .card-header p{
     margin: 0px 0px 0px 1rem;
 }
+
 .image-sm {
     border-radius: .5rem;
     width: 8rem;

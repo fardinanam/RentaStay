@@ -103,7 +103,10 @@ def signup(request):
                 data.update({'email' : None})
                 return render(request, "accounts/signup.html", data)
 
-            return redirect('home')
+            if request.GET.get('next') is None:
+                return redirect('home')
+            else:
+                return redirect(request.GET['next'])
         
         
 def signin(request):
@@ -123,10 +126,13 @@ def signin(request):
         cursor.close()
         if result is None:
             messages.error(request,"Invalid login credentials!")
-            return redirect('signin')
+            return render(request, 'acocunts/signin.html')
         else:
             request.session['username'] = username
-            return redirect('home')
+            if request.GET.get('next') is None:
+                return redirect('home')
+            else:
+                return redirect(request.GET['next'])
 
 def profile(request):
     if(request.session.has_key('username')):
