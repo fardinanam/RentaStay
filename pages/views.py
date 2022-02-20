@@ -94,6 +94,16 @@ def getJsonHousePriceRange(request, house_id):
 
     return JsonResponse({'minPrice':minPrice, 'maxPrice':maxPrice})
 
+# def getJsonAvailableRoomsData(request, house_id, checkIn, checkOut, guests):
+#     cursor = connection.cursor()
+#     query = """SELECT *
+#             FROM ROOMS
+#             WHERE HOUSE_ID = %s"""
+#     cursor.execute(query, [house_id])
+#     rooms = definitions.dictfetchall(cursor)
+#     rooms = sorted(rooms, key=lambda i: i['ROOM_NO'])
+
+
 def house(request, house_id):
     # print(f"house id from GET is {houseId}")
     cursor = connection.cursor()
@@ -115,12 +125,12 @@ def house(request, house_id):
         'MAX_PRICE': maxPrice
     })
 
-    query = """SELECT * 
-            FROM ROOMS
-            WHERE HOUSE_ID = %s"""
-    cursor.execute(query, [house_id])
-    rooms = definitions.dictfetchall(cursor)
-    rooms = sorted(rooms, key=lambda i: i['ROOM_NO'])
+    # query = """SELECT * 
+    #         FROM ROOMS
+    #         WHERE HOUSE_ID = %s"""
+    # cursor.execute(query, [house_id])
+    # rooms = definitions.dictfetchall(cursor)
+    # rooms = sorted(rooms, key=lambda i: i['ROOM_NO'])
 
     query = """SELECT PATH
             FROM HOUSE_PHOTOS_PATH
@@ -129,7 +139,7 @@ def house(request, house_id):
     photosPath = definitions.dictfetchall(cursor)
     cursor.close()
 
-    return render(request, 'pages/house.html', {'house':result, 'rooms': rooms, 'photos_url': photosPath})
+    return render(request, 'pages/house.html', {'house':result, 'photos_url': photosPath})
 
 def reservation(request, house_id, room_no, check_in, check_out, guests):
     if request.method == 'GET':
@@ -145,9 +155,10 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
             'check_out': checkOutDate.strftime(dateFormat),
             'guests': guests
         }
+        cursor = connection.cursor()
 
         if request.session.get('username') is not None:
-            cursor = connection.cursor()
+            
             query = """SELECT *
                     FROM USERS 
                     WHERE USERNAME = %s"""
@@ -155,43 +166,43 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
             result = definitions.dictfetchone(cursor)
             data.update(result)
 
-            query = """SELECT COUNTRY_NAME
-                    FROM COUNTRIES"""
-            cursor.execute(query, [])
-            result = definitions.dictfetchall(cursor)
-            data.update({
-                'countries': result
-            })
+        query = """SELECT COUNTRY_NAME
+                FROM COUNTRIES"""
+        cursor.execute(query, [])
+        result = definitions.dictfetchall(cursor)
+        data.update({
+            'countries': result
+        })
 
-            query = """SELECT HOUSE_NAME, PATH
-                    FROM HOUSES JOIN HOUSE_PHOTOS_PATH USING(HOUSE_ID)
-                    WHERE HOUSE_ID = %s"""
-            cursor.execute(query, [house_id])
-            result = definitions.dictfetchall(cursor)
-            data.update({
-                'house': result[0]
-            })
+        query = """SELECT HOUSE_NAME, PATH
+                FROM HOUSES JOIN HOUSE_PHOTOS_PATH USING(HOUSE_ID)
+                WHERE HOUSE_ID = %s"""
+        cursor.execute(query, [house_id])
+        result = definitions.dictfetchall(cursor)
+        data.update({
+            'house': result[0]
+        })
 
-            query = """SELECT PRICE, OFFER_PCT
-                    FROM ROOMS
-                    WHERE HOUSE_ID = %s AND ROOM_NO = %s"""
-            cursor.execute(query, [house_id, room_no])
-            result = definitions.dictfetchone(cursor)
-            pricePerNight = result['PRICE']
-            offer = result['OFFER_PCT']
-            data.update({
-                'room': result
-            })
+        query = """SELECT PRICE, OFFER_PCT
+                FROM ROOMS
+                WHERE HOUSE_ID = %s AND ROOM_NO = %s"""
+        cursor.execute(query, [house_id, room_no])
+        result = definitions.dictfetchone(cursor)
+        pricePerNight = result['PRICE']
+        offer = result['OFFER_PCT']
+        data.update({
+            'room': result
+        })
 
-            totalPrice = pricePerNight * noOfDays
-            totalOffer = totalPrice * (offer / 100)
-            data.update({
-                'daysReserving': noOfDays,
-                'totalPrice':  totalPrice,
-                'totalOffer': totalOffer,
-                'totalPriceWithOffer': totalPrice - totalOffer
-            })
-            cursor.close()
+        totalPrice = pricePerNight * noOfDays
+        totalOffer = totalPrice * (offer / 100)
+        data.update({
+            'daysReserving': noOfDays,
+            'totalPrice':  totalPrice,
+            'totalOffer': totalOffer,
+            'totalPriceWithOffer': totalPrice - totalOffer
+        })
+        cursor.close()
             
         return render(request, 'pages/reservation.html', data)
 
@@ -205,8 +216,8 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
         checkInDate = request.POST['checkin']
         checkOutDate = request.POST['checkout']
         transactionTime = datetime.now().strftime("%d%m%Y%H%M%S")
-        # transaction id format = username-houseid-roomno-ddmmyyyyhhmmss
-        transactionId = str(username) + '-' + str(houseId) + '-' + str(roomno) + '-' + str(transactionTime)
+        # transaction id format = userid-houseid-roomno-ddmmyyyyhhmmss
+        transactionId = str(userId) + '-' + str(houseId) + '-' + str(roomno) + '-' + str(transactionTime)
 
         cursor = connection.cursor()
         query = """SELECT USER_ID FROM USERS WHERE USERNAME = %s"""
@@ -226,4 +237,5 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
             print('Transaction Id is not unique')
             messages.error(request, "Server Error.")
         
+        # TODO: redirect to all the rents page of the user
         return redirect('home')
