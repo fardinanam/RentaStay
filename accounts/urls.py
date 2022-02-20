@@ -14,4 +14,6 @@ urlpatterns = [
     path('addroom/<int:house_id>/', views.addroom, name='addroom'),
     path('roompreview/<int:house_id>/<int:roomnumber>/', views.roompreview, name='roompreview'),
     path('fetch_no_of_room_pics/<int:house_id>/<int:roomnumber>/', views.fetch_no_of_room_pics, name='fetch_no_of_room_pics'),
+    path('edithouseinfo/<int:house_id>/', views.edithouseinfo, name='edithouseinfo'),
+    path('editroominfo/<int:house_id>/<int:roomnumber>/', views.editroominfo, name='editroominfo'),
 ]

@@ -3,12 +3,19 @@
 {% block content %}
 
 {% load static %}
+{% load humanize %}
 
 {% if request.session.username %}
 <!-- House details page start -->
     <div class="content-area-6">
         <div class="container">
             <div class="row">
+                <div>
+                    <h5>
+                        <a href="{% url 'yourhouses' %}"><i class="bi bi-arrow-left-circle"></i></a>
+                        Back to Your Houses
+                    </h5>
+                </div>
                 <div class="col-lg-8 col-md-12 col-xs-12">
                     <div class="home-details-section">
                         <!-- Heading start -->
@@ -22,27 +29,12 @@
                                 </h6>
                             </div>
                             <div class="pull-right">
-                                <h3><span>Price range will be here</span></h3>
+                                <h3><span>${{ minprice | intcomma }}-${{ maxprice | intcomma }}</span></h3>
                             </div>
                         </div>
                         <div id="homeDetailsSlider" class="carousel home-details-sliders slide mb-40" data-ride="carousel">
                             <!-- main slider carousel items -->
                             <div class="carousel-inner">
-                                <!-- <div class="active item carousel-item" data-slide-number="0">
-                                    <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
-                                </div>
-                                <div class="item carousel-item" data-slide-number="1">
-                                    <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="slider-home">
-                                </div>
-                                <div class="item carousel-item" data-slide-number="2">
-                                    <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
-                                </div>
-                                <div class="item carousel-item" data-slide-number="3">
-                                    <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="slider-home">
-                                </div>
-                                <div class="item carousel-item" data-slide-number="4">
-                                    <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="slider-home">
-                                </div> -->
                                 {% for photo in photos_url %}
                                     {% if forloop.first %}
                                         <div class="active item carousel-item" data-slide-number="{{ forloop.counter0 }}">
@@ -58,31 +50,6 @@
                             <!-- main slider carousel nav controls -->
                             <div class="carousel-indicators-section clearfix">
                                 <ul class="carousel-indicators home-properties list-inline nav nav-justified">
-                                    <!-- <li class="list-inline-item active">
-                                        <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#homeDetailsSlider">
-                                            <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
-                                        </a>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <a id="carousel-selector-1" data-slide-to="1" data-target="#homeDetailsSlider">
-                                            <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="small-home">
-                                        </a>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <a id="carousel-selector-2" data-slide-to="2" data-target="#homeDetailsSlider">
-                                            <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
-                                        </a>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <a id="carousel-selector-3" data-slide-to="3" data-target="#homeDetailsSlider">
-                                            <img src="{{ '/media/Houses/48/HousePic/20191127_154730-01.jpeg' }}" class="img-fluid" alt="small-home">
-                                        </a>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <a id="carousel-selector-4" data-slide-to="4" data-target="#homeDetailsSlider">
-                                            <img src="{{ '/media/Houses/48/HousePic/layer-1.png' }}" class="img-fluid" alt="small-home">
-                                        </a>
-                                    </li> -->
                                     {% for photo in photos_url %}
                                         {% if forloop.first %}
                                             <li class="list-inline-item active">
@@ -136,17 +103,17 @@
                                         <h3 class="heading-2">Features</h3>
                                         <div class="row">
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                                                <ul>
-                                                    <li>
-                                                        <span>This</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>This</span>
-                                                    </li>
-                                                    <li>
-                                                        <span>And This</span>
-                                                    </li>
-                                                </ul>
+                                                {% if features is None %}
+                                                    <h5> No features to preview!! </h5>
+                                                {% else %}
+                                                    <ul>
+                                                        {% for feature in features %}
+                                                            <li>
+                                                                <span>{{ feature }}</span>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -159,6 +126,10 @@
                     <div class="sidebar-right">
                         <!-- Advanced search start -->
                         <div class="widget advanced-search d-none-992">
+                            <form action="{% url 'edithouseinfo' house_id %}" style="margin-bottom: 15px;"">
+                                <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit"">Edit House Info</button>
+                                {% include 'includes/popup.html' %}
+                            </form>
                             <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit" id="addHousePicBtn">Add House Pic</button>
                         </div>
                         <form action="{% url 'homepreview' house_id %}" method="POST" enctype="multipart/form-data">
@@ -166,6 +137,7 @@
                             <div id="addHousePic">
 
                             </div>
+                            <h4 style="width:100%; text-align: center; display:none; color: #198754;" id="picLimit">You reached picture limit!!</h4>
                             <button class="btn btn-block btn-lg btn-theme btn-success"  style="width: 25%; height:50px; margin: auto; display: none;" id="addBtnHouse">Add</button>
                         </form>   
                     </div>

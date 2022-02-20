@@ -5,9 +5,18 @@ from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from soupsieve import select
 from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 from rentastay.settings import MEDIA_ROOT
+
+hfeatures = ['Kitchen', 'Free Parking', 'Backyard', 'WiFi', 'Dryer', 'Washer', 'Pets Allowed', 'Balcony', 'Refrigerator', 
+            'Security Cameras', 'Fire extinguisher', 'First Aid Kit', 'Microwave', '24/7 Electricity']
+
+rfeatures = ['EV Charger', 'Extra Pillow and Blanket', 'Portable Fans', 'TV', 'Air Conditioner (AC)', 'Heater', 'Separate Bathroom', 'Common Bathroom',
+             'Lockbox','Almirah']
+
+selected_features = []
 
 def IsHouseInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description):
     if countryname=="Country Name":
@@ -274,7 +283,7 @@ def addhome(request):
         
         # following function will insert into houses and return the house id
         house_id = cursor.callfunc('INSERT_HOUSE_RETURN_HOUSE_ID', int,
-            [str(user_id), str(address_id), datas['housename'], datas['housenumber'], datas['description']])
+            [str(user_id), str(address_id), datas['housename'].upper(), datas['housenumber'], datas['description']])
         
         if not bool(house_id):
             messages.error(request, 'Can\'t find the house!!')
@@ -303,7 +312,7 @@ def addhome(request):
 
 def homepreview(request,house_id):
     cursor = connection.cursor()
-    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, HOUSE_NO, FEATURES
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
     cursor.execute(query,[str(house_id)])
@@ -317,6 +326,8 @@ def homepreview(request,house_id):
     address_id = result["ADDRESS_ID"]
     housename = result["HOUSE_NAME"]
     description = result["DESCRIPTION"]
+    house_no = result["HOUSE_NO"]
+    housefeatures = result["FEATURES"]
     query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
             from ADDRESSES a 
             JOIN CITIES c 
@@ -337,8 +348,11 @@ def homepreview(request,house_id):
     statename = result["STATE_NAME"]
     countryname = result["COUNTRY_NAME"]
     #print(streetname)
+    query = """SELECT COUNT(*) FROM HOUSE_PHOTOS_PATH WHERE HOUSE_ID=%s"""
+    cursor.execute(query,[str(house_id)])
+    result = cursor.fetchone()
     if request.method=="POST":
-        for i in range(2,6):
+        for i in range(result[0],6):
             #print('upload'+str(i))
             if request.FILES.get('upload'+str(i),False):
                 folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/HousePic/'
@@ -362,13 +376,27 @@ def homepreview(request,house_id):
     cursor.execute(query,[str(house_id)])
     result = cursor.fetchall()
     rooms = [room[0] for room in result]
+    
+    if((housefeatures is None) or (housefeatures is NULL)):
+        fhouse = None
+    else:
+        x = housefeatures.split("\\")
+        del x[-1]
+        fhouse = x
+        
+    minPrice = cursor.callfunc('GET_MIN_PRICE', float, [house_id])
+    maxPrice = cursor.callfunc('GET_MAX_PRICE', float, [house_id])
+    
     data ={
         'house_id': str(house_id),
-        'housename': housename,
-        'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
+        'housename': housename.upper(),
+        'house_address': str(house_no).upper() + ", " + str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
         'description': description,
         'photos_url': photos_path,
         'rooms': rooms,
+        'features' : fhouse,
+        'minprice' : minPrice,
+        'maxprice' : maxPrice,
     }
     cursor.close()
     return render(request, 'accounts/home_preview.html',data)
@@ -413,10 +441,10 @@ def fetch_no_of_house_pics(request, house_id):
     cursor.execute(query,[str(house_id)])
     photos_paths = definitions.dictfetchall(cursor)
 
-    if not bool(photos_paths):
-        messages.error(request, 'Couldn\'t find any house photo!!')
-        cursor.close()
-        return redirect('home')
+    # if not bool(photos_paths):
+    #     messages.error(request, 'Couldn\'t find any house photo!!')
+    #     cursor.close()
+    #     return redirect('home')
 
     # photos_path = [photo["PATH"] for photo in photos_paths]
     result = [len(photos_paths)]
@@ -438,11 +466,11 @@ def fetch_no_of_room_pics(request, house_id, roomnumber):
     query = "SELECT PATH FROM ROOM_PHOTOS_PATH WHERE HOUSE_ID=%s AND ROOM_NO=%s"
     cursor.execute(query,[str(house_id),str(roomnumber)])
     photos_paths = definitions.dictfetchall(cursor)
-
-    if not bool(photos_paths):
-        messages.error(request, 'Couldn\'t find any house photo!!')
-        cursor.close()
-        return redirect('home')
+    
+    # if not bool(photos_paths):
+    #     messages.error(request, 'Couldn\'t find any house photo!!')
+    #     cursor.close()
+    #     return redirect('home')
 
     # photos_path = [photo["PATH"] for photo in photos_paths]
     result = [len(photos_paths)]
@@ -470,12 +498,12 @@ def addroom(request,house_id):
 
     house_name = house_name["HOUSE_NAME"]
     data.update({
-        'housename': house_name,
+        'housename': house_name.upper(),
     })
     
     data1 ={
         'house_id': str(house_id),
-        'housename': house_name,
+        'housename': house_name.upper(),
     }
     
     if request.method=='GET':
@@ -511,7 +539,7 @@ def addroom(request,house_id):
 
 def roompreview(request,house_id,roomnumber):
     cursor = connection.cursor()
-    query="""SELECT ADDRESS_ID, HOUSE_NAME
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, HOUSE_NO
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
     cursor.execute(query,[str(house_id)])
@@ -524,6 +552,7 @@ def roompreview(request,house_id,roomnumber):
 
     address_id = result["ADDRESS_ID"]
     housename = result["HOUSE_NAME"]
+    house_no = result["HOUSE_NO"]
     query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
             from ADDRESSES a 
             JOIN CITIES c 
@@ -543,8 +572,11 @@ def roompreview(request,house_id,roomnumber):
     cityname = result["CITY_NAME"]
     statename = result["STATE_NAME"]
     countryname = result["COUNTRY_NAME"]
+    query = """SELECT COUNT(*) from ROOM_PHOTOS_PATH WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+    cursor.execute(query,[str(house_id),str(roomnumber)])
+    result = cursor.fetchone()
     if request.method=="POST":
-        for i in range(2,6):
+        for i in range(result[0]+1,6):
             #print('upload'+str(i))
             if request.FILES.get('uploadroom'+str(i),False):
                 folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/Rooms/' + str(roomnumber) + '/'
@@ -561,24 +593,228 @@ def roompreview(request,house_id,roomnumber):
     result = cursor.fetchall()
     photos_path = [photo[0] for photo in result]
     
-    query="""SELECT DESCRIPTION,MAX_CAPACITY,PRICE,OFFER_PCT FROM ROOMS WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+    query="""SELECT DESCRIPTION,MAX_CAPACITY,PRICE,OFFER_PCT,FEATURES FROM ROOMS WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
     cursor.execute(query,[str(house_id),str(roomnumber)])
     result = definitions.dictfetchone(cursor)
     description = result['DESCRIPTION']
     capacity = result['MAX_CAPACITY']
     price = result['PRICE']
     offer_pct = result['OFFER_PCT']
+    roomfeatures = result['FEATURES']
+    
+    if((roomfeatures is None) or (roomfeatures is NULL)):
+        froom = None
+    else:
+        x = roomfeatures.split("\\")
+        del x[-1]
+        froom = x
     
     data ={
         'house_id': str(house_id),
-        'housename': housename,
+        'housename': housename.upper(),
         'roomnumber': roomnumber,
-        'house_address': str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
+        'house_address': str(house_no).upper() + ", " +  str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
         'description': description,
         'photos_url': photos_path,
         'capacity': capacity,
         'price': price,
         'offer_pct': offer_pct,
+        'features' : froom,
     }
     cursor.close()
     return render(request, 'accounts/room_preview.html',data)
+
+def edithouseinfo(request,house_id):
+    cursor = connection.cursor()
+    if request.method=="POST":
+        if request.POST.get('deletedImg',False):
+            path = request.POST.get('deletedImg',False)
+            query="""DELETE FROM HOUSE_PHOTOS_PATH WHERE HOUSE_ID=%s AND PATH=%s"""
+            cursor.execute(query,[str(house_id),str(path)]) 
+        
+        elif request.POST.get('description',False):
+            description = request.POST['description']
+            housename = request.POST['housename']
+            query="""UPDATE HOUSES SET HOUSE_NAME=%s, 
+                    DESCRIPTION=%s 
+                    WHERE HOUSE_ID=%s"""
+            cursor.execute(query,[str(housename).upper(), str(description) , str(house_id)])
+        else:
+            selected_features.clear()
+            text = ""
+            for feature in hfeatures:
+                if request.POST.get(feature, False):
+                    selected_features.append(feature)
+                    text+=(feature+"\\")
+            if(len(selected_features)!=0):
+                query="""UPDATE HOUSES SET FEATURES=%s WHERE HOUSE_ID=%s"""
+                cursor.execute(query,[str(text), str(house_id)])
+                 
+            
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, HOUSE_NO, FEATURES
+            FROM HOUSES
+            WHERE HOUSE_ID=%s"""
+    cursor.execute(query,[str(house_id)])
+    result = definitions.dictfetchone(cursor)
+
+    if not bool(result):
+            messages.error(request, 'Can\'t find the house!!')
+            cursor.close()
+            return redirect('home')
+
+    address_id = result["ADDRESS_ID"]
+    housename = result["HOUSE_NAME"]
+    description = result["DESCRIPTION"]
+    house_no = result["HOUSE_NO"]
+    housefeatures = result["FEATURES"]
+    query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
+            from ADDRESSES a 
+            JOIN CITIES c 
+            ON (a.CITY_ID=c.CITY_ID)
+            join STATES s
+            ON (c.STATE_ID=s.STATE_ID)
+            WHERE a.ADDRESS_ID=%s"""
+    cursor.execute(query,[str(address_id)])
+    result = definitions.dictfetchone(cursor)
+
+    if not bool(result):
+        messages.error(request, 'Can\'t find the address of the house!!')
+        cursor.close()
+        return redirect('home')
+
+    streetname = result["STREET"]
+    cityname = result["CITY_NAME"]
+    statename = result["STATE_NAME"]
+    countryname = result["COUNTRY_NAME"]
+    
+    query="""SELECT PATH FROM HOUSE_PHOTOS_PATH WHERE HOUSE_ID=%s"""
+    cursor.execute(query,[str(house_id)])
+    result = cursor.fetchall()
+    photos_path = [photo[0] for photo in result]
+    if((housefeatures is None) or (housefeatures is NULL)):
+        fhouse = None
+    else:
+        x = housefeatures.split("\\")
+        del x[-1]
+        fhouse = x
+    
+    data ={
+        'house_id': str(house_id),
+        'housename': housename.upper(),
+        'house_address': str(house_no).upper() + ", " +  str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'description': description,
+        'photos_url': photos_path,
+        'features' : hfeatures,
+        'sfeatures': fhouse,
+    }
+    cursor.close()
+    return render(request,'accounts/edithome.html',data)
+
+
+def editroominfo(request,house_id, roomnumber):
+    cursor = connection.cursor()
+    if request.method=="POST":
+        if request.POST.get('deletedImg',False):
+            path = request.POST.get('deletedImg',False)
+            query="""DELETE FROM ROOM_PHOTOS_PATH WHERE HOUSE_ID=%s AND ROOM_NO=%s AND PATH=%s"""
+            cursor.execute(query,[str(house_id), str(roomnumber), str(path)]) 
+        
+        elif request.POST.get('description',False):
+            description = request.POST['description']
+            price = request.POST['roomprice']
+            maxcap = request.POST.get('maxcapacity','Capacity')
+            offer = request.POST['offer_pct']
+            query="""UPDATE ROOMS SET 
+                    DESCRIPTION=%s, 
+                    PRICE=%s,
+                    OFFER_PCT=%s
+                    WHERE ROOM_NO=%s AND HOUSE_ID=%s"""
+            cursor.execute(query,[description, str(price), str(offer), str(roomnumber) , str(house_id)])
+            if maxcap!='Capacity':
+                query="""UPDATE ROOMS SET 
+                        MAX_CAPACITY=%s
+                        WHERE ROOM_NO=%s AND HOUSE_ID=%s"""
+                cursor.execute(query,[str(maxcap), str(roomnumber) , str(house_id)])
+                
+        else:
+            selected_features.clear()
+            text = ""
+            for feature in rfeatures:
+                if request.POST.get(feature, False):
+                    selected_features.append(feature)
+                    text+=(feature+"\\")
+            if(len(selected_features)!=0):
+                query="""UPDATE ROOMS SET FEATURES=%s WHERE ROOM_NO=%s AND HOUSE_ID=%s"""
+                cursor.execute(query,[str(text), str(roomnumber), str(house_id)])
+                 
+            
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, HOUSE_NO
+            FROM HOUSES
+            WHERE HOUSE_ID=%s"""
+    cursor.execute(query,[str(house_id)])
+    result = definitions.dictfetchone(cursor)
+
+    if not bool(result):
+            messages.error(request, 'Can\'t find the house!!')
+            cursor.close()
+            return redirect('home')
+
+    address_id = result["ADDRESS_ID"]
+    housename = result["HOUSE_NAME"]
+    house_no = result["HOUSE_NO"]
+    query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
+            from ADDRESSES a 
+            JOIN CITIES c 
+            ON (a.CITY_ID=c.CITY_ID)
+            join STATES s
+            ON (c.STATE_ID=s.STATE_ID)
+            WHERE a.ADDRESS_ID=%s"""
+    cursor.execute(query,[str(address_id)])
+    result = definitions.dictfetchone(cursor)
+
+    if not bool(result):
+        messages.error(request, 'Can\'t find the address of the house!!')
+        cursor.close()
+        return redirect('home')
+
+    streetname = result["STREET"]
+    cityname = result["CITY_NAME"]
+    statename = result["STATE_NAME"]
+    countryname = result["COUNTRY_NAME"]
+    
+    query="""SELECT PATH FROM ROOM_PHOTOS_PATH WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+    cursor.execute(query,[str(house_id),str(roomnumber)])
+    result = cursor.fetchall()
+    photos_path = [photo[0] for photo in result]
+        
+    query="""SELECT DESCRIPTION,MAX_CAPACITY,PRICE,OFFER_PCT,FEATURES FROM ROOMS WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+    cursor.execute(query,[str(house_id),str(roomnumber)])
+    result = definitions.dictfetchone(cursor)
+    description = result['DESCRIPTION']
+    capacity = result['MAX_CAPACITY']
+    price = result['PRICE']
+    offer_pct = result['OFFER_PCT']
+    roomfeatures = result['FEATURES']
+    
+    if((roomfeatures is None) or (roomfeatures is NULL)):
+        froom = None
+    else:
+        x = roomfeatures.split("\\")
+        del x[-1]
+        froom = x
+    
+    data ={
+        'house_id': str(house_id),
+        'housename': housename.upper(),
+        'roomnumber': roomnumber,
+        'house_address': str(house_no).upper() + ", " +  str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'description': description,
+        'photos_url': photos_path,
+        'capacity': str(capacity),
+        'price': price,
+        'offer_pct': offer_pct,
+        'features' : rfeatures,
+        'sfeatures': froom,
+    }
+    cursor.close()
+    return render(request,'accounts/editroom.html',data)

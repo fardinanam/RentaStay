@@ -24,6 +24,8 @@ def getHouses():
 def getYourHouses(request):
     cursor = connection.cursor()
     query = "SELECT USER_ID FROM USERS WHERE USERNAME=%s"
+    if 'username' not in request.session:
+        return redirect('home')
     cursor.execute(query,[request.session['username']])
     user_id = definitions.dictfetchone(cursor)
     if not bool(user_id):
