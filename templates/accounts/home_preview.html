@@ -3,6 +3,7 @@
 {% block content %}
 
 {% load static %}
+{% load humanize %}
 
 {% if request.session.username %}
 <!-- House details page start -->
@@ -28,7 +29,7 @@
                                 </h6>
                             </div>
                             <div class="pull-right">
-                                <h3><span>Price range will be here</span></h3>
+                                <h3><span>${{ minprice | intcomma }}-${{ maxprice | intcomma }}</span></h3>
                             </div>
                         </div>
                         <div id="homeDetailsSlider" class="carousel home-details-sliders slide mb-40" data-ride="carousel">
@@ -125,8 +126,9 @@
                     <div class="sidebar-right">
                         <!-- Advanced search start -->
                         <div class="widget advanced-search d-none-992">
-                            <form action="{% url 'edithouseinfo' house_id %}" style="margin-bottom: 15px;">
-                                <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit">Edit House Info</button>
+                            <form action="{% url 'edithouseinfo' house_id %}" style="margin-bottom: 15px;"">
+                                <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit"">Edit House Info</button>
+                                {% include 'includes/popup.html' %}
                             </form>
                             <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit" id="addHousePicBtn">Add House Pic</button>
                         </div>

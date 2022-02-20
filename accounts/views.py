@@ -378,6 +378,9 @@ def homepreview(request,house_id):
         del x[-1]
         fhouse = x
         
+    minPrice = cursor.callfunc('GET_MIN_PRICE', float, [house_id])
+    maxPrice = cursor.callfunc('GET_MAX_PRICE', float, [house_id])
+    
     data ={
         'house_id': str(house_id),
         'housename': housename.upper(),
@@ -386,6 +389,8 @@ def homepreview(request,house_id):
         'photos_url': photos_path,
         'rooms': rooms,
         'features' : fhouse,
+        'minprice' : minPrice,
+        'maxprice' : maxPrice,
     }
     cursor.close()
     return render(request, 'accounts/home_preview.html',data)

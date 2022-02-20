@@ -30,6 +30,8 @@ const addRoomPicBtn = document.getElementById('addRoomPicBtn');
 const addBtnRoom = document.getElementById('addBtnRoom');
 const addRoomBtn = document.getElementById('addRoomBtn');
 const picLimit = document.getElementById('picLimit');
+const popupheading = document.getElementById('popupheading');
+const popupmessage = document.getElementById('popupmessage');
 
 const addHtmlToElement = (element,html) => {
     element.innerHTML = html;
@@ -206,6 +208,35 @@ const addNewRoomPic = value => {
         })
     }
 }
+
+function onPopUp(header, msg) {
+    popupheading.innerHTML = header;
+    popupmessage.innerHTML = msg;
+    let confirmation = document.getElementById("confirmation");
+    if (!confirmation.classList.contains("modal-open")) {
+      confirmation.classList.add("modal-open");
+    }
+}
+
+function onCancel() {
+    let confirmation = document.getElementById("confirmation");
+    confirmation.classList.remove("modal-open");
+    return false;
+}
+
+function onConfirm() {
+    onCancel();
+    return true;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document
+        .getElementById("confirmation")
+        .addEventListener("click", onCancel);
+    document
+        .querySelector(".modal")
+        .addEventListener("click", (e) => e.stopPropagation());
+});
 
 
 $(document).ready(function(){
