@@ -5,9 +5,15 @@ from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from soupsieve import select
 from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 from rentastay.settings import MEDIA_ROOT
+
+features = ['Kitchen', 'Free Parking', 'Backyard', 'WiFi', 'Dryer', 'Washer', 'Pets Allowed', 'Balcony', 'Refrigerator', 
+            'Security Cameras', 'Fire extinguisher', 'First Aid Kit', 'Microwave', '24/7 Electricity']
+
+selected_features = []
 
 def IsHouseInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description):
     if countryname=="Country Name":
@@ -297,7 +303,7 @@ def addhome(request):
 
 def homepreview(request,house_id):
     cursor = connection.cursor()
-    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, HOUSE_NO
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
     cursor.execute(query,[str(house_id)])
@@ -311,6 +317,7 @@ def homepreview(request,house_id):
     address_id = result["ADDRESS_ID"]
     housename = result["HOUSE_NAME"]
     description = result["DESCRIPTION"]
+    house_no = result["HOUSE_NO"]
     query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
             from ADDRESSES a 
             JOIN CITIES c 
@@ -362,7 +369,7 @@ def homepreview(request,house_id):
     data ={
         'house_id': str(house_id),
         'housename': housename.upper(),
-        'house_address': str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'house_address': str(house_no).upper() + ", " + str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
         'description': description,
         'photos_url': photos_path,
         'rooms': rooms,
@@ -508,7 +515,7 @@ def addroom(request,house_id):
 
 def roompreview(request,house_id,roomnumber):
     cursor = connection.cursor()
-    query="""SELECT ADDRESS_ID, HOUSE_NAME
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, HOUSE_NO
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
     cursor.execute(query,[str(house_id)])
@@ -521,6 +528,7 @@ def roompreview(request,house_id,roomnumber):
 
     address_id = result["ADDRESS_ID"]
     housename = result["HOUSE_NAME"]
+    house_no = result["HOUSE_NO"]
     query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
             from ADDRESSES a 
             JOIN CITIES c 
@@ -573,7 +581,7 @@ def roompreview(request,house_id,roomnumber):
         'house_id': str(house_id),
         'housename': housename.upper(),
         'roomnumber': roomnumber,
-        'house_address': str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'house_address': str(house_no).upper() + ", " +  str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
         'description': description,
         'photos_url': photos_path,
         'capacity': capacity,
@@ -589,9 +597,28 @@ def edithouseinfo(request,house_id):
         if request.POST.get('deletedImg',False):
             path = request.POST.get('deletedImg',False)
             query="""DELETE FROM HOUSE_PHOTOS_PATH WHERE HOUSE_ID=%s AND PATH=%s"""
-            cursor.execute(query,[str(house_id),str(path)])          
+            cursor.execute(query,[str(house_id),str(path)]) 
+        
+        elif request.POST.get('description',False):
+            description = request.POST['description']
+            housename = request.POST['housename']
+            query="""UPDATE HOUSES SET HOUSE_NAME=%s, 
+                    DESCRIPTION=%s 
+                    WHERE HOUSE_ID=%s"""
+            cursor.execute(query,[str(housename).upper(), str(description) , str(house_id)])
+        else:
+            selected_features.clear()
+            text = ""
+            for feature in features:
+                if request.POST.get(feature, False):
+                    selected_features.append(feature)
+                    text+=(feature+"\\")
+            if(len(selected_features)!=0):
+                query="""UPDATE HOUSES SET FEATURES=%s WHERE HOUSE_ID=%s"""
+                cursor.execute(query,[str(text), str(house_id)])
+                 
             
-    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION
+    query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, HOUSE_NO, FEATURES
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
     cursor.execute(query,[str(house_id)])
@@ -605,6 +632,8 @@ def edithouseinfo(request,house_id):
     address_id = result["ADDRESS_ID"]
     housename = result["HOUSE_NAME"]
     description = result["DESCRIPTION"]
+    house_no = result["HOUSE_NO"]
+    housefeatures = result["FEATURES"]
     query="""select a.STREET,c.CITY_NAME,s.STATE_NAME,s.COUNTRY_NAME
             from ADDRESSES a 
             JOIN CITIES c 
@@ -629,13 +658,21 @@ def edithouseinfo(request,house_id):
     cursor.execute(query,[str(house_id)])
     result = cursor.fetchall()
     photos_path = [photo[0] for photo in result]
+    if((housefeatures is None) or (housefeatures is NULL)):
+        fhouse = None
+    else:
+        x = housefeatures.split("\\")
+        del x[-1]
+        fhouse = x
     
     data ={
         'house_id': str(house_id),
         'housename': housename.upper(),
-        'house_address': str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'house_address': str(house_no).upper() + ", " +  str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
         'description': description,
         'photos_url': photos_path,
+        'features' : features,
+        'sfeatures': fhouse,
     }
     cursor.close()
     return render(request,'accounts/edithome.html',data)
