@@ -711,6 +711,15 @@ a.nav-link.active{
 
 /** Room Card styles start */
 
+.house-photo-container .img-fluid {
+    border-radius: .5rem;
+    float: left;
+    height: 70vh;
+    width: auto; 
+    object-fit: cover;
+    /* background-size: cover; */
+}
+
 .room-card {
     border-radius: .5rem;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -761,7 +770,7 @@ ul {
     margin: 0;
 }
 
-.btn-reserve {
+li .btn-reserve {
     display: none;
 }
 
@@ -769,10 +778,7 @@ li:hover .btn-reserve {
     display: block;
 }
 
-/* .input-group-container {
-    border: 1px solid rgb(199, 199, 199);
-    border-radius: .5rem;
-} */
+/* input group start */
 
 .input-group-container .input-group:first-child {
     padding-bottom: 0;
@@ -798,6 +804,12 @@ li:hover .btn-reserve {
 .input-group-container .input-group:not(:first-child) * {
     border-top: 0;
 }
+
+/* 
+input group end
+
+date picker start
+ */
 
 .date-picker input {
     border: 0px;
@@ -833,15 +845,12 @@ li:hover .btn-reserve {
     text-align: center;
 }
 
+/* date picker end */
+
 .room-search-btn {
     border-radius: .5rem;
 }
 
-/* .guests-input {
-    width: 100%;
-    border-top: 1px solid rgb(199, 199, 199) !important;
-    border-radius: 0rem 0rem .5rem .5rem;
-} */
 /** Room Card styles end */
 .bi-credit-card-2-front {
     border-radius: .5rem;
@@ -1059,8 +1068,8 @@ li:hover .btn-reserve {
     margin-top: -40px;
 }
 
-/* 
-    modal-custom
+/* progile pic image css end
+    modal-custom start
 */
 
 .modal-custom {

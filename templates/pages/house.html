@@ -30,7 +30,7 @@
                             {% endif %}
                         {% endfor %}
                     </div>
-                    <div class="carousel-inner">
+                    <div class="carousel-inner house-photo-container">
                         {% for photo in photos_url %}
                             {% if forloop.first %}
                                 <div class="carousel-item active">
@@ -52,8 +52,15 @@
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
+                
                 <div class="clearfix">
-                    <h5 class="pull-left">{{ house.HOUSE_NAME }} hosted by {{ house.FIRST_NAME }} {{ house.LAST_NAME }}</h5>
+                    <div class="pull-left">
+                        <h5 class="pull-left">{{ house.HOUSE_NAME }} hosted by {{ house.FIRST_NAME }} {{ house.LAST_NAME }}</h5>
+                        <br>
+                        <small><i class="bi bi-star-fill"></i> {{ house.AVG_HOUSE_RATING }} * {{ house.TOTAL_HOUSE_REVIEWS }}
+                            <a href="#reviews"> Reviews</a>
+                        </small>
+                    </div>
                     <div class="pull-right">
                         <a href="#ownerInfo">
                             {% if house.PROFILE_PIC %}
@@ -145,6 +152,31 @@
                         </div>
                     </div>
                     <hr>
+                    <div class="p-2">
+                        <h5><i class="bi bi-star-fill"></i> {{ house.AVG_HOUSE_RATING }} * {{ house.TOTAL_HOUSE_REVIEWS }} Reviews</h5>
+                    </div>
+                    <div id="reviews" class="row">
+                        {% for review in reviews %}
+                            <div class="col-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="house-owner-profile-pic-container flex-shrink-0">
+                                        {% if review.PROFILE_PIC %}
+                                            <img src="{{ review.PROFILE_PIC }}">
+                                        {% else %}
+                                            <img src="{% static 'img/profile_pic_thumbnail.png' %}">
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1 ms-3"><b>{{ review.FIRST_NAME }}</b><br>
+                                        <small class="text-muted">{{ review.REVIEW_DATE | date:"M Y" }}</small>
+                                    </div> 
+                                </div>
+                                <p>
+                                    {{ review.HOUSE_REVIEW }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <hr>
                     <div id="ownerInfo">
                         <div class="d-flex align-items-center mb-2">
                             <div class="house-owner-profile-pic-container flex-shrink-0">
@@ -156,16 +188,16 @@
                             </div>
                             <div class="flex-grow-1 ms-3"><b> Hosted by {{ house.FIRST_NAME }} {{ house.LAST_NAME }}</b><br>
                                 Joined in {{ house.JOIN_DATE }}
-                            </div>                             
+                            </div>    
+                            <small>
+                                <i class="bi bi-star-fill"></i> {{ owner_rating.AVG_OWNER_RATING }} * {{ house.TOTAL_OWNER_RATING }} Reviews
+                            </small>                        
                         </div>
                         <div>
                             <p><b>Phone No:</b> {{ house.PHONE_NO }}</p>
                             <p><b>Email:   </b> {{ house.EMAIL }}</p>
                         </div>
                         <div>
-                            <p>Reviews star</p>
-                            <br>
-                            <div> Review Comments</div>
                         </div>
                     </div>
                 </div>

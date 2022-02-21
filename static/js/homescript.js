@@ -149,7 +149,7 @@ if(!window.location.href.includes('yourhouses')){
                 else
                     price = '$' + minPrice + '-' + maxPrice
 
-                priceRange.textContent = price
+                priceRange.textContent = price + '/night'
             })
 
             /** Iterate throgh all the images of a house */
