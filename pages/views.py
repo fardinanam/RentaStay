@@ -120,7 +120,8 @@ def updateReview(request, rent_id, owner_rating, house_rating, owner_review, hou
             SET OWNER_RATING = %s,
             OWNER_REVIEW = %s,
             HOUSE_RATING = %s,
-            HOUSE_REVIEW = %s
+            HOUSE_REVIEW = %s,
+            REVIEW_DATE = SYSDATE
             WHERE RENT_ID = %s;"""
     try:
         cursor.execute(query, [owner_rating, owner_review, house_rating, house_review, rent_id])
@@ -165,9 +166,37 @@ def house(request, house_id):
             WHERE HOUSE_ID = %s"""
     cursor.execute(query, [house_id])
     photosPath = definitions.dictfetchall(cursor)
+
+    query = """SELECT TRUNC(AVG(HOUSE_RATING), 2) AVG_HOUSE_RATING, 
+            COUNT(HOUSE_REVIEW) TOTAL_HOUSE_REVIEWS
+            FROM RENTS
+            WHERE HOUSE_ID = %s;"""
+    cursor.execute(query, [house_id])
+    reviews = definitions.dictfetchone(cursor)
+    result.update(reviews)
+
+    query = """SELECT FIRST_NAME, HOUSE_RATING, HOUSE_REVIEW, 
+            PROFILE_PIC, REVIEW_DATE
+            FROM RENTS JOIN USERS USING(USER_ID)
+            WHERE HOUSE_ID = %s AND HOUSE_REVIEW IS NOT NULL;"""
+    cursor.execute(query, [house_id])
+    reviews = definitions.dictfetchall(cursor)
+
+    query = """SELECT TRUNC(AVG(OWNER_RATING), 2) AVG_OWNER_RATING, COUNT(OWNER_RATING) TOTAL_OWNER_RATING
+            FROM RENTS
+            WHERE HOUSE_ID IN (
+            SELECT HOUSE_ID
+            FROM HOUSES
+            WHERE USER_ID = (
+            SELECT USER_ID
+            FROM HOUSES
+            WHERE HOUSE_ID = %s
+            ))"""
+    cursor.execute(query, [house_id])
+    ownerRating = definitions.dictfetchone(cursor)
     cursor.close()
 
-    return render(request, 'pages/house.html', {'house':result, 'photos_url': photosPath})
+    return render(request, 'pages/house.html', {'house':result, 'reviews': reviews, 'owner_rating':ownerRating, 'photos_url': photosPath})
 
 def reservation(request, house_id, room_no, check_in, check_out, guests):
     if request.method == 'GET':
