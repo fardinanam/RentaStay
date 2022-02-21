@@ -62,6 +62,35 @@ def IsRoomInputsValid(request,roomno,capacity,price):
         return False
     return True
 
+def IsSignUpInputsValid(request, firstname, lastname, phonenumber, email, username):
+    if username==NULL or username=="":
+        messages.error(request,'Please input your username!!')
+        return False
+    elif email==NULL or email=="":
+        messages.error(request,'Please input your email!!')
+        return False
+    elif firstname==NULL or firstname=="":
+        messages.error(request,'Please input your first name!!')
+        return False
+    elif lastname==NULL or lastname=="":
+        messages.error(request,'Please input your last name!!')
+        return False
+    elif phonenumber==NULL or phonenumber=="":
+        messages.error(request,'Please five your phone number!!')
+        return False
+
+def IsProfileInputsValid(request, firstname, lastname, phonenumber):
+    if firstname==NULL or firstname=="":
+        messages.error(request,'Please input your first name!!')
+        return False
+    elif lastname==NULL or lastname=="":
+        messages.error(request,'Please input your last name!!')
+        return False
+    elif phonenumber==NULL or phonenumber=="":
+        messages.error(request,'Please five your phone number!!')
+        return False
+    return True
+
 def signup(request):
     data = {
         'firstname': None,
@@ -77,15 +106,23 @@ def signup(request):
         return render(request, "accounts/signup.html", data)
 
     elif request.method == 'POST':
+        firstname = request.POST['firstname'],
+        lastname = request.POST['lastname'],
+        username = request.POST['username'],
+        email = request.POST['email'],
+        phone = request.POST['phonenumber'],
         data.update({
-            'firstname': request.POST['firstname'],
-            'lastname': request.POST['lastname'],
-            'username': request.POST['username'],
-            'email': request.POST['email'],
-            'phone': request.POST['phonenumber'],
+            'firstname': firstname,
+            'lastname': lastname,
+            'username': username,
+            'email': email,
+            'phone': phone,
             'bankacc': request.POST['bankaccount'],
             'creditcard': request.POST['creditcard'],
         })
+        
+        if IsSignUpInputsValid(request, firstname, lastname, phone, email, username) == False:
+            return render(request, "accounts/signup.html", data)
         
         password1 = request.POST['password']
         password2 = request.POST['confirmpassword']
@@ -158,13 +195,67 @@ def profile(request):
 
     if(request.session.has_key('username')):
         cursor = connection.cursor()
+# <<<<<<< Sawraz
+#         if request.method=="POST":
+#             firstname = request.POST['firstname']
+#             lastname = request.POST['lastname']
+#             phonenumber = request.POST['phonenumber']
+#             bankaccount = request.POST['bankaccount']
+#             creditcard = request.POST['creditcard']
+            
+#             query = """SELECT USER_ID 
+#                 FROM USERS WHERE USERNAME=%s"""
+#             cursor.execute(query,[request.session['username']])
+#             user_id = definitions.dictfetchone(cursor)
+#             if not bool(user_id):
+#                 messages.error(request, 'Please login to your account!!')
+#                 cursor.close()
+#                 return redirect('signin')
+#             user_id = user_id["USER_ID"]
+            
+#             if IsProfileInputsValid(request, firstname, lastname, phonenumber) == True:
+#                 query = """UPDATE USERS SET FIRST_NAME=%s, LAST_NAME=%s, PHONE_NO=%s WHERE USER_ID=%s"""
+#                 cursor.execute(query,[firstname, lastname, phonenumber,user_id])
+#                 if bankaccount==None or bankaccount==NULL or bankaccount=="":
+#                     bankaccount=None
+#                 else:
+#                     query = """UPDATE USERS SET BANK_ACC_NO=%s WHERE USER_ID=%s"""
+#                     cursor.execute(query,[bankaccount,user_id])
+#                 if creditcard==None or creditcard==NULL or creditcard=="":
+#                     creditcard=None
+#                 else:
+#                     query = """UPDATE USERS SET CREDIT_CARD_NO=%s WHERE USER_ID=%s"""
+#                     cursor.execute(query,[creditcard,user_id])
+            
+           
+                                
+#         query = """SELECT * 
+#                 FROM USERS 
+#                 WHERE USERNAME=%s"""
+# =======
         query = """SELECT *
                     FROM USERS
                     WHERE USERNAME=%s"""
+  
         cursor.execute(query, [request.session['username']])
         result = definitions.dictfetchone(cursor)
         cursor.close()
+# <<<<<<< Sawraz
+        
+#         data = {
+#             'username': result[1],
+#             'firstname': result[2],
+#             'lastname': result[3],
+#             'email': result[4],
+#             'phone': result[5],
+#             'bankacc': result[7],
+#             'creditcard': result[8],
+#             'profile_pic': result[10],
+#             'update':'disabled'
+#         }
 
+#         return render(request, 'accounts/profile.html', data)
+# =======
         data.update({
             'username': result['USERNAME'],
             'firstname': result['FIRST_NAME'],
@@ -206,6 +297,17 @@ def profile(request):
             cursor.execute(query, [data['firstname'], data['lastname'], 
                 data['phone'], data['bankacc'], data['creditcard'], request.session.get('username')])
             
+            if request.FILES.get('profilePic',False):
+                folder = MEDIA_ROOT + '/Users/' + str(request.session['username'])
+                upload1 = request.FILES['profilePic']
+                fss = FileSystemStorage(location=folder)
+                file = fss.save(upload1.name, upload1)
+                photoPath = '/media/Users/' + str(request.session['username']) + '/'+upload1.name
+                file_url = fss.url(file)
+
+                query = """UPDATE USERS SET PROFILE_PIC=%s WHERE USER_ID=%s"""
+                cursor.execute(query, [photoPath, str(user_id)])
+            
             query = """SELECT EMAIL 
                     FROM USERS
                     WHERE USERNAME = %s"""
@@ -219,7 +321,7 @@ def profile(request):
             return render(request, 'accounts/profile.html', data)
     else:
         messages.error(request, "Session Expired")
-        return render(request, 'accounts/signin.html')
+        return redirect('signin')
 
 def logout(request):
     request.session.flush()
