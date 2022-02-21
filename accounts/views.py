@@ -4,9 +4,6 @@ from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
-from django.urls import reverse
-from matplotlib.style import use
-from soupsieve import select
 from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 from rentastay.settings import MEDIA_ROOT
@@ -15,9 +12,22 @@ hfeatures = ['Kitchen', 'Free Parking', 'Backyard', 'WiFi', 'Dryer', 'Washer', '
             'Security Cameras', 'Fire extinguisher', 'First Aid Kit', 'Microwave', '24/7 Electricity']
 
 rfeatures = ['EV Charger', 'Extra Pillow and Blanket', 'Portable Fans', 'TV', 'Air Conditioner (AC)', 'Heater', 'Separate Bathroom', 'Common Bathroom',
-             'Lockbox','Almirah']
+            'Lockbox','Almirah']
 
 selected_features = []
+
+def is_username_unique(username):
+    cursor = connection.cursor()
+    query = """SELECT USERNAME 
+                FROM USERS WHERE USERNAME=%s"""
+    cursor.execute(query, [username])
+    result = cursor.fetchone()
+    cursor.close()
+
+    if result is not None:
+        return False
+
+    return True
 
 def IsHouseInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description):
     if countryname=="Country Name":
@@ -121,18 +131,9 @@ def signup(request):
             messages.error(request, "Passwords did not match")
             return render(request, "accounts/signup.html", data)
 
-        cursor = connection.cursor()
-        query = """SELECT USERNAME 
-                FROM USERS WHERE USERNAME=%s"""
-        cursor.execute(query, [data['username']])
-        result = cursor.fetchone()
-        cursor.close()
-
-        if result is not None:
+        if is_username_unique(data['username']):
             messages.error(request, 'Username already exists')
             data.update({'username' : None})
-            #return redirect('signup', data)
-            #print(data)
             return render(request, "accounts/signup.html", data)
         else:
             try:
@@ -182,38 +183,119 @@ def signin(request):
                 return redirect(request.GET['next'])
 
 def profile(request):
+    data = {
+        'username': '',
+        'firstname': '',
+        'lastname': '',
+        'email': '',
+        'phone': '',
+        'bankacc': '',
+        'creditcard': ''
+    }
+
     if(request.session.has_key('username')):
         cursor = connection.cursor()
-        if request.method=="POST":
-            firstname = request.POST['firstname']
-            lastname = request.POST['lastname']
-            phonenumber = request.POST['phonenumber']
-            bankaccount = request.POST['bankaccount']
-            creditcard = request.POST['creditcard']
+# <<<<<<< Sawraz
+#         if request.method=="POST":
+#             firstname = request.POST['firstname']
+#             lastname = request.POST['lastname']
+#             phonenumber = request.POST['phonenumber']
+#             bankaccount = request.POST['bankaccount']
+#             creditcard = request.POST['creditcard']
             
-            query = """SELECT USER_ID 
-                FROM USERS WHERE USERNAME=%s"""
-            cursor.execute(query,[request.session['username']])
-            user_id = definitions.dictfetchone(cursor)
-            if not bool(user_id):
-                messages.error(request, 'Please login to your account!!')
-                cursor.close()
-                return redirect('signin')
-            user_id = user_id["USER_ID"]
+#             query = """SELECT USER_ID 
+#                 FROM USERS WHERE USERNAME=%s"""
+#             cursor.execute(query,[request.session['username']])
+#             user_id = definitions.dictfetchone(cursor)
+#             if not bool(user_id):
+#                 messages.error(request, 'Please login to your account!!')
+#                 cursor.close()
+#                 return redirect('signin')
+#             user_id = user_id["USER_ID"]
             
-            if IsProfileInputsValid(request, firstname, lastname, phonenumber) == True:
-                query = """UPDATE USERS SET FIRST_NAME=%s, LAST_NAME=%s, PHONE_NO=%s WHERE USER_ID=%s"""
-                cursor.execute(query,[firstname, lastname, phonenumber,user_id])
-                if bankaccount==None or bankaccount==NULL or bankaccount=="":
-                    bankaccount=None
-                else:
-                    query = """UPDATE USERS SET BANK_ACC_NO=%s WHERE USER_ID=%s"""
-                    cursor.execute(query,[bankaccount,user_id])
-                if creditcard==None or creditcard==NULL or creditcard=="":
-                    creditcard=None
-                else:
-                    query = """UPDATE USERS SET CREDIT_CARD_NO=%s WHERE USER_ID=%s"""
-                    cursor.execute(query,[creditcard,user_id])
+#             if IsProfileInputsValid(request, firstname, lastname, phonenumber) == True:
+#                 query = """UPDATE USERS SET FIRST_NAME=%s, LAST_NAME=%s, PHONE_NO=%s WHERE USER_ID=%s"""
+#                 cursor.execute(query,[firstname, lastname, phonenumber,user_id])
+#                 if bankaccount==None or bankaccount==NULL or bankaccount=="":
+#                     bankaccount=None
+#                 else:
+#                     query = """UPDATE USERS SET BANK_ACC_NO=%s WHERE USER_ID=%s"""
+#                     cursor.execute(query,[bankaccount,user_id])
+#                 if creditcard==None or creditcard==NULL or creditcard=="":
+#                     creditcard=None
+#                 else:
+#                     query = """UPDATE USERS SET CREDIT_CARD_NO=%s WHERE USER_ID=%s"""
+#                     cursor.execute(query,[creditcard,user_id])
+            
+           
+                                
+#         query = """SELECT * 
+#                 FROM USERS 
+#                 WHERE USERNAME=%s"""
+# =======
+        query = """SELECT *
+                    FROM USERS
+                    WHERE USERNAME=%s"""
+  
+        cursor.execute(query, [request.session['username']])
+        result = definitions.dictfetchone(cursor)
+        cursor.close()
+# <<<<<<< Sawraz
+        
+#         data = {
+#             'username': result[1],
+#             'firstname': result[2],
+#             'lastname': result[3],
+#             'email': result[4],
+#             'phone': result[5],
+#             'bankacc': result[7],
+#             'creditcard': result[8],
+#             'profile_pic': result[10],
+#             'update':'disabled'
+#         }
+
+#         return render(request, 'accounts/profile.html', data)
+# =======
+        data.update({
+            'username': result['USERNAME'],
+            'firstname': result['FIRST_NAME'],
+            'lastname': result['LAST_NAME'],
+            'email': result['EMAIL'],
+            'phone': result['PHONE_NO'],
+            'bankacc': result['BANK_ACC_NO'],
+            'creditcard': result['CREDIT_CARD_NO']
+        })
+
+        if request.method == 'GET':
+            return render(request, 'accounts/profile.html', data)
+        elif request.method == 'POST':
+            data.update({
+                'firstname': request.POST.get('firstname'),
+                'lastname': request.POST.get('lastname'),
+                'phone': request.POST.get('phonenumber'),
+                'bankacc': request.POST.get('bankaccount'),
+                'creditcard': request.POST.get('creditcard')
+            })
+
+            if data['username'] != request.POST.get('username') and is_username_unique(data['username']) is False:
+                messages.error(
+                    request, 'Can not change to new username because the new username already exists')
+                return render(request, "accounts/profile.html", data)
+                
+            data.update({
+                'username': request.POST.get('username')
+            })
+
+            cursor = connection.cursor()
+            query = """UPDATE USERS
+                    SET FIRST_NAME = %s, 
+                    LAST_NAME = %s,
+                    PHONE_NO = %s,
+                    BANK_ACC_NO = %s,
+                    CREDIT_CARD_NO = %s
+                    WHERE USERNAME = %s"""
+            cursor.execute(query, [data['firstname'], data['lastname'], 
+                data['phone'], data['bankacc'], data['creditcard'], request.session.get('username')])
             
             if request.FILES.get('profilePic',False):
                 folder = MEDIA_ROOT + '/Users/' + str(request.session['username'])
@@ -225,27 +307,18 @@ def profile(request):
 
                 query = """UPDATE USERS SET PROFILE_PIC=%s WHERE USER_ID=%s"""
                 cursor.execute(query, [photoPath, str(user_id)])
-                                
-        query = """SELECT * 
-                FROM USERS 
-                WHERE USERNAME=%s"""
-        cursor.execute(query, [request.session['username']])
-        result = cursor.fetchone()
-        cursor.close()
-        
-        data = {
-            'username': result[1],
-            'firstname': result[2],
-            'lastname': result[3],
-            'email': result[4],
-            'phone': result[5],
-            'bankacc': result[7],
-            'creditcard': result[8],
-            'profile_pic': result[10],
-            'update':'disabled'
-        }
-
-        return render(request, 'accounts/profile.html', data)
+            
+            query = """SELECT EMAIL 
+                    FROM USERS
+                    WHERE USERNAME = %s"""
+            cursor.execute(query, [data['username']])
+            result = cursor.fetchone()
+            data.update({
+                'email': result[0]
+            })
+            cursor.close()
+            
+            return render(request, 'accounts/profile.html', data)
     else:
         messages.error(request, "Session Expired")
         return redirect('signin')
@@ -280,6 +353,17 @@ def addhome(request):
     }
     
     if request.method=='GET':
+        cursor = connection.cursor()
+        query = """SELECT BANK_ACC_NO
+                FROM USERS WHERE USERNAME = %s"""
+        cursor.execute(query, [request.session.get('username')])
+        result = cursor.fetchone()
+        cursor.close()
+
+        if result[0] is None:
+            messages.error(request, "Please update your bank account to become a host")
+            return redirect('/accounts/profile/')
+
         return render(request, 'accounts/addhome.html', data)
     
     if request.method=='POST':

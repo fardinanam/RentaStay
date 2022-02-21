@@ -96,15 +96,22 @@ def getJsonHousePriceRange(request, house_id):
 
     return JsonResponse({'minPrice':minPrice, 'maxPrice':maxPrice})
 
-# def getJsonAvailableRoomsData(request, house_id, checkIn, checkOut, guests):
-#     cursor = connection.cursor()
-#     query = """SELECT *
-#             FROM ROOMS
-#             WHERE HOUSE_ID = %s"""
-#     cursor.execute(query, [house_id])
-#     rooms = definitions.dictfetchall(cursor)
-#     rooms = sorted(rooms, key=lambda i: i['ROOM_NO'])
+def getJsonAvailableRoomsData(request, house_id, check_in, check_out, guests):
+    cursor = connection.cursor()
+    query = """SELECT * FROM ROOMS R
+            WHERE HOUSE_ID = %s
+            AND ROOM_NO NOT IN (
+                SELECT ROOM_NO FROM RENTS
+                WHERE HOUSE_ID = R.HOUSE_ID
+                AND ((TO_DATE(%s, 'DD-MON-YYYY') BETWEEN CHECKIN AND CHECKOUT)
+                OR (TO_DATE(%s, 'DD-MON-YYYY') BETWEEN CHECKIN AND CHECKOUT)
+                OR (CHECKIN BETWEEN TO_DATE(%s, 'DD-MON-YYYY') AND TO_DATE(%s, 'DD-MON-YYYY'))))
+            AND MAX_CAPACITY >= %s"""
+    cursor.execute(query, [house_id, check_in, check_out, check_in, check_out, guests])
+    rooms = definitions.dictfetchall(cursor)
+    rooms = sorted(rooms, key=lambda i: i['ROOM_NO'])
 
+    return JsonResponse({'rooms': rooms})
 
 def house(request, house_id):
     # print(f"house id from GET is {houseId}")
@@ -127,12 +134,12 @@ def house(request, house_id):
         'MAX_PRICE': maxPrice
     })
 
-    # query = """SELECT * 
-    #         FROM ROOMS
-    #         WHERE HOUSE_ID = %s"""
-    # cursor.execute(query, [house_id])
-    # rooms = definitions.dictfetchall(cursor)
-    # rooms = sorted(rooms, key=lambda i: i['ROOM_NO'])
+    query = """SELECT * 
+            FROM ROOMS
+            WHERE HOUSE_ID = %s"""
+    cursor.execute(query, [house_id])
+    rooms = definitions.dictfetchall(cursor)
+    rooms = sorted(rooms, key=lambda i: i['ROOM_NO'])
 
     query = """SELECT PATH
             FROM HOUSE_PHOTOS_PATH
@@ -141,7 +148,7 @@ def house(request, house_id):
     photosPath = definitions.dictfetchall(cursor)
     cursor.close()
 
-    return render(request, 'pages/house.html', {'house':result, 'photos_url': photosPath})
+    return render(request, 'pages/house.html', {'house':result, 'rooms': rooms, 'photos_url': photosPath})
 
 def reservation(request, house_id, room_no, check_in, check_out, guests):
     if request.method == 'GET':
@@ -160,7 +167,16 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
         cursor = connection.cursor()
 
         if request.session.get('username') is not None:
-            
+            query = """SELECT USERNAME FROM USERS
+                    JOIN HOUSES USING(USER_ID)
+                    WHERE HOUSE_ID = %s;"""
+            cursor.execute(query, [house_id])
+            houseOwner = cursor.fetchone()[0]
+            if houseOwner == request.session['username']:
+                # return render(request, 'pages/house.html', {'house_id': house_id})
+                messages.error(request, 'You can\'t rent your own house')
+                return redirect('/house/' + str(house_id))
+
             query = """SELECT *
                     FROM USERS 
                     WHERE USERNAME = %s"""
@@ -217,22 +233,24 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
         roomno = request.POST['roomno']
         checkInDate = request.POST['checkin']
         checkOutDate = request.POST['checkout']
-        transactionTime = datetime.now().strftime("%d%m%Y%H%M%S")
-        # transaction id format = userid-houseid-roomno-ddmmyyyyhhmmss
-        transactionId = str(userId) + '-' + str(houseId) + '-' + str(roomno) + '-' + str(transactionTime)
 
         cursor = connection.cursor()
         query = """SELECT USER_ID FROM USERS WHERE USERNAME = %s"""
         cursor.execute(query, [username])
         userId = cursor.fetchone()[0]
-        print(userId, houseId, roomno, transactionId, checkInDate, checkOutDate)
+
+        transactionTime = datetime.now().strftime("%d%m%Y%H%M%S")
+        # transaction id format = userid-houseid-roomno-ddmmyyyyhhmmss
+        transactionId = str(userId) + '-' + str(houseId) + '-' + str(roomno) + '-' + str(transactionTime)
+
+        print(checkInDate, checkOutDate, transactionId)
 
         query = """INSERT INTO PAYMENTS VALUES(%s, SYSDATE, %s, %s)"""
         try:
             cursor.execute(query, [transactionId, amount, paymentMethod])
 
             query = """INSERT INTO RENTS(USER_ID, HOUSE_ID, ROOM_NO, TRANSACTION_ID, CHECKIN, CHECKOUT)
-                    VALUES(%s, %s, %s, %s, %s, %s)"""
+                    VALUES(%s, %s, %s, %s, TO_DATE(%s, \'DD-Mon-YYYY\'), TO_DATE(%s, \'DD-Mon-YYYY\'))"""
             cursor.execute(query, [userId, houseId, roomno, transactionId, checkInDate, checkOutDate])
             messages.success(request, "Your reservation was successful")
         except IntegrityError:
