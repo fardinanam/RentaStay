@@ -239,6 +239,7 @@ def profile(request):
   
         cursor.execute(query, [request.session['username']])
         result = definitions.dictfetchone(cursor)
+        user_id = result['USER_ID']
         cursor.close()
 # <<<<<<< Sawraz
         
@@ -263,7 +264,8 @@ def profile(request):
             'email': result['EMAIL'],
             'phone': result['PHONE_NO'],
             'bankacc': result['BANK_ACC_NO'],
-            'creditcard': result['CREDIT_CARD_NO']
+            'creditcard': result['CREDIT_CARD_NO'],
+            'profile_pic': result['PROFILE_PIC']
         })
 
         if request.method == 'GET':
@@ -307,6 +309,10 @@ def profile(request):
 
                 query = """UPDATE USERS SET PROFILE_PIC=%s WHERE USER_ID=%s"""
                 cursor.execute(query, [photoPath, str(user_id)])
+
+                data.update({
+                    'profile_pic': photoPath
+                })
             
             query = """SELECT EMAIL 
                     FROM USERS
@@ -606,12 +612,6 @@ def fetch_no_of_house_pics(request, house_id):
     cursor.execute(query,[str(house_id)])
     photos_paths = definitions.dictfetchall(cursor)
 
-    # if not bool(photos_paths):
-    #     messages.error(request, 'Couldn\'t find any house photo!!')
-    #     cursor.close()
-    #     return redirect('home')
-
-    # photos_path = [photo["PATH"] for photo in photos_paths]
     result = [len(photos_paths)]
     cursor.close()
     return JsonResponse(result, safe=False)
@@ -632,12 +632,6 @@ def fetch_no_of_room_pics(request, house_id, roomnumber):
     cursor.execute(query,[str(house_id),str(roomnumber)])
     photos_paths = definitions.dictfetchall(cursor)
     
-    # if not bool(photos_paths):
-    #     messages.error(request, 'Couldn\'t find any house photo!!')
-    #     cursor.close()
-    #     return redirect('home')
-
-    # photos_path = [photo["PATH"] for photo in photos_paths]
     result = [len(photos_paths)]
     cursor.close()
     return JsonResponse(result, safe=False)
