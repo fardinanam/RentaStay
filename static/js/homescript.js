@@ -39,8 +39,8 @@ if(window.location.href.includes('yourhouses')){
     
                 carouselSlide.id = "carousel" + house.HOUSE_ID
                 
-                title.textContent = house.HOUSE_NAME.toUpperCase()
-                address.textContent = house.CITY_NAME.toUpperCase() + ', ' + house.COUNTRY_NAME.toUpperCase()
+                title.textContent = house.HOUSE_NAME
+                address.textContent = house.CITY_NAME + ', ' + house.COUNTRY_NAME
     
                 let minPrice = 0, maxPrice = 0
     
@@ -100,8 +100,8 @@ if(window.location.href.includes('yourhouses')){
     
                 houseCardsContainer.append(card)
     
-                return {name: house.HOUSE_NAME.toUpperCase(), 
-                        address: house.CITY_NAME.toUpperCase() + ', ' + house.COUNTRY_NAME.toUpperCase(),
+                return {name: house.HOUSE_NAME, 
+                        address: house.CITY_NAME + ', ' + house.COUNTRY_NAME,
                         element: card, minPrice: minPrice, maxPrice: maxPrice}
             })
         }
@@ -132,8 +132,8 @@ if(!window.location.href.includes('yourhouses')){
 
             carouselSlide.id = "carousel" + house.HOUSE_ID
             
-            title.textContent = house.HOUSE_NAME.toUpperCase()
-            address.textContent = house.CITY_NAME.toUpperCase() + ', ' + house.COUNTRY_NAME.toUpperCase()
+            title.textContent = house.HOUSE_NAME
+            address.textContent = house.CITY_NAME + ', ' + house.COUNTRY_NAME
 
             let minPrice = 0, maxPrice = 0
 
@@ -193,8 +193,8 @@ if(!window.location.href.includes('yourhouses')){
 
             houseCardsContainer.append(card)
 
-            return {name: house.HOUSE_NAME.toUpperCase(), 
-                    address: house.CITY_NAME.toUpperCase() + ', ' + house.COUNTRY_NAME.toUpperCase(),
+            return {name: house.HOUSE_NAME, 
+                    address: house.CITY_NAME + ', ' + house.COUNTRY_NAME,
                     element: card, minPrice: minPrice, maxPrice: maxPrice}
         })
 

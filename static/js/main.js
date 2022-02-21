@@ -1,3 +1,7 @@
+String.prototype.isNumber = function() {
+    return /^\d+$/.test(this)
+}
+
 $(function () {
     'use strict';
     // Showing page loader
@@ -298,3 +302,63 @@ catch{
     //console.log("On add home page!!")
 }
 
+const openModalButtons = document.querySelectorAll('[data-modal-target]')
+const closeModalButtons = document.querySelectorAll('[data-close-button]')
+const overlay = document.getElementById('overlay')
+
+if(openModalButtons != null) {
+    openModalButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const modal = document.querySelector(button.dataset.modalTarget)
+            openModal(modal)
+        })
+    })
+
+    overlay.addEventListener('click', () => {
+        const modals = document.querySelectorAll('.modal-custom.active')
+        modals.forEach(modal => {
+            closeModal(modal)
+        })
+    })
+
+    closeModalButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const modal = button.closest('.modal-custom')
+            const cardBody = modal.closest('.card-body')
+            const ownerStar = modal.querySelector("[star-select-owner]")
+            const houseStar = modal.querySelector("[star-select-house]")
+            const ownerReview = modal.querySelector("[owner-review-input]")
+            const houseReview = modal.querySelector("[house-review-input]")
+            const rentId = modal.getAttribute("data-rent-id") 
+            const cardOwnerRating = cardBody.querySelector("[card-owner-rating]")
+            const cardHouseRating = cardBody.querySelector("[card-house-rating]")
+            const cardOwnerReview = cardBody.querySelector("[card-owner-review]")
+            const cardHouseReview = cardBody.querySelector("[card-house-review]")
+            
+            let url = "/updateReview/" + rentId + '/' + ownerStar.value + '/' + houseStar.value + '/' + ownerReview.value + '/' + houseReview.value
+            fetch(url)
+            .then(response => response.json)
+            .then(data => {
+                console.log(data.message)
+                
+                cardOwnerRating.innerHTML = 'Rated' + ' ' + ownerStar.value + 'star'
+                cardOwnerReview.innerHTML = ownerReview.value
+                cardHouseRating.innerHTML = 'Rated' + ' ' + houseStar.value + 'star'
+                cardHouseReview.innerHTML = houseReview.value
+            })
+            closeModal(modal)
+        })
+    })
+
+    function openModal(modal) {
+        if (modal == null) return
+        modal.classList.add('active')
+        overlay.classList.add('active')
+    }
+
+    function closeModal(modal) {
+        if (modal == null) return
+        modal.classList.remove('active')
+        overlay.classList.remove('active')
+    }
+}

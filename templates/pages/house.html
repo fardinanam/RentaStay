@@ -2,6 +2,10 @@
 
 {% load static %}
 
+{% block title %}
+    House | {{ house.HOUSE_NAME }}
+{% endblock title %}
+
 {% block content %}
     {% include 'includes/messages.html' %}
     <div class="container-lg">
@@ -51,15 +55,17 @@
                 <div class="clearfix">
                     <h5 class="pull-left">{{ house.HOUSE_NAME }} hosted by {{ house.FIRST_NAME }} {{ house.LAST_NAME }}</h5>
                     <div class="pull-right">
-                        {% if house.PROFILE_PIC %}
-                            <div class="house-owner-profile-pic-container">
-                                <img src="{{ house.PROFILE_PIC }}">
-                            </div>
-                        {% else %}
-                            <div class="house-owner-profile-pic-container">
-                                <img src="{% static 'img/profile_pic_thumbnail.png' %}">
-                            </div>
-                        {% endif %}
+                        <a href="#ownerInfo">
+                            {% if house.PROFILE_PIC %}
+                                <div class="house-owner-profile-pic-container">
+                                    <img src="{{ house.PROFILE_PIC }}">
+                                </div>
+                            {% else %}
+                                <div class="house-owner-profile-pic-container">
+                                    <img src="{% static 'img/profile_pic_thumbnail.png' %}">
+                                </div>
+                            {% endif %}
+                        </a>
                     </div>
                 </div>
                 <hr>
@@ -139,6 +145,29 @@
                         </div>
                     </div>
                     <hr>
+                    <div id="ownerInfo">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="house-owner-profile-pic-container flex-shrink-0">
+                                {% if house.PROFILE_PIC %}
+                                    <img src="{{ house.PROFILE_PIC }}">
+                                {% else %}
+                                    <img src="{% static 'img/profile_pic_thumbnail.png' %}">                                
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1 ms-3"><b> Hosted by {{ house.FIRST_NAME }} {{ house.LAST_NAME }}</b><br>
+                                Joined in {{ house.JOIN_DATE }}
+                            </div>                             
+                        </div>
+                        <div>
+                            <p><b>Phone No:</b> {{ house.PHONE_NO }}</p>
+                            <p><b>Email:   </b> {{ house.EMAIL }}</p>
+                        </div>
+                        <div>
+                            <p>Reviews star</p>
+                            <br>
+                            <div> Review Comments</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">

@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 from rentastay.settings import MEDIA_ROOT
+from datetime import datetime
 
 hfeatures = ['Kitchen', 'Free Parking', 'Backyard', 'WiFi', 'Dryer', 'Washer', 'Pets Allowed', 'Balcony', 'Refrigerator', 
             'Security Cameras', 'Fire extinguisher', 'First Aid Kit', 'Microwave', '24/7 Electricity']
@@ -136,14 +137,17 @@ def signup(request):
             data.update({'username' : None})
             return render(request, "accounts/signup.html", data)
         else:
+            dateFormat = '%d-%b-%Y'
+            joiningDate= datetime.strptime(datetime.now(), dateFormat)
+            data.update({'joindate': joiningDate})
             try:
                 hashed_password = hashlib.sha256(password1.encode()).hexdigest()
                 cursor = connection.cursor()
-                query = """INSERT INTO USERS(USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NO, PASSWORD, BANK_ACC_NO, CREDIT_CARD_NO) 
-                        VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"""
+                query = """INSERT INTO USERS(USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NO, PASSWORD, BANK_ACC_NO, CREDIT_CARD_NO, JOIN_DATE) 
+                        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, TO_DATE(%s, \'DD-Mon-YYYY\'))"""
                 cursor.execute( query,
                                 [data['username'], data['firstname'], data['lastname'], data['email'], 
-                                data['phone'], hashed_password, data['bankacc'], data['creditcard']])
+                                data['phone'], hashed_password, data['bankacc'], data['creditcard'], data['joindate']])
                 request.session['username'] = data['username']
                 cursor.close()
             except IntegrityError:
@@ -165,7 +169,7 @@ def signin(request):
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
         cursor = connection.cursor()
-        query = """SELECT USERNAME, PROFILE_PIC 
+        query = """SELECT USERNAME, PROFILE_PIC, IS_HOST
                 FROM USERS 
                 WHERE USERNAME=%s AND PASSWORD=%s"""
         cursor.execute(query, [username, hashed_password])
@@ -173,10 +177,12 @@ def signin(request):
         cursor.close()
         if result is None:
             messages.error(request,"Invalid login credentials!")
-            return render(request, 'acocunts/signin.html')
+            return render(request, 'accounts/signin.html')
         else:
             request.session['username'] = username
             request.session['profile_pic'] = result[1]
+            request.session['is_host'] = result[2]
+            
             if request.GET.get('next') is None:
                 return redirect('home')
             else:
@@ -255,6 +261,9 @@ def profile(request):
                 file_url = fss.url(file)
 
                 query = """UPDATE USERS SET PROFILE_PIC=%s WHERE USER_ID=%s"""
+                request.session.update({
+                    'profile_pic': photoPath
+                })
                 cursor.execute(query, [photoPath, str(user_id)])
 
                 data.update({

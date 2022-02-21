@@ -114,6 +114,22 @@ def getJsonAvailableRoomsData(request, house_id, check_in, check_out, guests):
 
     return JsonResponse({'rooms': rooms})
 
+def updateReview(request, rent_id, owner_rating, house_rating, owner_review, house_review):
+    cursor = connection.cursor()
+    query = """UPDATE RENTS
+            SET OWNER_RATING = %s,
+            OWNER_REVIEW = %s,
+            HOUSE_RATING = %s,
+            HOUSE_REVIEW = %s
+            WHERE RENT_ID = %s;"""
+    try:
+        cursor.execute(query, [owner_rating, owner_review, house_rating, house_review, rent_id])
+        cursor.close()
+        return JsonResponse({'message': 'True'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'message': 'False'})
+
 def house(request, house_id):
     # print(f"house id from GET is {houseId}")
     cursor = connection.cursor()
@@ -262,3 +278,85 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
         
         # TODO: redirect to all the rents page of the user
         return redirect('home')
+
+def myRents(request):
+    if request.session.has_key('username') is False:
+        messages.error(request, "You must be logged in to see your rents")
+        return redirect('/accounts/signin/')
+    
+    username = request.session.get('username')
+    cursor = connection.cursor()
+
+    query = """SELECT USER_ID 
+            FROM USERS
+            WHERE USERNAME = %s"""
+    cursor.execute(query, [username])
+    userId = cursor.fetchone()[0]
+
+    query = """SELECT RENT_ID, HOUSE_ID, HOUSE_NAME, ROOM_NO, CHECKIN, CHECKOUT, 
+            HOUSE_NO, STREET, POST_CODE, CITY_NAME, STATE_NAME, COUNTRY_NAME,
+            USERNAME, HOUSE_RATING, HOUSE_REVIEW, OWNER_RATING, OWNER_REVIEW
+            FROM RENTS R
+            JOIN HOUSES H USING(HOUSE_ID)
+            JOIN ADDRESSES USING(ADDRESS_ID)
+            JOIN CITIES USING (CITY_ID)
+            JOIN STATES USING (STATE_ID)
+            JOIN COUNTRIES USING (COUNTRY_NAME)
+            JOIN USERS O ON (H.USER_ID = O.USER_ID)
+            WHERE R.USER_ID = %s 
+            AND CHECKOUT < SYSDATE;"""
+    cursor.execute(query, [userId])
+    olderRents = definitions.dictfetchall(cursor)
+
+    query = """SELECT RENT_ID, HOUSE_ID, HOUSE_NAME, ROOM_NO, CHECKIN, CHECKOUT, 
+            HOUSE_NO, STREET, POST_CODE, CITY_NAME, STATE_NAME, COUNTRY_NAME,
+            USERNAME, HOUSE_RATING, HOUSE_REVIEW, OWNER_RATING, OWNER_REVIEW
+            FROM RENTS R
+            JOIN HOUSES H USING(HOUSE_ID)
+            JOIN ADDRESSES USING(ADDRESS_ID)
+            JOIN CITIES USING (CITY_ID)
+            JOIN STATES USING (STATE_ID)
+            JOIN COUNTRIES USING (COUNTRY_NAME)
+            JOIN USERS O ON (H.USER_ID = O.USER_ID)
+            WHERE R.USER_ID = %s 
+            AND SYSDATE BETWEEN CHECKIN AND CHECKOUT;"""
+    cursor.execute(query, [userId])
+    ongoingRents = definitions.dictfetchall(cursor)
+
+    query = """SELECT RENT_ID, HOUSE_ID, HOUSE_NAME, ROOM_NO, CHECKIN, CHECKOUT, 
+            HOUSE_NO, STREET, POST_CODE, CITY_NAME, STATE_NAME, COUNTRY_NAME,
+            USERNAME, HOUSE_RATING, HOUSE_REVIEW, OWNER_RATING, OWNER_REVIEW
+            FROM RENTS R
+            JOIN HOUSES H USING(HOUSE_ID)
+            JOIN ADDRESSES USING(ADDRESS_ID)
+            JOIN CITIES USING (CITY_ID)
+            JOIN STATES USING (STATE_ID)
+            JOIN COUNTRIES USING (COUNTRY_NAME)
+            JOIN USERS O ON (H.USER_ID = O.USER_ID)
+            WHERE R.USER_ID = %s 
+            AND CHECKIN > SYSDATE;"""
+    cursor.execute(query, [userId])
+    upcomingRents = definitions.dictfetchall(cursor)
+
+    cursor.close()
+
+    if len(ongoingRents) == 0:
+        ongoingRents = None
+    if len(olderRents) == 0:
+        olderRents = None
+    if len(upcomingRents) == 0:
+        upcomingRents = None
+
+    data = {
+        'older_rents': olderRents,
+        'ongoing_rents': ongoingRents,
+        'upcoming_rents': upcomingRents
+    }
+
+    return render(request, 'pages/myrents.html', data)
+
+def myGuests(request):
+    if request.session.has_key('username') is False:
+        messages.error(request, "You must be logged in to see your rents")
+        return redirect('/accounts/signin/')
+    return render(request, 'pages/myguests.html')
