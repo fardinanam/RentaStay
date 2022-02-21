@@ -7,10 +7,10 @@
     <div class="container-lg">
         <div class="container-fluid p-2">
             <div>
-                <h3>{{ house.HOUSE_NAME | upper }} HOSTED BY {{ house.FIRST_NAME | upper }} {{ house.LAST_NAME | upper }}</h3>
+                <h3>{{ house.HOUSE_NAME }} Hosted by {{ house.FIRST_NAME }} {{ house.LAST_NAME }}</h3>
                 <p>
                     <i class="fa fa-map-marker"></i> 
-                    {{ house.HOUSE_NO }}, {{ house.STREET | upper }}, {{ house.CITY_NAME | upper }}, {{ house.STATE_NAME | upper }}, {{ house.COUNTRY_NAME | upper }}
+                    {{ house.HOUSE_NO }}, {{ house.STREET }}, {{ house.CITY_NAME }}, {{ house.STATE_NAME }}, {{ house.COUNTRY_NAME }}
                 </p>
             </div>
         </div>
@@ -49,11 +49,17 @@
                     </button>
                 </div>
                 <div class="clearfix">
-                    <h5 class="pull-left">{{ house.HOUSE_NAME | upper }} HOSTED BY {{ house.FIRST_NAME | upper }} {{ house.LAST_NAME | upper }}</h5>
+                    <h5 class="pull-left">{{ house.HOUSE_NAME }} hosted by {{ house.FIRST_NAME }} {{ house.LAST_NAME }}</h5>
                     <div class="pull-right">
-                        <div class="house-owner-profile-pic-container">
-                            <img src="{% static 'img/profile_pic_thumbnail.png' %}">
-                        </div>
+                        {% if house.PROFILE_PIC %}
+                            <div class="house-owner-profile-pic-container">
+                                <img src="{{ house.PROFILE_PIC }}">
+                            </div>
+                        {% else %}
+                            <div class="house-owner-profile-pic-container">
+                                <img src="{% static 'img/profile_pic_thumbnail.png' %}">
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
                 <hr>
@@ -62,7 +68,78 @@
                     <p>{{ house.DESCRIPTION }}
                 </div>
                 <hr>
-                
+                <div>
+                    <h4>What this place offers</h4>
+                    <div class="row">
+                        <div class="col-6 mb-1">
+                            <img src='{% static 'img/icons/kitchen_black_24dp.svg' %}'/>
+                            {% if house.HOUSE_FEATURES.0 %}
+                                <span >Kitchen</span>
+                            {% else %}
+                                <span style="text-decoration: line-through;">Kitchen</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 mb-1">
+                            <img src='{% static 'img/icons/garage_black_24dp.svg' %}'/>
+                            {% if house.HOUSE_FEATURES.1 %}
+                                <span >Free parking</span>
+                            {% else %}
+                                <span style="text-decoration: line-through;">Free parking</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-6 mb-1">
+                            <img src='{% static 'img/icons/wifi_black_24dp.svg' %}'/>
+                            {% if house.HOUSE_FEATURES.3 %}
+                                <span >Wifi</span>
+                            {% else %}
+                                <span style="text-decoration: line-through;">Wifi</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-6">
+                            <img src='{% static 'img/icons/local_laundry_service_black_24dp.svg' %}'/>
+                            {% if house.HOUSE_FEATURES.4 %}
+                                <span >Laundry</span>
+                            {% else %}
+                                <span style="text-decoration: line-through;">Laundry</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 mb-1">
+                            <img src='{% static 'img/icons/pets_black_24dp.svg' %}'/>                            
+                            {% if house.HOUSE_FEATURES.6 %}
+                                <span >Pets Allowed</span>
+                            {% else %}
+                                <span style="text-decoration: line-through;">Pets Allowed</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 mb-1">
+                            <img src='{% static 'img/icons/refrigerator_black_24dp.svg' %}'/>                        
+                            {% if house.HOUSE_FEATURES.8 %}
+                                <span >Refrigerator</span>
+                            {% else %}
+                                <span style="text-decoration: line-through;">Refrigerator</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 mb-1">
+                            <img src='{% static 'img/icons/microwave_black_24dp.svg' %}'/>
+                            {% if house.HOUSE_FEATURES.12 %}
+                                <span >Microwave Oven</span>
+                            {% else %}
+                                <span style="text-decoration: line-through;">Microwave Oven</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 mb-1">
+                            <img src='{% static 'img/icons/tungsten_black_24dp.svg' %}'/>
+                            {% if house.HOUSE_FEATURES.13 %}
+                                <span >24/7 Electricity</span>
+                            {% else %}
+                                <span style="text-decoration: line-through;">24/7 Electricity</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+                </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div id="rooms-card" class="card room-card">

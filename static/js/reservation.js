@@ -47,7 +47,7 @@ roomSearchButton.onclick = function () {
 
                     roomMiniCard.setAttribute("data-room-no", roomNo)
                     roomNoText.textContent = 'Room No: ' + roomNo
-                    guestsText.textContent = 'Max ' + room.MAX_CAPACITY + ' guests allowed'
+                    guestsText.textContent = room.MAX_CAPACITY + ' guests allowed'
                     roomPriceText.textContent = '$' + room.PRICE
                     roomReservationButton.setAttribute("data-room-no", roomNo)
 
