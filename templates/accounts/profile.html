@@ -7,15 +7,6 @@
 {% block content %}
 {% load static %}
 <div class="container">
-    {% comment %} <div class="">
-        <p>Username: {{ username }}</p><br>
-        <p>First Name: {{ firstname }}</p><br>
-        <p>Last Name: {{ lastname }}</p><br>
-        <p>Email: {{ email }}</p><br>
-        <p>Phone No.: {{ phone }}</p><br>
-        <p>Bank Account No.: {{ bankacc }}</p><br>
-        <p>Credit Card No.: {{ creditcard }}</p><br>
-    </div> {% endcomment %}
     <div class="row justify-content-center">
         <h1 class="text-center">Profile</h1>
         <form style="max-width:70%" method="POST" action="{% url 'profile' %}" enctype="multipart/form-data">
@@ -85,15 +76,6 @@
                 <button type="submit" value="submit" class="btn btn-primary">Update</button>
             </div>
         </form>
-<!-- 
-                    <input type="text" id="creditcard" name="creditcard" value="{{ creditcard }}" class="form-control" aria-describedby="" >
-                </div>
-            </div>
-            <button type="submit" class="btn btn-success">Update</button>
-        </form>
-        
-        <a class="text-center" href="{% url 'addhome' %}"><button class="btn btn-primary"> Add Home </button></a>
- -->
     </div>
 </div>
 {% endblock content %}
