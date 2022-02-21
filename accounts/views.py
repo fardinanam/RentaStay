@@ -155,8 +155,7 @@ def signup(request):
                 return redirect('home')
             else:
                 return redirect(request.GET['next'])
-        
-        
+
 def signin(request):
     if request.method == 'GET':
         return render(request, "accounts/signin.html")
@@ -166,7 +165,7 @@ def signin(request):
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
         cursor = connection.cursor()
-        query = """SELECT USERNAME 
+        query = """SELECT USERNAME, PROFILE_PIC 
                 FROM USERS 
                 WHERE USERNAME=%s AND PASSWORD=%s"""
         cursor.execute(query, [username, hashed_password])
@@ -177,6 +176,7 @@ def signin(request):
             return render(request, 'acocunts/signin.html')
         else:
             request.session['username'] = username
+            request.session['profile_pic'] = result[1]
             if request.GET.get('next') is None:
                 return redirect('home')
             else:
@@ -195,68 +195,15 @@ def profile(request):
 
     if(request.session.has_key('username')):
         cursor = connection.cursor()
-# <<<<<<< Sawraz
-#         if request.method=="POST":
-#             firstname = request.POST['firstname']
-#             lastname = request.POST['lastname']
-#             phonenumber = request.POST['phonenumber']
-#             bankaccount = request.POST['bankaccount']
-#             creditcard = request.POST['creditcard']
-            
-#             query = """SELECT USER_ID 
-#                 FROM USERS WHERE USERNAME=%s"""
-#             cursor.execute(query,[request.session['username']])
-#             user_id = definitions.dictfetchone(cursor)
-#             if not bool(user_id):
-#                 messages.error(request, 'Please login to your account!!')
-#                 cursor.close()
-#                 return redirect('signin')
-#             user_id = user_id["USER_ID"]
-            
-#             if IsProfileInputsValid(request, firstname, lastname, phonenumber) == True:
-#                 query = """UPDATE USERS SET FIRST_NAME=%s, LAST_NAME=%s, PHONE_NO=%s WHERE USER_ID=%s"""
-#                 cursor.execute(query,[firstname, lastname, phonenumber,user_id])
-#                 if bankaccount==None or bankaccount==NULL or bankaccount=="":
-#                     bankaccount=None
-#                 else:
-#                     query = """UPDATE USERS SET BANK_ACC_NO=%s WHERE USER_ID=%s"""
-#                     cursor.execute(query,[bankaccount,user_id])
-#                 if creditcard==None or creditcard==NULL or creditcard=="":
-#                     creditcard=None
-#                 else:
-#                     query = """UPDATE USERS SET CREDIT_CARD_NO=%s WHERE USER_ID=%s"""
-#                     cursor.execute(query,[creditcard,user_id])
-            
-           
-                                
-#         query = """SELECT * 
-#                 FROM USERS 
-#                 WHERE USERNAME=%s"""
-# =======
         query = """SELECT *
                     FROM USERS
                     WHERE USERNAME=%s"""
-  
+
         cursor.execute(query, [request.session['username']])
         result = definitions.dictfetchone(cursor)
         user_id = result['USER_ID']
         cursor.close()
-# <<<<<<< Sawraz
-        
-#         data = {
-#             'username': result[1],
-#             'firstname': result[2],
-#             'lastname': result[3],
-#             'email': result[4],
-#             'phone': result[5],
-#             'bankacc': result[7],
-#             'creditcard': result[8],
-#             'profile_pic': result[10],
-#             'update':'disabled'
-#         }
 
-#         return render(request, 'accounts/profile.html', data)
-# =======
         data.update({
             'username': result['USERNAME'],
             'firstname': result['FIRST_NAME'],
@@ -417,21 +364,12 @@ def addhome(request):
             query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
         address_id = definitions.dictfetchone(cursor)
         if not bool(address_id):
-            # query = """INSERT INTO ADDRESSES(STREET,POST_CODE,CITY_ID) 
-            #         VALUES(%s,%s,%s)"""
-            # cursor.execute(
-            #     query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
-            #cursor.commit()
-            # query = """SELECT ADDRESS_ID 
-            #         FROM ADDRESSES 
-            #         WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
-            # cursor.execute(
-            #     query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
-            # address_id = definitions.dictfetchone(cursor)
-
-            # following function will insert into addresses and return the address id
-            address_id = cursor.callfunc('INSERT_ADDRESS_RETURN_ADDRESS_ID', int,
-                [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
+            try:
+                address_id = cursor.callfunc('INSERT_ADDRESS_RETURN_ADDRESS_ID', int,
+                    [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
+            except IntegrityError:
+                messages.error(request, "A house with this address already exists")
+                return render(request, 'accounts/addhome.html', datas)
             
             if not bool(address_id):
                 messages.error(request, 'Can\'t find the address!!')
@@ -439,20 +377,7 @@ def addhome(request):
                 return render(request,'accounts/addhome.html',datas)
         if isinstance(address_id, int) is False:
             address_id = address_id["ADDRESS_ID"]
-        #print("Address id: " + str(address_id))
-        # query = """INSERT INTO HOUSES(USER_ID,ADDRESS_ID,HOUSE_NAME,HOUSE_NO,DESCRIPTION) 
-        #         VALUES(%s,%s,%s,%s,%s)"""
-        # cursor.execute(query,[str(user_id), str(address_id), datas['housename'], datas['housenumber'], datas['description']])
 
-        
-        #cursor.commit()
-        # query = """SELECT HOUSE_ID 
-        #         FROM HOUSES 
-        #         WHERE USER_ID=%s AND ADDRESS_ID=%s AND HOUSE_NAME=%s AND HOUSE_NO=%s"""
-        # cursor.execute(query,[str(user_id), str(address_id), datas['housename'], datas['housenumber']])
-        # house_id = definitions.dictfetchone(cursor)
-        
-        # following function will insert into houses and return the house id
         house_id = cursor.callfunc('INSERT_HOUSE_RETURN_HOUSE_ID', int,
             [str(user_id), str(address_id), datas['housename'].upper(), datas['housenumber'], datas['description']])
         
@@ -808,8 +733,7 @@ def edithouseinfo(request,house_id):
             if(len(selected_features)!=0):
                 query="""UPDATE HOUSES SET FEATURES=%s WHERE HOUSE_ID=%s"""
                 cursor.execute(query,[str(text), str(house_id)])
-                 
-            
+
     query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, HOUSE_NO, FEATURES
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
@@ -905,8 +829,7 @@ def editroominfo(request,house_id, roomnumber):
             if(len(selected_features)!=0):
                 query="""UPDATE ROOMS SET FEATURES=%s WHERE ROOM_NO=%s AND HOUSE_ID=%s"""
                 cursor.execute(query,[str(text), str(roomnumber), str(house_id)])
-                 
-            
+
     query="""SELECT ADDRESS_ID, HOUSE_NAME, HOUSE_NO
             FROM HOUSES
             WHERE HOUSE_ID=%s"""

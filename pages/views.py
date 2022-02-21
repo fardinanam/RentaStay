@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from django.shortcuts import render, redirect
 from django.db import connection, IntegrityError
 from rentastay import definitions
@@ -126,6 +127,15 @@ def house(request, house_id):
     cursor.execute(query, [house_id])
     result = definitions.dictfetchone(cursor)
 
+    houseFeatures = result["FEATURES"]
+
+    if((houseFeatures is not None) and (houseFeatures is not NULL)):
+        houseFeatures = houseFeatures.split("\\")
+        del houseFeatures[-1]
+        result.update({
+            'HOUSE_FEATURES': houseFeatures
+        })
+
     minPrice = cursor.callfunc('GET_MIN_PRICE', float, [house_id])
     maxPrice = cursor.callfunc('GET_MAX_PRICE', float, [house_id])
 
@@ -134,13 +144,6 @@ def house(request, house_id):
         'MAX_PRICE': maxPrice
     })
 
-    query = """SELECT * 
-            FROM ROOMS
-            WHERE HOUSE_ID = %s"""
-    cursor.execute(query, [house_id])
-    rooms = definitions.dictfetchall(cursor)
-    rooms = sorted(rooms, key=lambda i: i['ROOM_NO'])
-
     query = """SELECT PATH
             FROM HOUSE_PHOTOS_PATH
             WHERE HOUSE_ID = %s"""
@@ -148,7 +151,7 @@ def house(request, house_id):
     photosPath = definitions.dictfetchall(cursor)
     cursor.close()
 
-    return render(request, 'pages/house.html', {'house':result, 'rooms': rooms, 'photos_url': photosPath})
+    return render(request, 'pages/house.html', {'house':result, 'photos_url': photosPath})
 
 def reservation(request, house_id, room_no, check_in, check_out, guests):
     if request.method == 'GET':
