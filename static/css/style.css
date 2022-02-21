@@ -1018,3 +1018,42 @@ li:hover .btn-reserve {
     cursor: pointer;
     white-space: nowrap;
 }
+
+/** Pop up css end **/
+
+/** Profile Pic image css start **/
+
+.profile-pic-div{
+    height: 185px;
+    width: 185px;
+    left: 50%;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid grey;
+    margin-left: 40%;
+    margin-bottom: 50px;
+}
+
+#photo{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+#file{
+    display: none;
+}
+
+#uploadBtn{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    color: wheat;
+    line-height: 30px;
+    font-family: sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: -40px;
+}

@@ -33,6 +33,11 @@ const picLimit = document.getElementById('picLimit');
 const popupheading = document.getElementById('popupheading');
 const popupmessage = document.getElementById('popupmessage');
 
+const imgDiv = document.querySelector('.profile-pic-div');
+const img = document.querySelector('#photo');
+const file = document.querySelector('#file');
+const uploadBtn = document.querySelector('#uploadBtn');
+
 const addHtmlToElement = (element,html) => {
     element.innerHTML = html;
 }
@@ -209,7 +214,9 @@ const addNewRoomPic = value => {
     }
 }
 
-function onPopUp(header, msg) {
+// Pop up functions start
+
+/*function onPopUp(header, msg) {
     popupheading.innerHTML = header;
     popupmessage.innerHTML = msg;
     let confirmation = document.getElementById("confirmation");
@@ -236,8 +243,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document
         .querySelector(".modal")
         .addEventListener("click", (e) => e.stopPropagation());
-});
+});*/
 
+
+// Pop up functions end
 
 $(document).ready(function(){
     $(".simg").magnificPopup({
@@ -247,6 +256,20 @@ $(document).ready(function(){
         }
     });
 })
+
+// Profile image upload function start
+
+file.addEventListener('change', function(){
+    //this refers to file
+    const choosedFile = this.files[0];
+    if (choosedFile) {
+        const reader = new FileReader(); 
+        reader.addEventListener('load', function(){
+            img.setAttribute('src', reader.result);
+        });
+        reader.readAsDataURL(choosedFile);
+    }
+});
 
 
 try{
