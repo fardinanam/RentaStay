@@ -142,7 +142,7 @@ def signup(request):
             return render(request, "accounts/signup.html", data)
         else:
             dateFormat = '%d-%b-%Y'
-            joiningDate= datetime.strptime(datetime.now(), dateFormat)
+            joiningDate= datetime.strftime(datetime.now(), dateFormat)
             data.update({'joindate': joiningDate})
             try:
                 hashed_password = hashlib.sha256(password1.encode()).hexdigest()
