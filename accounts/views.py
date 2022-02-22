@@ -23,11 +23,12 @@ def is_username_unique(username):
             FROM USERS WHERE USERNAME=%s"""
     cursor.execute(query, [username])
     result = cursor.fetchone()
+    print(result)
     cursor.close()
 
     if result is not None:
         return False
-
+    
     return True
 
 def IsHouseInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description):
@@ -113,11 +114,11 @@ def signup(request):
         email = request.POST['email'],
         phone = request.POST['phonenumber'],
         data.update({
-            'firstname': firstname,
-            'lastname': lastname,
-            'username': username,
-            'email': email,
-            'phone': phone,
+            'firstname': firstname[0],
+            'lastname': lastname[0],
+            'username': username[0],
+            'email': email[0],
+            'phone': phone[0],
             'bankacc': request.POST['bankaccount'],
             'creditcard': request.POST['creditcard'],
         })
@@ -131,8 +132,11 @@ def signup(request):
         if password1 != password2:
             messages.error(request, "Passwords did not match")
             return render(request, "accounts/signup.html", data)
+        
+        print("Username hoilo")
+        print(data['username'])
 
-        if is_username_unique(data['username']):
+        if is_username_unique(data['username'])== False:
             messages.error(request, 'Username already exists')
             data.update({'username' : None})
             return render(request, "accounts/signup.html", data)
@@ -297,6 +301,14 @@ def profile(request):
         messages.error(request, "Session Expired")
         return redirect('signin')
 
+def deleteprofile(request):
+    cursor = connection.cursor()
+    if request.method=='POST' and request.POST.get('YES', False) and request.POST.get('YES',False)=='deluser':
+        query="""DELETE FROM USERS WHERE USERNAME=%s"""
+        cursor.execute(query,[request.session.get('username')])
+        request.session.flush()
+        return JsonResponse({'url': ''}) 
+
 def logout(request):
     request.session.flush()
     return redirect('home')
@@ -345,11 +357,11 @@ def addhome(request):
         statename = request.POST.get('statename','State Name')
         cityname = request.POST.get('cityname','City Name')
         datas.update({
-            'streetname': request.POST['streetname'],
-            'postalcode': request.POST['postalcode'],
-            'housename': request.POST['housename'],
-            'housenumber': request.POST['housenumber'],
-            'description': request.POST['description'],
+            'streetname': request.POST.get('streetname',""),
+            'postalcode': request.POST.get('postalcode',""),
+            'housename': request.POST.get('housename',""),
+            'housenumber': request.POST.get('housenumber',""),
+            'description': request.POST.get('description',""),
         })
         #print(countryname + " " + statename + " " + cityname + " " + streetname + " " + postalcode + " " + housename + " " + housenumber + " " + description + " " + request.session['username'])
         if IsHouseInputsValid(request,countryname,statename,cityname,datas['streetname'],datas['postalcode'],datas['housename'],datas['housenumber'],datas['description']) == False:
@@ -401,7 +413,6 @@ def addhome(request):
 
         house_id = cursor.callfunc('INSERT_HOUSE_RETURN_HOUSE_ID', int,
             [str(user_id), str(address_id), datas['housename'].upper(), datas['housenumber'], datas['description']])
-        
         if not bool(house_id):
             messages.error(request, 'Can\'t find the house!!')
             cursor.close()
@@ -410,7 +421,6 @@ def addhome(request):
         datas.update({
             'house_id': str(house_id),
         })
-        
         if request.FILES.get('upload1',False):
             folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/HousePic/'
             upload1 = request.FILES['upload1']
@@ -429,6 +439,11 @@ def addhome(request):
 
 def homepreview(request,house_id):
     cursor = connection.cursor()
+    if request.method=='POST' and request.POST.get('YES', False) and request.POST.get('YES',False)=='delhouse':
+        houseid=request.POST.get('house_id')
+        query="""DELETE FROM HOUSES WHERE HOUSE_ID=%s"""
+        cursor.execute(query,[str(houseid)])
+        return JsonResponse({'url': '/yourhouses/'}) 
     query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, HOUSE_NO, FEATURES
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
@@ -644,6 +659,12 @@ def addroom(request,house_id):
 
 def roompreview(request,house_id,roomnumber):
     cursor = connection.cursor()
+    if request.method=='POST' and request.POST.get('YES', False) and request.POST.get('YES',False)=='delroom':
+        houseid=request.POST.get('house_id')
+        room = request.POST.get('roomnumber')
+        query="""DELETE FROM ROOMS WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+        cursor.execute(query,[str(houseid),str(room)])
+        return JsonResponse({'url': '/accounts/homepreview/'+str(houseid)})
     query="""SELECT ADDRESS_ID, HOUSE_NAME, HOUSE_NO
             FROM HOUSES
             WHERE HOUSE_ID=%s"""

@@ -36,6 +36,7 @@ const addRoomBtn = document.getElementById('addRoomBtn');
 const picLimit = document.getElementById('picLimit');
 const popupheading = document.getElementById('popupheading');
 const popupmessage = document.getElementById('popupmessage');
+const udform = document.getElementById('udform');
 
 const imgDiv = document.querySelector('.profile-pic-div');
 const img = document.querySelector('#photo');
@@ -218,39 +219,6 @@ const addNewRoomPic = value => {
     }
 }
 
-// Pop up functions start
-
-/*function onPopUp(header, msg) {
-    popupheading.innerHTML = header;
-    popupmessage.innerHTML = msg;
-    let confirmation = document.getElementById("confirmation");
-    if (!confirmation.classList.contains("modal-open")) {
-      confirmation.classList.add("modal-open");
-    }
-}
-
-function onCancel() {
-    let confirmation = document.getElementById("confirmation");
-    confirmation.classList.remove("modal-open");
-    return false;
-}
-
-function onConfirm() {
-    onCancel();
-    return true;
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    document
-        .getElementById("confirmation")
-        .addEventListener("click", onCancel);
-    document
-        .querySelector(".modal")
-        .addEventListener("click", (e) => e.stopPropagation());
-});*/
-
-
-// Pop up functions end
 
 $(document).ready(function(){
     $(".simg").magnificPopup({
@@ -260,6 +228,171 @@ $(document).ready(function(){
         }
     });
 })
+
+//Pop up functionality start
+
+if(udform!=null){
+    udform.addEventListener('submit', function ( event ) {
+        console.log("paise")
+        event.preventDefault();
+    });
+}
+
+//<form action="{% url 'home' %}" method="post" id="udform">
+//    {% csrf_token %}
+//    <input type="submit" value="Submit" onclick="onUDClick('ho','matha','{{csrf_token}}','homeyes')">
+//</form>
+
+function onUDClickRoom(header, msg, csrf_token, postmsg, urlpage,houseid,roomno){
+    console.log(postmsg)
+    Confirm.open({
+        title: header,
+        message: msg,
+        onok: () => {
+            $.ajax({
+                type: "POST",
+                headers: { "X-CSRFToken": csrf_token },
+                url: urlpage,
+                data: {
+                    "YES" : postmsg,
+                    "house_id" : houseid,
+                    "roomnumber": roomno
+                },
+                success: function(data){
+                    console.log(data.url)
+                    window.location.href=data.url
+                },
+                dataType: "json"
+            });
+            return false;
+        }
+    })
+}
+
+function onUDClickHouse(header, msg, csrf_token, postmsg, urlpage,houseid){
+    console.log(postmsg)
+    Confirm.open({
+        title: header,
+        message: msg,
+        onok: () => {
+            $.ajax({
+                type: "POST",
+                headers: { "X-CSRFToken": csrf_token },
+                url: urlpage,
+                data: {
+                    "YES" : postmsg,
+                    "house_id": houseid
+                },
+                success: function(data){
+                    console.log(data.url)
+                    window.location.href=data.url
+                },
+                dataType: "json"
+            });
+            return false;
+        }
+    })
+}
+
+
+function onUDClickUser(header, msg, csrf_token, postmsg, urlpage){
+    console.log(postmsg)
+    Confirm.open({
+        title: header,
+        message: msg,
+        onok: () => {
+            $.ajax({
+                type: "POST",
+                headers: { "X-CSRFToken": csrf_token },
+                url: urlpage,
+                data: {
+                    "YES" : postmsg,
+                },
+                success: function(data){
+                    console.log(data.url)
+                    window.location.href=data.url
+                },
+                dataType: "json"
+            });
+            return false;
+        }
+    })
+}
+
+const Confirm = {
+    open (options) {
+        options = Object.assign({}, {
+            title: '',
+            message: '',
+            okText: 'Continue',
+            cancelText: 'Cancel',
+            onok: function () {},
+            oncancel: function () {}
+        }, options);
+        
+        const html = `
+            <div class="confirm">
+                <div class="confirm__window">
+                    <div class="confirm__titlebar">
+                        <span class="confirm__title">${options.title}</span>
+                        <button class="confirm__close">&times;</button>
+                    </div>
+                    <div class="confirm__content">${options.message}</div>
+                    <div class="confirm__buttons">
+                        <button class="confirm__button confirm__button--ok confirm__button--fill">${options.okText}</button>
+                        <button class="confirm__button confirm__button--cancel">${options.cancelText}</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const template = document.createElement('template');
+        template.innerHTML = html;
+
+        // Elements
+        const confirmEl = template.content.querySelector('.confirm');
+        const btnClose = template.content.querySelector('.confirm__close');
+        const btnOk = template.content.querySelector('.confirm__button--ok');
+        const btnCancel = template.content.querySelector('.confirm__button--cancel');
+
+        confirmEl.addEventListener('click', e => {
+            if (e.target === confirmEl) {
+                options.oncancel();
+                this._close(confirmEl);
+                console.log('Returning false');
+                //return false;
+            }
+        });
+
+        btnOk.addEventListener('click', () => {
+            options.onok();
+            this._close(confirmEl);
+            console.log('Returning true');
+            //return true;
+        });
+
+        [btnCancel, btnClose].forEach(el => {
+            el.addEventListener('click', () => {
+                options.oncancel();
+                this._close(confirmEl);
+                console.log('Returning false');
+               // return false;
+            });
+        });
+
+        document.body.appendChild(template.content);
+    },
+
+    _close (confirmEl) {
+        confirmEl.classList.add('confirm--close');
+
+        confirmEl.addEventListener('animationend', () => {
+            document.body.removeChild(confirmEl);
+        });
+    }
+};
+
+//Pop up end
 
 // Profile image upload function start
 if(file != null) {
