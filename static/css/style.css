@@ -944,82 +944,135 @@ li:hover .btn-reserve {
     margin-top: 25px;
 }
 
-/** Pop Up Button **/
+/** Popup css **/
 
-.modal-container {
+.confirm {
     z-index: 9999;
     position: fixed;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    box-sizing: border-box;
+
+    opacity: 0;
+    animation-name: confirm---open;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+
+    display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.modal-open {
+.confirm--close {
+    animation-name: confirm---close;
+}
+
+.confirm__window {
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    font-size: 14px;
+    font-family: 'Noto Sans', sans-serif;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+    opacity: 0;
+    transform: scale(0.75);
+    animation-name: confirm__window---open;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+    animation-delay: 0.2s;
+}
+
+.confirm__titlebar,
+.confirm__content,
+.confirm__buttons {
+    padding: 1.25em;
+}
+
+.confirm__titlebar {
+    background: #222222;
+    color: #ffffff;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.modal {
-    max-width: 700px;
-    max-height: 400px;
-    background-color: white;
-    border-radius: 3px;
+.confirm__title {
+    font-weight: bold;
+    font-size: 1.1em;
 }
 
-.modal-button {
-    text-transform: uppercase;
-    padding: 0.5em 1em;
+.confirm__close {
+    background: none;
+    outline: none;
     border: none;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 3px;
-    margin-left: 0.5em;
+    transform: scale(2.5);
+    color: #ffffff;
+    transition: color 0.15s;
 }
 
-.modal-confirm-button {
-    background-color: tomato;
+.confirm__close:hover {
+    color: #ff0000;
+    cursor: pointer;
 }
 
-.modal-header {
-    background-color: rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
+.confirm__content {
+    line-height: 1.8em;
 }
 
-.modal-header h2 {
-    margin: 1em;
-}
-
-.modal-header span {
-    padding-right: 0.3em;
-    cursor: default;
-    align-self: flex-end;
-}
-
-.modal-content {
-    padding: 1em;
-    flex-grow: 1;
-}
-
-.modal-footer {
-    padding: 1em;
-    background-color: rgba(0, 0, 0, 0.05);
+.confirm__buttons {
+    background: #eeeeee;
     display: flex;
     justify-content: flex-end;
 }
 
-.close-button {
-    border: none;
-    text-align: center;
+.confirm__button {
+    padding: 0.4em 0.8em;
+    border: 2px solid #009879;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #009879;
+    font-weight: bold;
+    font-size: 1.1em;
+    font-family: 'Noto Sans', sans-serif;
+    margin-left: 0.6em;
     cursor: pointer;
-    white-space: nowrap;
+    outline: none;
 }
 
-/** Pop up css end **/
+.confirm__button--fill {
+    background: #009879;
+    color: #ffffff;
+}
+
+.confirm__button:focus {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes confirm---open {
+    from { opacity: 0 }
+    to { opacity: 1 }
+}
+
+@keyframes confirm---close {
+    from { opacity: 1 }
+    to { opacity: 0 }
+}
+
+@keyframes confirm__window---open {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/** End **/
 
 /** Profile Pic image css start **/
 

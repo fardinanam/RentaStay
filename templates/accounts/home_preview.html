@@ -29,7 +29,14 @@
                                 </h6>
                             </div>
                             <div class="pull-right">
-                                <h3><span>${{ minprice | intcomma }}-${{ maxprice | intcomma }}</span></h3>
+                                {% if minprice is None or maxprice is None%}
+                                {% else %}
+                                    {% if minprice == maxprice %}
+                                        <h3><span>${{ minprice | intcomma }}</span></h3>
+                                    {% else %}
+                                        <h3><span>${{ minprice | intcomma }}-${{ maxprice | intcomma }}</span></h3>
+                                    {% endif %}
+                                {% endif %}
                             </div>
                         </div>
                         <div id="homeDetailsSlider" class="carousel home-details-sliders slide mb-40" data-ride="carousel">
@@ -128,7 +135,6 @@
                         <div class="widget advanced-search d-none-992">
                             <form action="{% url 'edithouseinfo' house_id %}" style="margin-bottom: 15px;"">
                                 <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit"">Edit House Info</button>
-                                {% include 'includes/popup.html' %}
                             </form>
                             <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit" id="addHousePicBtn">Add House Pic</button>
                         </div>

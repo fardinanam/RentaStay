@@ -324,11 +324,11 @@ def addhome(request):
         statename = request.POST.get('statename','State Name')
         cityname = request.POST.get('cityname','City Name')
         datas.update({
-            'streetname': request.POST['streetname'],
-            'postalcode': request.POST['postalcode'],
-            'housename': request.POST['housename'],
-            'housenumber': request.POST['housenumber'],
-            'description': request.POST['description'],
+            'streetname': request.POST.get('streetname',""),
+            'postalcode': request.POST.get('postalcode',""),
+            'housename': request.POST.get('housename',""),
+            'housenumber': request.POST.get('housenumber',""),
+            'description': request.POST.get('description',""),
         })
         #print(countryname + " " + statename + " " + cityname + " " + streetname + " " + postalcode + " " + housename + " " + housenumber + " " + description + " " + request.session['username'])
         if IsHouseInputsValid(request,countryname,statename,cityname,datas['streetname'],datas['postalcode'],datas['housename'],datas['housenumber'],datas['description']) == False:
@@ -380,7 +380,6 @@ def addhome(request):
 
         house_id = cursor.callfunc('INSERT_HOUSE_RETURN_HOUSE_ID', int,
             [str(user_id), str(address_id), datas['housename'].upper(), datas['housenumber'], datas['description']])
-        
         if not bool(house_id):
             messages.error(request, 'Can\'t find the house!!')
             cursor.close()
@@ -389,7 +388,6 @@ def addhome(request):
         datas.update({
             'house_id': str(house_id),
         })
-        
         if request.FILES.get('upload1',False):
             folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/HousePic/'
             upload1 = request.FILES['upload1']
