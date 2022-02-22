@@ -18,10 +18,12 @@
                             <div class="card mb-3" style="max-width: 100%;">
                                 <div>
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ rent.HOUSE_NAME }} Hosted by {{ rent.USERNAME }}</h5>
+                                        <p class="card-title"><b>{{ rent.HOUSE_NAME }} Hosted by {{ rent.FIRST_NAME }} {{ rent.LAST_NAME }}</b></p>
                                         <p class="card-text">
-                                            <i class="fa fa-map-marker"></i> 
-                                            {{ rent.HOUSE_NO }}, {{ rent.STREET }}, {{ rent.CITY_NAME }}, {{ rent.STATE_NAME }}, {{ rent.COUNTRY_NAME }}
+                                            <small class="text-muted">
+                                                <i class="fa fa-map-marker"></i> 
+                                                {{ rent.HOUSE_NO }}, {{ rent.STREET }}, {{ rent.CITY_NAME }}, {{ rent.STATE_NAME }}, {{ rent.COUNTRY_NAME }}
+                                            </small>
                                         </p>
                                         <p class="card-text"><small class="text-muted">From {{ rent.CHECKIN | date:"M d, Y" }} to {{ rent.CHECKOUT | date:"M d, Y" }}</small></p>
                                         <a class="btn btn-outline-success btn-block" href="{% url 'house' house_id=rent.HOUSE_ID %}">View Details</a>
@@ -42,11 +44,13 @@
                             <div class="card mb-3" style="max-width: 100%;">
                                 <div>
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ rent.HOUSE_NAME }} Hosted by {{ rent.USERNAME }}</h5>
+                                        <p class="card-title"><b>{{ rent.HOUSE_NAME }} Hosted by {{ rent.FIRST_NAME }} {{ rent.LAST_NAME }}</b></p>
                                         <p class="card-text">
-                                            <i class="fa fa-map-marker"></i> 
-                                            {{ rent.HOUSE_NO }}, {{ rent.STREET }}, {{ rent.CITY_NAME }}, {{ rent.STATE_NAME }}, {{ rent.COUNTRY_NAME }}
-                                        </p>
+                                            <small class="text-muted">
+                                                <i class="fa fa-map-marker"></i> 
+                                                {{ rent.HOUSE_NO }}, {{ rent.STREET }}, {{ rent.CITY_NAME }}, {{ rent.STATE_NAME }}, {{ rent.COUNTRY_NAME }}
+                                            </small>
+                                            </p>
                                         <p class="card-text"><small class="text-muted">From {{ rent.CHECKIN | date:"M d, Y" }} to {{ rent.CHECKOUT | date:"M d, Y" }}</small></p>
                                         <a class="btn btn-outline-success btn-block" href="{% url 'house' house_id=rent.HOUSE_ID %}">View Details</a>
                                     </div>
@@ -65,52 +69,69 @@
                         {% for rent in older_rents %}
                             <div class="card mb-3" style="max-width: 100%;">
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ rent.HOUSE_NAME }} Hosted by {{ rent.USERNAME }}</h5>
+                                    <p class="card-title"><b>{{ rent.HOUSE_NAME }} Hosted by {{ rent.FIRST_NAME }} {{ rent.LAST_NAME }}</b></p>
                                     <p class="card-text">
                                         <small class="text-muted">
                                             <i class="fa fa-map-marker"></i> 
                                             {{ rent.HOUSE_NO }}, {{ rent.STREET }}, {{ rent.CITY_NAME }}, {{ rent.STATE_NAME }}, {{ rent.COUNTRY_NAME }}
                                         </small>
+                                        <br>
+                                        <small class="text-muted"><b>Stayed From {{ rent.CHECKIN | date:"M d, Y" }} to {{ rent.CHECKOUT | date:"M d, Y" }}</b></small>
                                     </p>
-                                    </p class="text-card">
-                                        Review on owner: 
-                                        <span card-owner-review>
-                                            {% if rent.OWNER_REVIEW is not None %}
-                                                {{ rent.OWNER_REVIEW }}
-                                            {% else %}
-                                                No comments.
-                                            {% endif %}
-                                        </span>
+                                    <p class="text-card">
+                                        <div>
+                                            <div class="clearfix">
+                                                <div class="pull-left">
+                                                    <b>Review on owner: </b>
+                                                    
+                                                </div>
+                                                <div class="pull-right">
+                                                    <span card-owner-rating>
+                                                        {% if rent.OWNER_RATING is not None %}
+                                                            <small><i class="bi bi-star-fill"></i> {{ rent.OWNER_RATING }}</small>
+                                                        {% else %}
+                                                            You haven't rated him yet.
+                                                        {% endif %}
+                                                    </span><br>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span card-owner-review>
+                                                    {% if rent.OWNER_REVIEW is not None %}
+                                                        {{ rent.OWNER_REVIEW }}
+                                                    {% else %}
+                                                        No comments.
+                                                    {% endif %}
+                                                </span>
+                                            <div>
+                                        </div>
+                                        <div>
+                                            <div class="clearfix">
+                                                <div class="pull-left">
+                                                    <b>Review on house: </b>
+                                                </div>
+                                                <div class="pull-right">
+                                                    <span card-owner-rating>
+                                                        {% if rent.HOUSE_RATING is not None %}
+                                                            <small><i class="bi bi-star-fill"></i> {{ rent.HOUSE_RATING }}</small>
+                                                        {% else %}
+                                                            You haven't rated this house yet.
+                                                        {% endif %}
+                                                    </span><br>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span card-owner-review>
+                                                    {% if rent.HOUSE_REVIEW is not None %}
+                                                        {{ rent.HOUSE_REVIEW }}
+                                                    {% else %}
+                                                        No comments.
+                                                    {% endif %}
+                                                </span>
+                                            <div>
+                                        </div>
                                     </p>
-                                    </p class="text-card">
-                                        <span card-owner-rating>
-                                            {% if rent.OWNER_RATING is not None %}
-                                                Rated {{ rent.OWNER_RATING }} star
-                                            {% else %}
-                                                You haven't rated him yet.
-                                            {% endif %}
-                                        </span>
-                                    </p>
-                                    </p class="text-card">
-                                        Review on house: 
-                                        <span card-house-review>
-                                            {% if rent.HOUSE_REVIEW is not None %}
-                                                {{ rent.HOUSE_REVIEW }}
-                                            {% else %}
-                                                No comments.
-                                            {% endif %}
-                                        </span>
-                                    </p>
-                                    </p class="text-card">
-                                        <span card-house-rating>
-                                            {% if rent.HOUSE_RATING is not None %}
-                                                Rated {{ rent.HOUSE_RATING }} star
-                                            {% else %}
-                                                You haven't rated this house yet.
-                                            {% endif %}
-                                        </span>
-                                    </p>
-                                    <button class="btn btn-sm btn-primary text-center" data-modal-target="#modal{{ forloop.counter0 }}">Edit Review</button>
+                                    <button class="btn btn-outline-success btn-block mb-2" data-modal-target="#modal{{ forloop.counter0 }}">Edit Review</button>
                                     <div class="modal-custom justify-content-center" id="modal{{ forloop.counter0 }}" data-rent-id="{{ rent.RENT_ID }}">
                                         <div class="modal-custom-header">
                                             <div class="title text-center">Edit Review</div>
@@ -159,7 +180,6 @@
                                             <button data-close-button class="close-button btn-sm btn-success text-center">Done</button>
                                         </div>
                                     </div>
-                                    <p class="card-text"><small class="text-muted">From {{ rent.CHECKIN | date:"M d, Y" }} to {{ rent.CHECKOUT | date:"M d, Y" }}</small></p>
                                     <a class="btn btn-outline-success btn-block" href="{% url 'house' house_id=rent.HOUSE_ID %}">View Details</a>
                                 </div>
                             </div>
