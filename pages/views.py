@@ -284,8 +284,16 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
         roomno = request.POST['roomno']
         checkInDate = request.POST['checkin']
         checkOutDate = request.POST['checkout']
+        guests = request.POST['guests']
 
         cursor = connection.cursor()
+
+        isAvailable = cursor.callfunc('IS_ROOM_AVAILABLE', str, [house_id, room_no, checkInDate, checkOutDate, guests])
+
+        if isAvailable == 'N':
+            messages.error(request, 'Sorry! This room is not available in this criteria.')
+            return redirect('/')
+
         query = """SELECT USER_ID FROM USERS WHERE USERNAME = %s"""
         cursor.execute(query, [username])
         userId = cursor.fetchone()[0]
@@ -309,7 +317,7 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
             messages.error(request, "Server Error.")
         
         # TODO: redirect to all the rents page of the user
-        return redirect('home')
+        return redirect('/myRents/')
 
 def myRents(request):
     if request.session.has_key('username') is False:
