@@ -265,6 +265,31 @@ function onUDClickRoom(header, msg, csrf_token, postmsg, urlpage,houseid,roomno)
     })
 }
 
+function onUDClickHouse(header, msg, csrf_token, postmsg, urlpage,houseid){
+    console.log(postmsg)
+    Confirm.open({
+        title: header,
+        message: msg,
+        onok: () => {
+            $.ajax({
+                type: "POST",
+                headers: { "X-CSRFToken": csrf_token },
+                url: urlpage,
+                data: {
+                    "YES" : postmsg,
+                    "house_id": houseid
+                },
+                success: function(data){
+                    console.log(data.url)
+                    window.location.href=data.url
+                },
+                dataType: "json"
+            });
+            return false;
+        }
+    })
+}
+
 const Confirm = {
     open (options) {
         options = Object.assign({}, {

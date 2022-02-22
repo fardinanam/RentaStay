@@ -133,6 +133,11 @@
                     <div class="sidebar-right">
                         <!-- Advanced search start -->
                         <div class="widget advanced-search d-none-992">
+                            <form action="{% url 'yourhouses' %}" method="post" id="udform">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" style="margin-bottom: 15px;"
+                                 type="submit" value="submit" onclick="onUDClickHouse('Delete House','Are you sure you want to delete this house?You can\'t undo this request!!','{{csrf_token}}','delhouse','/accounts/homepreview/{{house_id}}/','{{house_id}}')">Delete This House</button>
+                             </form>
                             <form action="{% url 'edithouseinfo' house_id %}" style="margin-bottom: 15px;"">
                                 <button class="btn btn-outline-success bomd btn-block btn-lg" data-toggle="modal" type="submit"">Edit House Info</button>
                             </form>
