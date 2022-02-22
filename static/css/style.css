@@ -104,7 +104,8 @@ span {
 }
 
 .header-with-top{
-    background: rgba(12, 12, 12, 0.18);
+    /* background: rgba(12, 12, 12, 0.18); */
+    background: black;
 }
 
 .main-header .company-logo img {
@@ -422,7 +423,8 @@ span {
 @media (max-width: 992px) {
     .main-header .navbar-expand-lg .navbar-nav .nav-link {
         padding: 10px 15px;
-        background: #f9f9f9;
+        /* background: #f9f9f9; */
+        background: #212121;
     }
 
     .navbar-light .navbar-toggler {
@@ -1016,6 +1018,7 @@ date picker start
 .confirm__title {
     font-weight: bold;
     font-size: 1.1em;
+    color: #F0F0F0;
 }
 
 .confirm__close {
@@ -1034,6 +1037,7 @@ date picker start
 
 .confirm__content {
     line-height: 1.8em;
+    font-size: 1.1em;
 }
 
 .confirm__buttons {
@@ -1192,7 +1196,6 @@ date picker start
     border-radius: .5rem;
 }
 
-.logo-white {
-    fill: red;
-    stroke: red;
+.navbar-ul li a:hover{
+    background-color: #000;
 }
