@@ -22,11 +22,12 @@ def is_username_unique(username):
                 FROM USERS WHERE USERNAME=%s"""
     cursor.execute(query, [username])
     result = cursor.fetchone()
+    print(result)
     cursor.close()
 
     if result is not None:
         return False
-
+    
     return True
 
 def IsHouseInputsValid(request,countryname,statename,cityname,streetname,postalcode,housename,housenumber,description):
@@ -112,11 +113,11 @@ def signup(request):
         email = request.POST['email'],
         phone = request.POST['phonenumber'],
         data.update({
-            'firstname': firstname,
-            'lastname': lastname,
-            'username': username,
-            'email': email,
-            'phone': phone,
+            'firstname': firstname[0],
+            'lastname': lastname[0],
+            'username': username[0],
+            'email': email[0],
+            'phone': phone[0],
             'bankacc': request.POST['bankaccount'],
             'creditcard': request.POST['creditcard'],
         })
@@ -130,8 +131,11 @@ def signup(request):
         if password1 != password2:
             messages.error(request, "Passwords did not match")
             return render(request, "accounts/signup.html", data)
+        
+        print("Username hoilo")
+        print(data['username'])
 
-        if is_username_unique(data['username']):
+        if is_username_unique(data['username'])== False:
             messages.error(request, 'Username already exists')
             data.update({'username' : None})
             return render(request, "accounts/signup.html", data)
