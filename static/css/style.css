@@ -651,6 +651,10 @@ span {
     transform: scale(1);
 }
 
+.house-card .card-body {
+    margin-top: -1.5rem;
+}
+
 .house-card .card-body:hover {
     cursor: pointer;
 }
@@ -1190,9 +1194,4 @@ date picker start
 
 .card {
     border-radius: .5rem;
-}
-
-.logo-white {
-    fill: red;
-    stroke: red;
 }

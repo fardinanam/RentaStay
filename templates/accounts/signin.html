@@ -1,34 +1,38 @@
 {% extends 'base/base.html' %}
-
-{% block title %} Accounts | Login {% endblock %}
-{% block content %}
 {% load static %}
+{% block title %} Accounts | Login {% endblock %}
+{% block includecss %}
+    <link rel="stylesheet" type="text/css"  href="{% static 'css/signin.css' %}">
+{% endblock includecss %}
+
+{% block content %}
+
 <div class="container">
-    <h1 class="text-center">Sign In</h1>
-    <div class="row justify-content-center">
-        <form style="max-width:70%" method="POST">
-            {% csrf_token %}
+    <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+            <div class="card card-signin my-5">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Sign In</h5>
+                    <form class="form-signin" method="POST">
+                        {% include 'includes/messages.html' %}
+                        {% csrf_token %}
+                        <div class="form-label-group">
+                            <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+                            <label for="username">Username</label>
+                        </div>
 
-            {% include 'includes/messages.html' %}
-            
-            <div class="mb-3 row">
-                <label for="username" class="col-sm-2 col-form-label">Username</label>
-                <div class="col-sm-10">
-                    <input type="text" id="username" name="username" placeholder="username" class="form-control" aria-describedby="" required>
+                        <div class="form-label-group">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                            <label for="password">Password</label>
+                        </div>
+                        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" value="submit">Sign in</button>
+                        <hr>
+                        <a class="btn btn-sm btn-create-acc btn-block text-uppercase" href="{% url 'signup' %}"> Create Account</a>
+                    </form>
                 </div>
             </div>
-
-            <div class="mb-3 row">
-                <label for="password" class="col-sm-2 col-form-label">Password</label>
-                <div class="col-sm-10">
-                    <input type="password" id="password" name="password" class="form-control" aria-describedby="" required>
-                </div>
-            </div>
-            
-            <div class="text-center">
-                <button type="submit" value="submit" class="btn btn-primary">Login</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
+
 {% endblock %}
