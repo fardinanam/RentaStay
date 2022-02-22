@@ -74,8 +74,9 @@
             </form>
         </div>
     {% else %}
-        <div class="row justify-content-center">
-            <h3> You must be logged in to add a house!! </h3>
+        <div class="background-container">
+            <h3 class="intro"> You must be logged in to add a house!! </h3>
+            <a href="{% url 'signin' %}" class="btn btn-outline-light btn-link-search">Login</a>
         </div>
     {% endif %}
 {% endblock content %}

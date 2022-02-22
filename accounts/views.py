@@ -108,26 +108,26 @@ def signup(request):
         return render(request, "accounts/signup.html", data)
 
     elif request.method == 'POST':
-        firstname = request.POST['firstname'],
-        lastname = request.POST['lastname'],
-        username = request.POST['username'],
-        email = request.POST['email'],
-        phone = request.POST['phonenumber'],
+        firstname = request.POST.get('firstname'),
+        lastname = request.POST.get('lastname'),
+        username = request.POST.get('username'),
+        email = request.POST.get('email'),
+        phone = request.POST.get('phonenumber'),
         data.update({
             'firstname': firstname[0],
             'lastname': lastname[0],
             'username': username[0],
             'email': email[0],
             'phone': phone[0],
-            'bankacc': request.POST['bankaccount'],
-            'creditcard': request.POST['creditcard'],
+            'bankacc': request.POST.get('bankaccount'),
+            'creditcard': request.POST.get('creditcard'),
         })
         
         if IsSignUpInputsValid(request, firstname, lastname, phone, email, username) == False:
             return render(request, "accounts/signup.html", data)
         
-        password1 = request.POST['password']
-        password2 = request.POST['confirmpassword']
+        password1 = request.POST.get('password')
+        password2 = request.POST.get('confirmpassword')
 
         if password1 != password2:
             messages.error(request, "Passwords did not match")
@@ -168,8 +168,8 @@ def signin(request):
     if request.method == 'GET':
         return render(request, "accounts/signin.html")
     elif request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
         cursor = connection.cursor()
@@ -190,7 +190,7 @@ def signin(request):
             if request.GET.get('next') is None:
                 return redirect('home')
             else:
-                return redirect(request.GET['next'])
+                return redirect(request.GET.get('next'))
 
 def profile(request):
     data = {
