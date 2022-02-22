@@ -469,7 +469,7 @@ span {
     }
 
     .content-area {
-        padding: 80px 0 50px;
+        padding: 10px 0 50px;
     }
 
     .main-title {
@@ -537,7 +537,7 @@ span {
     }
 
     .content-area {
-        padding: 60px 0 30px;
+        padding: 10px 0 30px;
     }
 
     .main-title h1 {
@@ -546,6 +546,10 @@ span {
 
     .main-title {
         margin-bottom: 30px;
+    }
+
+    .slick-slide-item{
+        margin-bottom: 0;
     }
 }
 
@@ -1199,3 +1203,112 @@ date picker start
 .navbar-ul li a:hover{
     background-color: #000;
 }
+
+/** Our Team Part **/
+.content-area {
+    padding: 10px 0 70px;
+}
+
+.bg-grea-3{
+    background: #f9f9f8;
+}
+
+.slick-slider-area {
+    position: relative;
+}
+
+.slick-slide-item {
+    padding: 0 15px!important;
+}
+
+/** Team 1 start **/
+.team-1 {
+    margin-bottom: 30px;
+    background: #fff;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.1);
+}
+
+.team-1:hover{
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.team-1 .photo {
+    position: relative;
+    text-align: center;
+}
+
+.team-1 .photo img{
+    width: 100%;
+}
+
+.team-1 .social-list {
+    position: absolute;
+    bottom: 15px;
+    text-align: center;
+    z-index: 20;
+    border-radius: 5px 5px 0 0;
+    left: 0;
+    color: rgb(255, 255, 255);
+    display: inline-block;
+    width: 100%;
+}
+
+.team-1 .social-list a {
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    display: inline-block;
+    margin: 2px;
+    border-radius: 3px;
+    text-align: center;
+    background: rgba(0,0,0,0.5);
+}
+
+.team-1 .details {
+    text-align: center;
+    padding: 25px 10px;
+}
+
+.team-1 .details h4 {
+    margin-bottom: 7px;
+}
+
+.team-1 .details h4 a{
+    font-size: 20px;
+    font-weight: 400;
+    color: #212121;
+}
+
+.team-1 .details h4 a:hover{
+    color: #212529;
+}
+
+.team-1 .details h5 {
+    font-size: 15px;
+    color: #535353;
+    font-weight: 400;
+}
+
+.team-1 .social-list a:hover{
+    box-shadow: none;
+}
+
+.team-1 .facebook-bg:hover {
+    background: #4867aa!important;
+}
+
+.team-1 .twitter-bg:hover {
+    background: #56d7fe!important;
+}
+
+.team-1 .google-bg:hover {
+    background: #dc4e41!important;
+}
+
+.team-img{
+    height: 245px;
+    object-fit: contain;
+}
+
+/** team-1 end **/
