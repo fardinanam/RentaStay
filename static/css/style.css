@@ -1191,3 +1191,8 @@ date picker start
 .card {
     border-radius: .5rem;
 }
+
+.logo-white {
+    fill: red;
+    stroke: red;
+}

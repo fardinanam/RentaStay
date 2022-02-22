@@ -139,9 +139,6 @@ BEGIN
 	COMMIT;
 END;
 
-
--- New Added pl sql
-
 -- Deleting values from DEPOSITS
 CREATE OR REPLACE TRIGGER DEL_DEPOSITS
 BEFORE DELETE
