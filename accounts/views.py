@@ -3,7 +3,7 @@ import hashlib
 from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from rentastay import definitions
 from django.core.files.storage import FileSystemStorage
 from rentastay.settings import MEDIA_ROOT
