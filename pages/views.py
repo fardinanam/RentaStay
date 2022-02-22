@@ -115,6 +115,9 @@ def getJsonAvailableRoomsData(request, house_id, check_in, check_out, guests):
     return JsonResponse({'rooms': rooms})
 
 def updateReview(request, rent_id, owner_rating, house_rating, owner_review, house_review):
+    if request.session.has_key('username') is False:
+        return redirect('/')
+
     cursor = connection.cursor()
     query = """UPDATE RENTS
             SET OWNER_RATING = %s,
@@ -388,4 +391,82 @@ def myGuests(request):
     if request.session.has_key('username') is False:
         messages.error(request, "You must be logged in to see your rents")
         return redirect('/accounts/signin/')
-    return render(request, 'pages/myguests.html')
+    
+    username = request.session.get('username')
+    cursor = connection.cursor()
+    
+    query = """SELECT USER_ID 
+            FROM USERS
+            WHERE USERNAME = %s"""
+    cursor.execute(query, [username])
+    userId = cursor.fetchone()[0]
+
+    query = """SELECT INITCAP(HOUSE_NAME) HOUSE_NAME, ROOM_NO, CHECKIN, CHECKOUT, 
+            HOUSE_NO, STREET, POST_CODE, CITY_NAME, STATE_NAME, COUNTRY_NAME,
+            FIRST_NAME, LAST_NAME, EMAIL, PHONE_NO, JOIN_DATE, PROFILE_PIC
+            FROM RENTS
+            JOIN USERS USING(USER_ID)
+            JOIN HOUSES USING(HOUSE_ID)
+            JOIN ADDRESSES USING(ADDRESS_ID)
+            JOIN CITIES USING (CITY_ID)
+            JOIN STATES USING (STATE_ID)
+            JOIN COUNTRIES USING (COUNTRY_NAME)
+            WHERE HOUSE_ID IN (
+            SELECT HOUSE_ID
+            FROM HOUSES
+            WHERE USER_ID = %s)
+            AND SYSDATE BETWEEN CHECKIN AND CHECKOUT;"""
+    cursor.execute(query, [userId])
+    currentGuests = definitions.dictfetchall(cursor)
+
+    query = """SELECT INITCAP(HOUSE_NAME) HOUSE_NAME, ROOM_NO, CHECKIN, CHECKOUT, 
+            HOUSE_NO, STREET, POST_CODE, CITY_NAME, STATE_NAME, COUNTRY_NAME,
+            FIRST_NAME, LAST_NAME, EMAIL, PHONE_NO, JOIN_DATE, PROFILE_PIC
+            FROM RENTS
+            JOIN USERS USING(USER_ID)
+            JOIN HOUSES USING(HOUSE_ID)
+            JOIN ADDRESSES USING(ADDRESS_ID)
+            JOIN CITIES USING (CITY_ID)
+            JOIN STATES USING (STATE_ID)
+            JOIN COUNTRIES USING (COUNTRY_NAME)
+            WHERE HOUSE_ID IN (
+            SELECT HOUSE_ID
+            FROM HOUSES
+            WHERE USER_ID = %s)
+            AND SYSDATE > CHECKOUT;"""
+    cursor.execute(query, [userId])
+    olderGuests = definitions.dictfetchall(cursor)
+
+    query = """SELECT INITCAP(HOUSE_NAME) HOUSE_NAME, ROOM_NO, CHECKIN, CHECKOUT, 
+            HOUSE_NO, STREET, POST_CODE, CITY_NAME, STATE_NAME, COUNTRY_NAME,
+            FIRST_NAME, LAST_NAME, EMAIL, PHONE_NO, JOIN_DATE, PROFILE_PIC
+            FROM RENTS
+            JOIN USERS USING(USER_ID)
+            JOIN HOUSES USING(HOUSE_ID)
+            JOIN ADDRESSES USING(ADDRESS_ID)
+            JOIN CITIES USING (CITY_ID)
+            JOIN STATES USING (STATE_ID)
+            JOIN COUNTRIES USING (COUNTRY_NAME)
+            WHERE HOUSE_ID IN (
+            SELECT HOUSE_ID
+            FROM HOUSES
+            WHERE USER_ID = %s)
+            AND SYSDATE < CHECKIN;"""
+    cursor.execute(query, [userId])
+    upcomingGuests = definitions.dictfetchall(cursor)
+    cursor.close()
+
+    if len(currentGuests) == 0:
+        currentGuests = None
+    if len(olderGuests) == 0:
+        olderGuests = None
+    if len(upcomingGuests) == 0:
+        upcomingGuests = None
+
+    data = {
+        'older_guests': olderGuests,
+        'current_guests': currentGuests,
+        'upcoming_guests': upcomingGuests
+    }
+
+    return render(request, 'pages/myguests.html', data)

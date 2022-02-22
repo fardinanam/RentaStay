@@ -20,7 +20,7 @@ selected_features = []
 def is_username_unique(username):
     cursor = connection.cursor()
     query = """SELECT USERNAME 
-                FROM USERS WHERE USERNAME=%s"""
+            FROM USERS WHERE USERNAME=%s"""
     cursor.execute(query, [username])
     result = cursor.fetchone()
     cursor.close()
@@ -232,14 +232,26 @@ def profile(request):
                 'creditcard': request.POST.get('creditcard')
             })
 
-            if data['username'] != request.POST.get('username') and is_username_unique(data['username']) is False:
+            if data['username'] != request.POST.get('username') and is_username_unique(request.POST.get('username')) is False:
                 messages.error(
                     request, 'Can not change to new username because the new username already exists')
                 return render(request, "accounts/profile.html", data)
+            elif data['username'] != request.POST.get('username'):
+                cursor = connection.cursor()
+                query = """UPDATE USERS
+                        SET USERNAME = %s
+                        WHERE USERNAME = %s"""
+                cursor.execute(
+                    query, [request.POST.get('username'), data['username']])
                 
-            data.update({
-                'username': request.POST.get('username')
-            })
+                
+                messages.success(request, "Username updated!")
+                data.update({
+                    'username': request.POST.get('username')
+                })
+                request.session.update({
+                    'username': data['username']
+                })
 
             cursor = connection.cursor()
             query = """UPDATE USERS
@@ -250,7 +262,7 @@ def profile(request):
                     CREDIT_CARD_NO = %s
                     WHERE USERNAME = %s"""
             cursor.execute(query, [data['firstname'], data['lastname'], 
-                data['phone'], data['bankacc'], data['creditcard'], request.session.get('username')])
+                data['phone'], data['bankacc'], data['creditcard'], data['username']])
             
             if request.FILES.get('profilePic',False):
                 folder = MEDIA_ROOT + '/Users/' + str(request.session['username'])
