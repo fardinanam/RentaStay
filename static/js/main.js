@@ -239,7 +239,7 @@ if(udform!=null){
 //    <input type="submit" value="Submit" onclick="onUDClick('ho','matha','{{csrf_token}}','homeyes')">
 //</form>
 
-function onUDClick(header, msg, csrf_token, postmsg,urlpage){
+function onUDClickRoom(header, msg, csrf_token, postmsg, urlpage,houseid,roomno){
     console.log(postmsg)
     Confirm.open({
         title: header,
@@ -250,7 +250,13 @@ function onUDClick(header, msg, csrf_token, postmsg,urlpage){
                 headers: { "X-CSRFToken": csrf_token },
                 url: urlpage,
                 data: {
-                    "YES" : postmsg
+                    "YES" : postmsg,
+                    "house_id" : houseid,
+                    "roomnumber": roomno
+                },
+                success: function(data){
+                    console.log(data.url)
+                    window.location.href=data.url
                 },
                 dataType: "json"
             });

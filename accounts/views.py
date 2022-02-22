@@ -405,6 +405,7 @@ def addhome(request):
         
 
 def homepreview(request,house_id):
+    print("Eine aise")
     cursor = connection.cursor()
     query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, HOUSE_NO, FEATURES
             FROM HOUSES
@@ -621,6 +622,13 @@ def addroom(request,house_id):
 
 def roompreview(request,house_id,roomnumber):
     cursor = connection.cursor()
+    if request.method=='POST' and request.POST.get('YES', False) and request.POST.get('YES',False)=='delroom':
+        houseid=request.POST.get('house_id')
+        room = request.POST.get('roomnumber')
+        query="""DELETE FROM ROOMS WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+        cursor.execute(query,[str(houseid),str(room)])
+        print("Ei porjonto ashche")
+        return JsonResponse({'url': '/accounts/homepreview/'+str(houseid)})
     query="""SELECT ADDRESS_ID, HOUSE_NAME, HOUSE_NO
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
