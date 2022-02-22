@@ -1,6 +1,8 @@
 body{
     /* background-image: url("../img/home-6.jpg");  */
     background-size: cover;
+    /* background: #212529; */
+    /* background: linear-gradient( black, #0099ff); */
 }
 
 .alert {
@@ -105,7 +107,7 @@ span {
 
 .header-with-top{
     /* background: rgba(12, 12, 12, 0.18); */
-    background: black;
+    background: #212529;
 }
 
 .main-header .company-logo img {
@@ -1317,3 +1319,43 @@ date picker start
 }
 
 /** team-1 end **/
+
+.background-container {
+    margin: 2rem;
+    border-radius: 1rem;
+    height: 85vh;
+    overflow: hidden
+}
+
+.cont {
+    height: 85vh;
+    background-color: #212529;
+    margin-top: -2rem;
+}
+.background-container img {
+    background-color: #212529;
+    border-radius: 1rem;
+    text-align: center;
+    float: left;
+    height: 85vh;
+    width: auto;
+    object-fit: cover;
+}
+
+.intro {
+    color: white;
+    /* font-size: 3rem; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.btn-link-search {
+    color: white;
+    /* font-size: 3rem; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 100%);
+}
