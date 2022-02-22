@@ -114,7 +114,7 @@
                                             <form action="{% url 'editroominfo' house_id roomnumber %}" method="POST" enctype="multipart/form-data" style=" margin-left: auto; margin-right: 0;">
                                                 {% csrf_token %}
                                                 <input type="text" value="{{ photo }}" name="deletedImg" hidden>
-                                                <button value="{{ photo }}" class="btn btn-block btn-lg btn-theme btn-success"  style="width: 125%; padding: 0px; font-size: 1.15rem; text-align: center;">Delete</button>
+                                                <button value="{{ photo }}" class="btn btn-block btn-lg btn-theme btn-danger"  style="width: 125%; padding: 0px; font-size: 1.15rem; text-align: center;">Delete</button>
                                             </form>
                                         </li>
                                     {% endfor %}
