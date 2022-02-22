@@ -79,7 +79,7 @@
         <form action="{% url 'home' %}" method="post" id="udform" style="text-align:center; margin-top:15px;">
             {% csrf_token %}
             {% comment %} <input type="submit" value="Submit" onclick="onUDClick('ho','matha','{{csrf_token}}','homeyes')"> {% endcomment %}
-            <button type="submit" value="submit" class="btn btn-primary"
+            <button type="submit" value="submit" class="btn btn-primary btn-danger"
              onclick="onUDClickUser('Delete User Profile','Are your sure to delete your account?You can\'t undo this!','{{csrf_token}}','deluser','/accounts/deleteprofile/')">Delete Account</button>
         </form>
     </div>
