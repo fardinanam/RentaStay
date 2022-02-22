@@ -7,7 +7,128 @@
 {% endblock title %}
 
 {% block content %}
-    <div class="container-lg p-4">
-        Guests
+    <div class="container-lg p-4 justify-content-center">
+        <h1 class="text-center"> Your Guests </h1>
+        <div class="row" style="height: 80vh">
+            <section class="col-12 col-md-4 col-lg-4 overflow-auto border border-1" style="border-radius: .5rem; max-height: 75vh">
+                <h4 class="text-center">Currently Staying</h4>
+                <div class="vstack gap-2">
+                    {% if current_guests is not None %}
+                        {% for guest in current_guests %}
+                            <div class="card mb-3" style="max-width: 100%;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="house-owner-profile-pic-container flex-shrink-0">
+                                            {% if guest.PROFILE_PIC %}
+                                                <img src="{{ guest.PROFILE_PIC }}">
+                                            {% else %}
+                                                <img src="{% static 'img/profile_pic_thumbnail.png' %}">                                
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-grow-1 ms-3"><b>{{ guest.FIRST_NAME }} {{ guest.LAST_NAME }}</b><br>
+                                            <small class="text-muted">Joined in {{ guest.JOIN_DATE }}</small>
+                                        </div>                       
+                                    </div>
+                                    <hr>
+                                    <div>
+                                        <small>
+                                            <p>Rented {{ guest.HOUSE_NAME }}, room no. {{ guest.ROOM_NO }} 
+                                                from {{ guest.CHECKIN | date:"d M, Y"}} to {{ guest.CHECKOUT | date:"d M, Y"}}
+                                            </p>
+                                            <p>
+                                                <b>Phone No:</b> {{ guest.PHONE_NO }} <br>
+                                                <b>Email   :</b> {{ guest.EMAIL }}
+                                            </p>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <h5 class="text-center ">No current guests</h5>
+                    {% endif %}
+                </div>
+            </section>
+            <section class="col-12 col-md-4 col-lg-4 overflow-auto border border-1" style="border-radius: .5rem; max-height: 75vh">
+                <h4 class="text-center">Upcoming</h4>
+                <div class="vstack gap-2">
+                    {% if upcoming_guests is not None %}
+                        {% for guest in upcoming_guests %}
+                            <div class="card mb-3" style="max-width: 100%;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="house-owner-profile-pic-container flex-shrink-0">
+                                            {% if guest.PROFILE_PIC %}
+                                                <img src="{{ guest.PROFILE_PIC }}">
+                                            {% else %}
+                                                <img src="{% static 'img/profile_pic_thumbnail.png' %}">                                
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-grow-1 ms-3"><b>{{ guest.FIRST_NAME }} {{ guest.LAST_NAME }}</b><br>
+                                            <small class="text-muted">Joined in {{ guest.JOIN_DATE }}</small>
+                                        </div>                       
+                                    </div>
+                                    <hr>
+                                    <div>
+                                        <small>
+                                            <p>Rented {{ guest.HOUSE_NAME }}, room no. {{ guest.ROOM_NO }} 
+                                                from {{ guest.CHECKIN | date:"d M, Y"}} to {{ guest.CHECKOUT | date:"d M, Y"}}
+                                            </p>
+                                            <p>
+                                                <b>Phone No:</b> {{ guest.PHONE_NO }} <br>
+                                                <b>Email   :</b> {{ guest.EMAIL }}
+                                            </p>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <h5 class="text-center ">No upcoming guests</h5>
+                    {% endif %}
+                </div>
+            </section>
+            <section class="col-12 col-md-4 col-lg-4 overflow-auto border border-1" style="border-radius: .5rem; max-height: 75vh">
+                <h4 class="text-center">Older</h4>
+                <div class="vstack gap-2">
+                    {% if older_guests is not None %}
+                        {% for guest in older_guests %}
+                            <div class="card mb-3" style="max-width: 100%;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="house-owner-profile-pic-container flex-shrink-0">
+                                            {% if guest.PROFILE_PIC %}
+                                                <img src="{{ guest.PROFILE_PIC }}">
+                                            {% else %}
+                                                <img src="{% static 'img/profile_pic_thumbnail.png' %}">                                
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-grow-1 ms-3"><b>{{ guest.FIRST_NAME }} {{ guest.LAST_NAME }}</b><br>
+                                            <small class="text-muted">Joined in {{ guest.JOIN_DATE }}</small>
+                                        </div>                       
+                                    </div>
+                                    <hr>
+                                    <div>
+                                        <small>
+                                            <p>Rented {{ guest.HOUSE_NAME }}, room no. {{ guest.ROOM_NO }} 
+                                                from {{ guest.CHECKIN | date:"d M, Y"}} to {{ guest.CHECKOUT | date:"d M, Y"}}
+                                            </p>
+                                            <p>
+                                                <b>Phone No:</b> {{ guest.PHONE_NO }} <br>
+                                                <b>Email   :</b> {{ guest.EMAIL }}
+                                            </p>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <h5 class="text-center ">No older guests</h5>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
     </div>
+    
 {% endblock content %}
+

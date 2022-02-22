@@ -9,8 +9,8 @@
 {% block content %}
     <div class="container-lg p-4 justify-content-center">
         <h1 class="text-center"> Your Rents </h1>
-        <div class="row gx-5" style="height: 80vh">
-            <section class="col-12 col-md-4 col-lg-4 overflow-auto border border-2" style="border-radius: .5rem; max-height: 75vh">
+        <div class="row" style="height: 80vh">
+            <section class="col-12 col-md-4 col-lg-4 overflow-auto border border-1" style="border-radius: .5rem; max-height: 75vh">
                 <h4 class="text-center">Currently In</h4>
                 <div class="vstack gap-2">
                     {% if ongoing_rents is not None %}
@@ -34,7 +34,7 @@
                     {% endif %}
                 </div>
             </section>
-            <section class="col-12 col-md-4 col-lg-4 overflow-auto border border-2" style="border-radius: .5rem; max-height: 75vh">
+            <section class="col-12 col-md-4 col-lg-4 overflow-auto border border-1" style="border-radius: .5rem; max-height: 75vh">
                 <h4 class="text-center">Upcoming</h4>
                 <div class="vstack gap-2">
                     {% if upcoming_rents is not None %}
@@ -58,7 +58,7 @@
                     {% endif %}
                 </div>
             </section>
-            <section class="col-12 col-md-4 col-lg-4 overflow-auto border border-2" style="border-radius: .5rem; max-height: 75vh">
+            <section class="col-12 col-md-4 col-lg-4 overflow-auto border border-1" style="border-radius: .5rem; max-height: 75vh">
                 <h4 class="text-center">Older</h4>
                 <div class="vstack gap-2">
                     {% if older_rents is not None %}
@@ -113,49 +113,51 @@
                                     <button class="btn btn-sm btn-primary text-center" data-modal-target="#modal{{ forloop.counter0 }}">Edit Review</button>
                                     <div class="modal-custom justify-content-center" id="modal{{ forloop.counter0 }}" data-rent-id="{{ rent.RENT_ID }}">
                                         <div class="modal-custom-header">
-                                            <div class="title">Edit Review</div>
+                                            <div class="title text-center">Edit Review</div>
                                         </div>
                                         <div class="modal-custom-body">
-                                            <h5 class="text-center">Review {{ rent.USERNAME }}</h5>
-                                            <select class="form-control mb-2" star-select-owner>
-                                                {% if rent.OWNER_RATING is not None %}
-                                                    <option selected="true" disabled="disabled">{{ rent.OWNER_RATING }}</option>
+                                            <div class="container-fluid p-0 justify-content-center">
+                                                <h5 class="text-center">Review {{ rent.USERNAME }}</h5>
+                                                <select class="form-control mb-2" star-select-owner>
+                                                    {% if rent.OWNER_RATING is not None %}
+                                                        <option selected="true" disabled="disabled">{{ rent.OWNER_RATING }}</option>
+                                                    {% else %}
+                                                        <option selected="true" disabled="disabled">/5 stars</option>
+                                                    {% endif %}
+                                                    
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                {% if rent.OWNER_REVIEW is not None %}
+                                                    <input class="form-control mb-2" placeholder="Write comment on owner" owner-review-input value="{{ rent.OWNER_REVIEW }}">
                                                 {% else %}
-                                                    <option selected="true" disabled="disabled">/5 stars</option>
+                                                    <input class="form-control mb-2" placeholder="Write comment on owner" owner-review-input>
                                                 {% endif %}
                                                 
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                            </select>
-                                            {% if rent.OWNER_REVIEW is not None %}
-                                                <input class="form-control mb-2" placeholder="Write comment on owner" owner-review-input value="{{ rent.OWNER_REVIEW }}">
-                                            {% else %}
-                                                <input class="form-control mb-2" placeholder="Write comment on owner" owner-review-input>
-                                            {% endif %}
-                                            
-                                            <h5 class="text-center">Review {{ rent.HOUSE_NAME }}</h5>
-                                            <select class="form-control mb-2" star-select-house>
-                                                {% if rent.HOUSE_RATING is not None %}
-                                                    <option selected="true" disabled="disabled">{{ rent.HOUSE_RATING }}</option>
+                                                <h5 class="text-center">Review {{ rent.HOUSE_NAME }}</h5>
+                                                <select class="form-control mb-2" star-select-house>
+                                                    {% if rent.HOUSE_RATING is not None %}
+                                                        <option selected="true" disabled="disabled">{{ rent.HOUSE_RATING }}</option>
+                                                    {% else %}
+                                                        <option selected="true" disabled="disabled">/5 stars</option>
+                                                    {% endif %}
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                {% if rent.HOUSE_REVIEW is not None %}
+                                                    <input class="form-control mb-2" placeholder="Write comment on owner" house-review-input value="{{ rent.HOUSE_REVIEW }}">
                                                 {% else %}
-                                                    <option selected="true" disabled="disabled">/5 stars</option>
+                                                    <input class="form-control mb-2" placeholder="Write comment on owner" house-review-input>
                                                 {% endif %}
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                            </select>
-                                            {% if rent.HOUSE_REVIEW is not None %}
-                                                <input class="form-control mb-2" placeholder="Write comment on owner" house-review-input value="{{ rent.HOUSE_REVIEW }}">
-                                            {% else %}
-                                                <input class="form-control mb-2" placeholder="Write comment on owner" house-review-input>
-                                            {% endif %}
+                                            </div>
+                                            <button data-close-button class="close-button btn-sm btn-success text-center">Done</button>
                                         </div>
-                                        <button data-close-button class="close-button btn-sm btn-success">Done</button>
                                     </div>
                                     <p class="card-text"><small class="text-muted">From {{ rent.CHECKIN | date:"M d, Y" }} to {{ rent.CHECKOUT | date:"M d, Y" }}</small></p>
                                     <a class="btn btn-outline-success btn-block" href="{% url 'house' house_id=rent.HOUSE_ID %}">View Details</a>

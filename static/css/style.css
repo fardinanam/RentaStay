@@ -1134,3 +1134,7 @@ date picker start
 }
 
 /* modal-custom end */
+
+.card {
+    border-radius: .5rem;
+}
