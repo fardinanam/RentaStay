@@ -394,12 +394,12 @@ def addhome(request):
         query = """SELECT ADDRESS_ID 
                 FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
         cursor.execute(
-            query, [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
+            query, [str(datas['streetname']), str(datas['postalcode']), str(city_id)])
         address_id = definitions.dictfetchone(cursor)
         if not bool(address_id):
             try:
                 address_id = cursor.callfunc('INSERT_ADDRESS_RETURN_ADDRESS_ID', int,
-                    [str(datas['streetname']).upper(), str(datas['postalcode']).upper(), str(city_id)])
+                    [str(datas['streetname']), str(datas['postalcode']), str(city_id)])
             except IntegrityError:
                 messages.error(request, "A house with this address already exists")
                 return render(request, 'accounts/addhome.html', datas)
@@ -412,7 +412,7 @@ def addhome(request):
             address_id = address_id["ADDRESS_ID"]
 
         house_id = cursor.callfunc('INSERT_HOUSE_RETURN_HOUSE_ID', int,
-            [str(user_id), str(address_id), datas['housename'].upper(), datas['housenumber'], datas['description']])
+            [str(user_id), str(address_id), datas['housename'], datas['housenumber'], datas['description']])
         if not bool(house_id):
             messages.error(request, 'Can\'t find the house!!')
             cursor.close()
@@ -521,8 +521,8 @@ def homepreview(request,house_id):
     
     data ={
         'house_id': str(house_id),
-        'housename': housename.upper(),
-        'house_address': str(house_no).upper() + ", " + str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'housename': housename,
+        'house_address': str(house_no) + ", " + str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
         'description': description,
         'photos_url': photos_path,
         'rooms': rooms,
@@ -618,12 +618,12 @@ def addroom(request,house_id):
 
     house_name = house_name["HOUSE_NAME"]
     data.update({
-        'housename': house_name.upper(),
+        'housename': house_name,
     })
     
     data1 ={
         'house_id': str(house_id),
-        'housename': house_name.upper(),
+        'housename': house_name,
     }
     
     if request.method=='GET':
@@ -737,9 +737,9 @@ def roompreview(request,house_id,roomnumber):
     
     data ={
         'house_id': str(house_id),
-        'housename': housename.upper(),
+        'housename': housename,
         'roomnumber': roomnumber,
-        'house_address': str(house_no).upper() + ", " +  str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'house_address': str(house_no) + ", " +  str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
         'description': description,
         'photos_url': photos_path,
         'capacity': capacity,
@@ -764,7 +764,7 @@ def edithouseinfo(request,house_id):
             query="""UPDATE HOUSES SET HOUSE_NAME=%s, 
                     DESCRIPTION=%s 
                     WHERE HOUSE_ID=%s"""
-            cursor.execute(query,[str(housename).upper(), str(description) , str(house_id)])
+            cursor.execute(query,[str(housename), str(description) , str(house_id)])
         else:
             selected_features.clear()
             text = ""
@@ -825,8 +825,8 @@ def edithouseinfo(request,house_id):
     
     data ={
         'house_id': str(house_id),
-        'housename': housename.upper(),
-        'house_address': str(house_no).upper() + ", " +  str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'housename': housename,
+        'house_address': str(house_no) + ", " +  str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
         'description': description,
         'photos_url': photos_path,
         'features' : hfeatures,
@@ -929,9 +929,9 @@ def editroominfo(request,house_id, roomnumber):
     
     data ={
         'house_id': str(house_id),
-        'housename': housename.upper(),
+        'housename': housename,
         'roomnumber': roomnumber,
-        'house_address': str(house_no).upper() + ", " +  str(streetname).upper() + ", " +  str(cityname).upper() + ", " + str(statename).upper() + ", " + str(countryname).upper(),
+        'house_address': str(house_no) + ", " +  str(streetname) + ", " +  str(cityname) + ", " + str(statename) + ", " + str(countryname),
         'description': description,
         'photos_url': photos_path,
         'capacity': str(capacity),
