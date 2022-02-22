@@ -3,7 +3,7 @@
 {% block title %} RentaStay {% endblock %}
 {% block content %}
 {% load static %}
-    <div class="container-lg">
+    <div class="container-lg" style="margin-bottom: 20px;">
         {% include 'includes/messages.html' %}
         <div class="input-group col-12 col-lg-8 p-2 start-50 translate-middle-x">
             <span class="input-group-text round-search-icon" id="basic-addon1">
@@ -54,6 +54,76 @@
             </template>
         </div>
     </div>
+
+    <!-- Our team start -->
+    <div class="our-team content-area bg-grea-3">
+        <div class="container">
+            <!-- Main title -->
+            <div class="main-title">
+                <h1>Executive <span>Team</span></h1>
+            </div>
+            <!-- Slick slider area start -->
+            <div class="slick-slider-area clearfix">
+                <div class="row slick-carousel" data-slick='{"slidesToShow": 4, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": 2}}, {"breakpoint": 768,"settings":{"slidesToShow": 1}}]}'>
+                    <div class="slick-slide-item">
+                        <div class="team-1">
+                            <div class="photo">
+                                <a href="#">
+                                    <img src="{% static 'img/avatar/avatar-2.jpg' %}" alt="team-1" class="img-fluid team-img">
+                                </a>
+                                <div class="social-list clearfix">
+                                    <a href="https://www.facebook.com/fardinanam.aungon" class="facebook-bg"><i class="fa fa-facebook"></i></a>
+                                    <a href="https://github.com/fardinanam" class="github-bg"><i class="fa fa-github"></i></a>
+                                    <a href="https://www.instagram.com/aungon11/?fbclid=IwAR3V5pL1GsU725CU470CeAHP9JxEkt5dN7h6fjpBn_FbPQEU3m83L05ekfE" class="twitter-bg"><i class="fa fa-instagram"></i></a>
+                                </div>
+                            </div>
+                            <div class="details">
+                                <h4>Fardin Anam Aungon</h4>
+                                <h5>Manager & Web Developer</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slick-slide-item">
+                        <div class="team-1">
+                            <div class="photo">
+                                <a href="#">
+                                    <img src="{% static 'img/avatar/avatar-1.jpg' %}" alt="team-1" class="img-fluid team-img">
+                                </a>
+                                <div class="social-list clearfix">
+                                    <a href="https://www.facebook.com/shehabul.islam.sawraz" class="facebook-bg"><i class="fa fa-facebook"></i></a>
+                                    <a href="https://github.com/Shehabul-Islam-Sawraz" class="github-bg"><i class="fa fa-github"></i></a>
+                                    <a href="https://www.google.com/" class="google-bg"><i class="fa fa-google"></i></a>
+                                </div>
+                            </div>
+                            <div class="details">
+                                <h4>Shehabul Islam Sawraz</h4>
+                                <h5>Support Manager & Creative Director</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slick-slide-item">
+                        <div class="team-1">
+                            <div class="photo" style="display: none;">
+                                <a href="#">
+                                    <img src="{% static 'img/avatar/avatar-2.jpg' %}" alt="team-1" class="img-fluid team-img">
+                                </a>
+                                <div class="social-list clearfix">
+                                    <a href="#" class="facebook-bg"><i class="fa fa-facebook"></i></a>
+                                    <a href="#" class="twitter-bg"><i class="fa fa-twitter"></i></a>
+                                    <a href="#" class="google-bg"><i class="fa fa-google"></i></a>
+                                </div>
+                            </div>
+                            <div class="details" style="display: none;">
+                                <h4>Fardin Anam Mamum</h4>
+                                <h5>Manager & Web Developer</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Our team end -->
 {% endblock %}
 {% block includejs %}
     <script src="{% static 'js/homescript.js' %}" defer></script>
