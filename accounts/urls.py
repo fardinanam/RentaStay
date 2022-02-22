@@ -6,6 +6,7 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('logout/', views.logout, name='logout'),
     path('profile/', views.profile, name='profile'),
+    path('deleteprofile/', views.deleteprofile, name='deleteprofile'),
     path('addhome/', views.addhome, name='addhome'),
     path('homepreview/<int:house_id>/', views.homepreview, name='homepreview'),
     path('fetch_statenames/<str:key>/', views.fetch_statenames, name='fetch_statenames'),

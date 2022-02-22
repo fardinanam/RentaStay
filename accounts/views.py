@@ -173,7 +173,7 @@ def signin(request):
         cursor.close()
         if result is None:
             messages.error(request,"Invalid login credentials!")
-            return render(request, 'acocunts/signin.html')
+            return render(request, 'accounts/signin.html')
         else:
             request.session['username'] = username
             request.session['profile_pic'] = result[1]
@@ -275,6 +275,14 @@ def profile(request):
     else:
         messages.error(request, "Session Expired")
         return redirect('signin')
+
+def deleteprofile(request):
+    cursor = connection.cursor()
+    if request.method=='POST' and request.POST.get('YES', False) and request.POST.get('YES',False)=='deluser':
+        query="""DELETE FROM USERS WHERE USERNAME=%s"""
+        cursor.execute(query,[request.session.get('username')])
+        request.session.flush()
+        return JsonResponse({'url': ''}) 
 
 def logout(request):
     request.session.flush()
