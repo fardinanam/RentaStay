@@ -256,7 +256,7 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
         })
 
         totalPrice = pricePerNight * noOfDays
-        totalOffer = totalPrice * (offer / 100)
+        totalOffer = round(totalPrice * (offer / 100))
         data.update({
             'daysReserving': noOfDays,
             'totalPrice':  totalPrice,

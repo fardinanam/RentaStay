@@ -111,7 +111,7 @@
                                             <a name="carousel-selector-{{ forloop.counter0 }}" href="{{ photo }}" id="carousel-selector-{{ forloop.counter0 }}" data-slide-to="{{ forloop.counter0 }}" data-target="#homeDetailsSlider" class="simg">
                                                 <img src="{{ photo }}" class="img-fluid editimg" alt="small-home" style="margin-left: 20px; box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.5); margin-bottom: 25px; height: 40%; width: 40%;max-width: 350px; max-height: 350px;">
                                             </a>
-                                            <form action="{% url 'editroominfo' house_id roomnumber %}" method="POST" enctype="multipart/form-data" style=" margin-left: auto; margin-right: 0;">
+                                            <form action="{% url 'editroominfo' house_id roomnumber %}" method="POST" enctype="multipart/form-data" style=" margin-left: auto; margin-right: 0;" onsubmit="return confirm('Are you sure you want to delete this image?You can\'t undo if you continue!!')">
                                                 {% csrf_token %}
                                                 <input type="text" value="{{ photo }}" name="deletedImg" hidden>
                                                 <button value="{{ photo }}" class="btn btn-block btn-lg btn-theme btn-danger"  style="width: 125%; padding: 0px; font-size: 1.15rem; text-align: center;">Delete</button>
