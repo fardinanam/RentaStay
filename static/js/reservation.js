@@ -25,6 +25,7 @@ roomSearchButton.onclick = function () {
     const checkInDate = roomsCard.querySelector('#checkIn').value
     const checkOutDate = roomsCard.querySelector('#checkOut').value
     const guests = roomsCard.querySelector('#guestsInput').value
+    const noRoom = roomsCard.querySelector('[no-room]')
 
     if(areValidInputs(checkInDate, checkOutDate, guests)) {
         const info = document.getElementById(["info"])
@@ -35,8 +36,9 @@ roomSearchButton.onclick = function () {
         fetch("/availableRooms/" + houseId + '/' + checkInDate + '/' + checkOutDate + '/' + guests)
         .then(response => response.json())
         .then(rooms => {
-            if(rooms != null) {
+            if(rooms.rooms.length != 0) {
                 rooms.rooms.forEach(room => {
+                    noRoom.classList.add("hide")
                     const roomMiniCard = roomMiniCardTemplate.content.cloneNode(true).children[0]
                     const roomNoText = roomMiniCard.querySelector("[room-no]")
                     const guestsText = roomMiniCard.querySelector("[guests]")
@@ -58,7 +60,8 @@ roomSearchButton.onclick = function () {
                     roomMinicardContainer.append(roomMiniCard)
                 })
             } else {
-                info.getElementsByTagName('p').textContent = 'No available rooms in this criteria'
+                noRoom.classList.remove('hide')
+                // info.getElementsByTagName('p').textContent = 'No available rooms in this criteria'
             }
         })
     }
@@ -89,7 +92,10 @@ var from = $('#checkIn').datepicker({
     minDate: 0
 })
 .on("change", function() {
-    to.datepicker("option", "minDate", getDate(this))
+    var nextDay = new Date(getDate(this));
+    console.log(nextDay)
+    nextDay.setDate(nextDay.getDate() + 1);
+    to.datepicker("option", "minDate", nextDay)
 })
 
 var to = $("#checkOut").datepicker({
@@ -99,7 +105,12 @@ var to = $("#checkOut").datepicker({
     minDate: 0
 })
 .on("change", function() {
-    from.datepicker("option", "maxDate", getDate(this))
+    var prevDay = new Date(getDate(this));
+    console.log(prevDay)
+    prevDay.setDate(prevDay.getDate() - 1);
+    from.datepicker("option", "maxDate", prevDay)
+    // from.datepicker("option", "maxDate", getDate(this))
+
 })
 
 function getDate(element) {
