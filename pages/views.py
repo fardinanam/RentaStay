@@ -173,7 +173,7 @@ def house(request, house_id):
     query = """SELECT TRUNC(AVG(HOUSE_RATING), 2) AVG_HOUSE_RATING, 
             COUNT(HOUSE_RATING) TOTAL_HOUSE_REVIEWS
             FROM RENTS
-            WHERE HOUSE_ID = %s;"""
+            WHERE HOUSE_ID = %s AND CHECKOUT < SYSDATE"""
     cursor.execute(query, [house_id])
     reviews = definitions.dictfetchone(cursor)
     result.update(reviews)
@@ -193,7 +193,7 @@ def house(request, house_id):
             WHERE USER_ID = (
             SELECT USER_ID
             FROM HOUSES
-            WHERE HOUSE_ID = %s
+            WHERE HOUSE_ID = %s AND CHECKOUT < SYSDATE
             ))"""
     cursor.execute(query, [house_id])
     ownerRating = definitions.dictfetchone(cursor)

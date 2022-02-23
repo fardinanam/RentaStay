@@ -1373,3 +1373,13 @@ date picker start
 .message-popup {
     border-radius: .5rem;
 }
+
+.bi-star-fill {
+    fill: red;
+    color: rgb(255, 123, 0);
+    text-shadow: -1px 0 rgb(15, 15, 0), 0 .5px rgb(0, 0, 0), .5px 0 rgb(255, 166, 2), 0 -.5px rgb(255, 166, 2);
+}
+
+.middot:before {
+    content: "\B7";
+}

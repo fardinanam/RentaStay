@@ -92,7 +92,7 @@
                                                         {% else %}
                                                             You haven't rated him yet.
                                                         {% endif %}
-                                                    </span><br>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div>
@@ -103,7 +103,7 @@
                                                         No comments.
                                                     {% endif %}
                                                 </span>
-                                            <div>
+                                            </div>
                                         </div>
                                         <div>
                                             <div class="clearfix">
@@ -117,7 +117,7 @@
                                                         {% else %}
                                                             You haven't rated this house yet.
                                                         {% endif %}
-                                                    </span><br>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div>
@@ -128,13 +128,15 @@
                                                         No comments.
                                                     {% endif %}
                                                 </span>
-                                            <div>
+                                            </div>
                                         </div>
                                     </p>
                                     <button class="btn btn-outline-success btn-block mb-2" data-modal-target="#modal{{ forloop.counter0 }}">Edit Review</button>
                                     <div class="modal-custom justify-content-center" id="modal{{ forloop.counter0 }}" data-rent-id="{{ rent.RENT_ID }}">
                                         <div class="modal-custom-header">
-                                            <div class="title text-center">Edit Review</div>
+                                            <div class="title text-center">
+                                                Edit Review
+                                            </div>
                                         </div>
                                         <div class="modal-custom-body">
                                             <div class="container-fluid p-0 justify-content-center">
