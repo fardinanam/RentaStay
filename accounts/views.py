@@ -1,5 +1,6 @@
 from asyncio.windows_events import NULL
 import hashlib
+from unittest import result
 from django.shortcuts import redirect, render
 from django.db import connection, IntegrityError
 from django.contrib import messages
@@ -304,10 +305,18 @@ def profile(request):
 def deleteprofile(request):
     cursor = connection.cursor()
     if request.method=='POST' and request.POST.get('YES', False) and request.POST.get('YES',False)=='deluser':
-        query="""DELETE FROM USERS WHERE USERNAME=%s"""
+        query="""SELECT USER_ID FROM USERS WHERE USERNAME=%s"""
         cursor.execute(query,[request.session.get('username')])
-        request.session.flush()
-        return JsonResponse({'url': ''}) 
+        result = cursor.fetchone()
+        canDelete = cursor.callfunc('GET_LAST_DATE_USER', bool, [result[0]])
+        if canDelete==False:
+            query="""DELETE FROM USERS WHERE USERNAME=%s"""
+            cursor.execute(query,[request.session.get('username')])
+            request.session.flush()
+            return JsonResponse({'url': ''}) 
+        else:
+            messages.error(request,'Some users are still staying in some of your houses.Can\'t delete profile!!')
+            return JsonResponse({'url': '/accounts/profile'}) 
 
 def logout(request):
     request.session.flush()
@@ -441,9 +450,14 @@ def homepreview(request,house_id):
     cursor = connection.cursor()
     if request.method=='POST' and request.POST.get('YES', False) and request.POST.get('YES',False)=='delhouse':
         houseid=request.POST.get('house_id')
-        query="""DELETE FROM HOUSES WHERE HOUSE_ID=%s"""
-        cursor.execute(query,[str(houseid)])
-        return JsonResponse({'url': '/yourhouses/'}) 
+        canDelete = cursor.callfunc('GET_LAST_DATE_HOUSE', bool, [houseid])
+        if canDelete==False:
+            query="""DELETE FROM HOUSES WHERE HOUSE_ID=%s"""
+            cursor.execute(query,[str(houseid)])
+            return JsonResponse({'url': '/yourhouses/'}) 
+        else:
+            messages.error(request,"Some users are still in your house. Can\'t delete the house!!")
+            return JsonResponse({'url': '/accounts/homepreview/'+str(houseid)}) 
     query="""SELECT ADDRESS_ID, HOUSE_NAME, DESCRIPTION, HOUSE_NO, FEATURES
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
@@ -662,9 +676,14 @@ def roompreview(request,house_id,roomnumber):
     if request.method=='POST' and request.POST.get('YES', False) and request.POST.get('YES',False)=='delroom':
         houseid=request.POST.get('house_id')
         room = request.POST.get('roomnumber')
-        query="""DELETE FROM ROOMS WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
-        cursor.execute(query,[str(houseid),str(room)])
-        return JsonResponse({'url': '/accounts/homepreview/'+str(houseid)})
+        canDelete = cursor.callfunc('GET_LAST_DATE_ROOM', bool, [houseid,room])
+        if canDelete==False:
+            query="""DELETE FROM ROOMS WHERE HOUSE_ID=%s AND ROOM_NO=%s"""
+            cursor.execute(query,[str(houseid),str(room)])
+            return JsonResponse({'url': '/accounts/homepreview/'+str(houseid)})
+        else:
+            messages.error(request,'Some users are still staying in this room.Can\'t delete this room!!')
+            return JsonResponse({'url': '/accounts/roompreview/'+str(houseid)+'/'+str(room)})
     query="""SELECT ADDRESS_ID, HOUSE_NAME, HOUSE_NO
             FROM HOUSES
             WHERE HOUSE_ID=%s"""
