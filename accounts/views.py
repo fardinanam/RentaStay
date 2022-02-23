@@ -24,7 +24,6 @@ def is_username_unique(username):
             FROM USERS WHERE USERNAME=%s"""
     cursor.execute(query, [username])
     result = cursor.fetchone()
-    print(result)
     cursor.close()
 
     if result is not None:
@@ -82,18 +81,6 @@ def IsSignUpInputsValid(request, firstname, lastname, phonenumber, email, userna
         messages.error(request,'Please five your phone number!!')
         return False
 
-def IsProfileInputsValid(request, firstname, lastname, phonenumber):
-    if firstname==NULL or firstname=="":
-        messages.error(request,'Please input your first name!!')
-        return False
-    elif lastname==NULL or lastname=="":
-        messages.error(request,'Please input your last name!!')
-        return False
-    elif phonenumber==NULL or phonenumber=="":
-        messages.error(request,'Please five your phone number!!')
-        return False
-    return True
-
 def signup(request):
     data = {
         'firstname': None,
@@ -133,9 +120,6 @@ def signup(request):
         if password1 != password2:
             messages.error(request, "Passwords did not match")
             return render(request, "accounts/signup.html", data)
-        
-        print("Username hoilo")
-        print(data['username'])
 
         if is_username_unique(data['username'])== False:
             messages.error(request, 'Username already exists')
@@ -372,7 +356,6 @@ def addhome(request):
             'housenumber': request.POST.get('housenumber',""),
             'description': request.POST.get('description',""),
         })
-        #print(countryname + " " + statename + " " + cityname + " " + streetname + " " + postalcode + " " + housename + " " + housenumber + " " + description + " " + request.session['username'])
         if IsHouseInputsValid(request,countryname,statename,cityname,datas['streetname'],datas['postalcode'],datas['housename'],datas['housenumber'],datas['description']) == False:
             return render(request,'accounts/addhome.html',datas)
         cursor = connection.cursor()
@@ -385,21 +368,18 @@ def addhome(request):
             cursor.close()
             return redirect('signin')
         user_id = user_id["USER_ID"]
-        #print("User id: " + str(user_id))
         query = """SELECT STATE_ID 
                 FROM STATES 
                 WHERE STATE_NAME=%s AND COUNTRY_NAME=%s"""
         cursor.execute(query,[statename, countryname])
         state_id = definitions.dictfetchone(cursor)
         state_id = state_id["STATE_ID"]
-        #print("State id: " + str(state_id))
         query = """SELECT CITY_ID 
                 FROM CITIES 
                 WHERE CITY_NAME=%s AND STATE_ID=%s"""
         cursor.execute(query,[cityname, str(state_id)])
         city_id = definitions.dictfetchone(cursor)
         city_id = city_id["CITY_ID"]
-        #print("City id: " + str(city_id))
         query = """SELECT ADDRESS_ID 
                 FROM ADDRESSES WHERE STREET=%s AND POST_CODE=%s AND CITY_ID=%s"""
         cursor.execute(
@@ -493,13 +473,11 @@ def homepreview(request,house_id):
     cityname = result["CITY_NAME"]
     statename = result["STATE_NAME"]
     countryname = result["COUNTRY_NAME"]
-    #print(streetname)
     query = """SELECT COUNT(*) FROM HOUSE_PHOTOS_PATH WHERE HOUSE_ID=%s"""
     cursor.execute(query,[str(house_id)])
     result = cursor.fetchone()
     if request.method=="POST":
         for i in range(result[0],6):
-            #print('upload'+str(i))
             if request.FILES.get('upload'+str(i),False):
                 folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/HousePic/'
                 upload = request.FILES['upload'+str(i)]
@@ -514,8 +492,6 @@ def homepreview(request,house_id):
     cursor.execute(query,[str(house_id)])
     result = cursor.fetchall()
     photos_path = [photo[0] for photo in result]
-    #print(address_id,housename,description)
-    #print(photos_path)
     query="""SELECT ROOM_NO FROM ROOMS 
             WHERE HOUSE_ID=%s
             ORDER BY ROOM_NO ASC"""
@@ -553,7 +529,6 @@ def fetch_statenames(request, key):
     cursor.execute(query,[key])
     result = cursor.fetchall()
     result = [state[0] for state in result]
-    #print(JsonResponse(result,safe=False))
     cursor.close()
     return JsonResponse(result, safe=False)
 
@@ -566,9 +541,7 @@ def fetch_citynames(request, key1,key2):
     cursor.execute(query,[str(state_id[0])])
     result = cursor.fetchall()
     result = [city[0] for city in result]
-    #print(JsonResponse(result,safe=False))
     cursor.close()
-    #print(result)
     return JsonResponse(result, safe=False)
 
 def fetch_no_of_house_pics(request, house_id):
@@ -722,7 +695,6 @@ def roompreview(request,house_id,roomnumber):
     result = cursor.fetchone()
     if request.method=="POST":
         for i in range(result[0]+1,6):
-            #print('upload'+str(i))
             if request.FILES.get('uploadroom'+str(i),False):
                 folder = MEDIA_ROOT + '/Houses/' + str(house_id) + '/Rooms/' + str(roomnumber) + '/'
                 upload = request.FILES['uploadroom'+str(i)]

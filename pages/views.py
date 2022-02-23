@@ -4,7 +4,6 @@ from django.db import connection, IntegrityError
 from rentastay import definitions
 from django.http import JsonResponse
 from django.contrib import messages
-
 from datetime import datetime
 
 def getHouses():
@@ -15,9 +14,7 @@ def getHouses():
             JOIN STATES USING(STATE_ID) 
             JOIN COUNTRIES USING(COUNTRY_NAME)"""
     cursor.execute(query)
-    #print(cursor.fetchone())
     result = definitions.dictfetchall(cursor)
-    #print(result)
     cursor.close()
 
     return result
@@ -63,13 +60,11 @@ def getYourHouses(request):
 def home(request):
     houses = getHouses()
     data = {'houses':houses}
-    # print(houses)
     return render(request, 'pages/home.html', data)
 
 def yourhouses(request):
     houses = getYourHouses(request)
     data = {'houses':houses}
-    # print(houses)
     return render(request,'pages/yourhouses.html',data)
 
 def getJsonHouseData(request):
@@ -131,11 +126,9 @@ def updateReview(request, rent_id, owner_rating, house_rating, owner_review, hou
         cursor.close()
         return JsonResponse({'message': 'True'})
     except Exception as e:
-        print(e)
         return JsonResponse({'message': 'False'})
 
 def house(request, house_id):
-    # print(f"house id from GET is {houseId}")
     cursor = connection.cursor()
     query = """SELECT * 
             FROM HOUSES JOIN USERS USING(USER_ID)
@@ -224,7 +217,6 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
             cursor.execute(query, [house_id])
             houseOwner = cursor.fetchone()[0]
             if houseOwner == request.session['username']:
-                # return render(request, 'pages/house.html', {'house_id': house_id})
                 messages.error(request, 'You can\'t rent your own house')
                 return redirect('/house/' + str(house_id))
 
@@ -299,10 +291,7 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
         userId = cursor.fetchone()[0]
 
         transactionTime = datetime.now().strftime("%d%m%Y%H%M%S")
-        # transaction id format = userid-houseid-roomno-ddmmyyyyhhmmss
         transactionId = str(userId) + '-' + str(houseId) + '-' + str(roomno) + '-' + str(transactionTime)
-
-        print(checkInDate, checkOutDate, transactionId)
 
         query = """INSERT INTO PAYMENTS VALUES(%s, SYSDATE, %s, %s)"""
         try:
@@ -313,10 +302,8 @@ def reservation(request, house_id, room_no, check_in, check_out, guests):
             cursor.execute(query, [userId, houseId, roomno, transactionId, checkInDate, checkOutDate])
             messages.success(request, "Your reservation was successful")
         except IntegrityError:
-            print('Transaction Id is not unique')
             messages.error(request, "Server Error.")
         
-        # TODO: redirect to all the rents page of the user
         return redirect('/myRents/')
 
 def myRents(request):

@@ -9,7 +9,7 @@ $(function () {
         setTimeout(function () {
             $(".page_loader").fadeOut("fast");
         }, 200);
-    });
+   });
 
     $('.hideMessage').on('click',function(){
         document.getElementById("message").style.display = "None";
