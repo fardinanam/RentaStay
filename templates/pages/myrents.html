@@ -86,9 +86,9 @@
                                                     
                                                 </div>
                                                 <div class="pull-right">
-                                                    <span card-owner-rating>
+                                                    <span >
                                                         {% if rent.OWNER_RATING is not None %}
-                                                            <small><i class="bi bi-star-fill"></i> {{ rent.OWNER_RATING }}</small>
+                                                            <small><i class="bi bi-star-fill"></i><span card-owner-rating> {{ rent.OWNER_RATING }}</span></small>
                                                         {% else %}
                                                             You haven't rated him yet.
                                                         {% endif %}
@@ -111,9 +111,9 @@
                                                     <b>Review on house: </b>
                                                 </div>
                                                 <div class="pull-right">
-                                                    <span card-owner-rating>
+                                                    <span>
                                                         {% if rent.HOUSE_RATING is not None %}
-                                                            <small><i class="bi bi-star-fill"></i> {{ rent.HOUSE_RATING }}</small>
+                                                            <small><i class="bi bi-star-fill"></i><span card-house-rating> {{ rent.HOUSE_RATING }}</span></small>
                                                         {% else %}
                                                             You haven't rated this house yet.
                                                         {% endif %}
@@ -121,7 +121,7 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <span card-owner-review>
+                                                <span card-house-review>
                                                     {% if rent.HOUSE_REVIEW is not None %}
                                                         {{ rent.HOUSE_REVIEW }}
                                                     {% else %}
