@@ -51,12 +51,19 @@ if(window.location.href.includes('yourhouses')){
                     maxPrice = prices.maxPrice
                     let price = ''
                     
-                    if(minPrice == maxPrice)
+                    if(minPrice==null && maxPrice==null){
+                        price = ' '
+                        priceRange.textContent = price
+                    }
+                    else if(minPrice == maxPrice){
                         price = '$' + minPrice
-                    else
+                        priceRange.textContent = price + '/night'
+                    }
+                    else{
                         price = '$' + minPrice + '-' + maxPrice
-    
-                    priceRange.textContent = price
+                        priceRange.textContent = price + '/night'
+                    }
+                    
                 })
     
                 /** Iterate throgh all the images of a house */
@@ -144,12 +151,19 @@ if(!window.location.href.includes('yourhouses')){
                 maxPrice = prices.maxPrice
                 let price = ''
                 
-                if(minPrice == maxPrice)
+                if(minPrice==null && maxPrice==null){
+                    price = ' '
+                    priceRange.textContent = price
+                }
+                else if(minPrice == maxPrice){
                     price = '$' + minPrice
-                else
+                    priceRange.textContent = price + '/night'
+                }
+                else{
                     price = '$' + minPrice + '-' + maxPrice
+                    priceRange.textContent = price + '/night'
+                }
 
-                priceRange.textContent = price + '/night'
             })
 
             /** Iterate throgh all the images of a house */
