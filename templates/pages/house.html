@@ -86,7 +86,7 @@
                     <div class="row">
                         <div class="col-6 mb-1">
                             <img class="features-icon" src='{% static 'img/icons/kitchen_black_24dp.svg' %}'/>
-                            {% if house.HOUSE_FEATURES.0 %}
+                            {% if "Kitchen" in house.HOUSE_FEATURES %}
                                 <span >Kitchen</span>
                             {% else %}
                                 <span style="text-decoration: line-through;">Kitchen</span>
@@ -94,7 +94,7 @@
                         </div>
                         <div class="col-6 mb-1">
                             <img class="features-icon" src='{% static 'img/icons/garage_black_24dp.svg' %}'/>
-                            {% if house.HOUSE_FEATURES.1 %}
+                            {% if "Free Parking" in house.HOUSE_FEATURES %}
                                 <span >Free parking</span>
                             {% else %}
                                 <span style="text-decoration: line-through;">Free parking</span>
@@ -103,8 +103,8 @@
                         
                         <div class="col-6 mb-1">
                             <img class="features-icon" src='{% static 'img/icons/wifi_black_24dp.svg' %}'/>
-                            {% if house.HOUSE_FEATURES.3 %}
-                                <span >Wifi</span>
+                            {% if "WiFi" in house.HOUSE_FEATURES %}
+                                <span >WiFi</span>
                             {% else %}
                                 <span style="text-decoration: line-through;">Wifi</span>
                             {% endif %}
@@ -112,7 +112,7 @@
                         
                         <div class="col-6">
                             <img class="features-icon" src='{% static 'img/icons/local_laundry_service_black_24dp.svg' %}'/>
-                            {% if house.HOUSE_FEATURES.4 %}
+                            {% if "Dryer" in house.HOUSE_FEATURES and "Washer" in house.HOUSE_FEATURES %}
                                 <span >Laundry</span>
                             {% else %}
                                 <span style="text-decoration: line-through;">Laundry</span>
@@ -120,7 +120,7 @@
                         </div>
                         <div class="col-6 mb-1">
                             <img class="features-icon" src='{% static 'img/icons/pets_black_24dp.svg' %}'/>                            
-                            {% if house.HOUSE_FEATURES.6 %}
+                            {% if "Pets Allowed" in house.HOUSE_FEATURES %}
                                 <span >Pets Allowed</span>
                             {% else %}
                                 <span style="text-decoration: line-through;">Pets Allowed</span>
@@ -128,7 +128,7 @@
                         </div>
                         <div class="col-6 mb-1">
                             <img class="features-icon" src='{% static 'img/icons/refrigerator_black_24dp.svg' %}'/>                        
-                            {% if house.HOUSE_FEATURES.8 %}
+                            {% if "Refrigerator"  in house.HOUSE_FEATURES %}
                                 <span >Refrigerator</span>
                             {% else %}
                                 <span style="text-decoration: line-through;">Refrigerator</span>
@@ -144,7 +144,7 @@
                         </div>
                         <div class="col-6 mb-1">
                             <img class="features-icon" src='{% static 'img/icons/tungsten_black_24dp.svg' %}'/>
-                            {% if house.HOUSE_FEATURES.13 %}
+                            {% if "24/7 Electricity" in house.HOUSE_FEATURES %}
                                 <span >24/7 Electricity</span>
                             {% else %}
                                 <span style="text-decoration: line-through;">24/7 Electricity</span>
