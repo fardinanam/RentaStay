@@ -113,6 +113,9 @@ def updateReview(request, rent_id, owner_rating, house_rating, owner_review, hou
     if request.session.has_key('username') is False:
         return redirect('/')
 
+    dateFormat = '%d-%b-%Y'
+    updateTime = datetime.now().strftime("%d%m%Y%H%M%S")
+
     cursor = connection.cursor()
     query = """UPDATE RENTS
             SET OWNER_RATING = %s,
@@ -120,13 +123,17 @@ def updateReview(request, rent_id, owner_rating, house_rating, owner_review, hou
             HOUSE_RATING = %s,
             HOUSE_REVIEW = %s,
             REVIEW_DATE = SYSDATE
-            WHERE RENT_ID = %s;"""
+            WHERE RENT_ID = %s"""
+    message = ''
     try:
         cursor.execute(query, [owner_rating, owner_review, house_rating, house_review, rent_id])
         cursor.close()
-        return JsonResponse({'message': 'True'})
+        message = 'True'
+        return JsonResponse({'message': message})
     except Exception as e:
-        return JsonResponse({'message': 'False'})
+        print(e)
+        message = 'False'
+        return JsonResponse({'message': message})
 
 def house(request, house_id):
     cursor = connection.cursor()
@@ -166,7 +173,7 @@ def house(request, house_id):
     query = """SELECT TRUNC(AVG(HOUSE_RATING), 2) AVG_HOUSE_RATING, 
             COUNT(HOUSE_RATING) TOTAL_HOUSE_REVIEWS
             FROM RENTS
-            WHERE HOUSE_ID = %s;"""
+            WHERE HOUSE_ID = %s AND CHECKOUT < SYSDATE"""
     cursor.execute(query, [house_id])
     reviews = definitions.dictfetchone(cursor)
     result.update(reviews)
@@ -174,7 +181,7 @@ def house(request, house_id):
     query = """SELECT FIRST_NAME, HOUSE_RATING, HOUSE_REVIEW, 
             PROFILE_PIC, REVIEW_DATE
             FROM RENTS JOIN USERS USING(USER_ID)
-            WHERE HOUSE_ID = %s AND HOUSE_REVIEW IS NOT NULL;"""
+            WHERE HOUSE_ID = %s AND CHECKOUT < SYSDATE AND HOUSE_REVIEW IS NOT NULL;"""
     cursor.execute(query, [house_id])
     reviews = definitions.dictfetchall(cursor)
 
@@ -186,7 +193,7 @@ def house(request, house_id):
             WHERE USER_ID = (
             SELECT USER_ID
             FROM HOUSES
-            WHERE HOUSE_ID = %s
+            WHERE HOUSE_ID = %s AND CHECKOUT < SYSDATE
             ))"""
     cursor.execute(query, [house_id])
     ownerRating = definitions.dictfetchone(cursor)

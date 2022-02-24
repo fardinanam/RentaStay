@@ -491,11 +491,11 @@ if(openModalButtons != null && overlay != null && closeModalButtons != null) {
             fetch(url)
             .then(response => response.json)
             .then(data => {
-                console.log(data.message)
+                console.log(data)
                 
-                cardOwnerRating.innerHTML = 'Rated' + ' ' + ownerStar.value + 'star'
+                cardOwnerRating.innerHTML = ownerStar.value
                 cardOwnerReview.innerHTML = ownerReview.value
-                cardHouseRating.innerHTML = 'Rated' + ' ' + houseStar.value + 'star'
+                cardHouseRating.innerHTML = houseStar.value
                 cardHouseReview.innerHTML = houseReview.value
             })
             closeModal(modal)

@@ -86,13 +86,13 @@
                                                     
                                                 </div>
                                                 <div class="pull-right">
-                                                    <span card-owner-rating>
+                                                    <span >
                                                         {% if rent.OWNER_RATING is not None %}
-                                                            <small><i class="bi bi-star-fill"></i> {{ rent.OWNER_RATING }}</small>
+                                                            <small><i class="bi bi-star-fill"></i><span card-owner-rating> {{ rent.OWNER_RATING }}</span></small>
                                                         {% else %}
                                                             You haven't rated him yet.
                                                         {% endif %}
-                                                    </span><br>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div>
@@ -103,7 +103,7 @@
                                                         No comments.
                                                     {% endif %}
                                                 </span>
-                                            <div>
+                                            </div>
                                         </div>
                                         <div>
                                             <div class="clearfix">
@@ -111,30 +111,32 @@
                                                     <b>Review on house: </b>
                                                 </div>
                                                 <div class="pull-right">
-                                                    <span card-owner-rating>
+                                                    <span>
                                                         {% if rent.HOUSE_RATING is not None %}
-                                                            <small><i class="bi bi-star-fill"></i> {{ rent.HOUSE_RATING }}</small>
+                                                            <small><i class="bi bi-star-fill"></i><span card-house-rating> {{ rent.HOUSE_RATING }}</span></small>
                                                         {% else %}
                                                             You haven't rated this house yet.
                                                         {% endif %}
-                                                    </span><br>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div>
-                                                <span card-owner-review>
+                                                <span card-house-review>
                                                     {% if rent.HOUSE_REVIEW is not None %}
                                                         {{ rent.HOUSE_REVIEW }}
                                                     {% else %}
                                                         No comments.
                                                     {% endif %}
                                                 </span>
-                                            <div>
+                                            </div>
                                         </div>
                                     </p>
                                     <button class="btn btn-outline-success btn-block mb-2" data-modal-target="#modal{{ forloop.counter0 }}">Edit Review</button>
                                     <div class="modal-custom justify-content-center" id="modal{{ forloop.counter0 }}" data-rent-id="{{ rent.RENT_ID }}">
                                         <div class="modal-custom-header">
-                                            <div class="title text-center">Edit Review</div>
+                                            <div class="title text-center">
+                                                Edit Review
+                                            </div>
                                         </div>
                                         <div class="modal-custom-body">
                                             <div class="container-fluid p-0 justify-content-center">
