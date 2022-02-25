@@ -13,24 +13,29 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-RentaStay is an oracle powered bootstrapped django Website. It is a faithful copy of [Airbnb](https://www.airbnb.com/). You'll find many features that is in the main site. We tried best of our ability to create something in this short time. 
+RentaStay is an oracle powered bootstrapped django Website inspired by [Airbnb](https://www.airbnb.com/). 
+
+The goal of the project is to learn database from the core. So, we were not allowed to use Django's built-in models features.  Instead, we had to use raw sql. 
 
 ### Built With 
+
+#### Database
+![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
 #### Backend
-- 	![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-- ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
 
 #### Fronend
-- ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
-- ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-- ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 
-#### Frameworks
-- ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
-- ![Bootstrap](https://img.shields.io/badge/bootstrap-%23563D7C.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
-- ![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/bootstrap-%23563D7C.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
+
+<p align="right"><a href="#top">back to top</a></p>
 
 ## Getting Started
 
@@ -118,7 +123,7 @@ Make sure you have python and oracle installed in your device.
     python manage.py runserver
     ```
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right"><a href="#top">back to top</a></p>
 
 <!-- CONTACT -->
 ## Contributors
@@ -143,4 +148,4 @@ Make sure you have python and oracle installed in your device.
 
     [http://rifatshahriyar.github.io/](http://rifatshahriyar.github.io/)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<p align="right"><a href="#top">back to top</a></p>
