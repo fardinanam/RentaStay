@@ -1,3 +1,36 @@
+<div id="top"></div>
+
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+
+![](static/img/logos/RentaStay-logo.svg)
+
+<h2 align="center">RentaStay</h2>
+</div>
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+RentaStay is an oracle powered bootstrapped django Website. It is a faithful copy of [Airbnb](https://www.airbnb.com/). You'll find many features that is in the main site. We tried best of our ability to create something in this short time. 
+
+### Built With 
+#### Backend
+- 	![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+- ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
+
+#### Fronend
+- ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+- ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+
+#### Frameworks
+- ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
+- ![Bootstrap](https://img.shields.io/badge/bootstrap-%23563D7C.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
+- ![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Getting Started
 
 Follow the step by step installation procedure to install and run this on your machine
@@ -35,6 +68,8 @@ Make sure you have python and oracle installed in your device.
 
 #### Setting up Oracle
 
+0. The oracle `TNSListener` and `Services` are supposed to be run by default but on windows sometimes these are required to run manually. In that case, you need to manually start those. In `Windows->Services` find `OracleOraDB19Home2TNSListener` (or just find the one that starts with oracle and ends with Listener) and `OracleServiceORCL`. Start these sequencially.
+
 1. Open SQL Plus
 
 2. Enter credentials
@@ -46,7 +81,7 @@ Make sure you have python and oracle installed in your device.
 
 3.  Create a new user sa
 
-    ```sh
+    ```sql
     create user sa identified by sa;
     grant all privileges to sa;
     ```
@@ -81,3 +116,30 @@ Make sure you have python and oracle installed in your device.
     ```sh
     python manage.py runserver
     ```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- CONTACT -->
+## Contributors
+
+- [Fardin Anam Aungon](https://github.com/fardinanam)
+
+- [Shehabul Islam Sawraz](https://github.com/Shehabul-Islam-Sawraz)
+
+## Supervisor
+
+- Dr. Rifat Shahriyar (রিফাত শাহরিয়ার)
+
+  - **Professor**
+
+    ▶ **Contact:**
+
+    Department of Computer Science and Engineering
+    Bangladesh University of Engineering and Technology
+    Dhaka-1000, Bangladesh
+
+    ▶   **Homepage:**
+
+    [http://rifatshahriyar.github.io/](http://rifatshahriyar.github.io/)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
