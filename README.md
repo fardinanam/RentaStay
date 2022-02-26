@@ -6,34 +6,67 @@
 <div align="center">
 
 ![](static/img/logos/RentaStay-logo.svg)
+<h1 align="center">RentaStay</h1>
 
-<h2 align="center">RentaStay</h2>
 </div>
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary><b>Table of Contents</b></summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a>
+            <ul>
+                <li><a href="#getting-the-repository">Getting the repository</a></li>
+                <li><a href="#setting-up-python">Setting up Python</a></li>
+                <li><a href="#setting-up-oracle">Setting up Oracle</a></li>
+                <li><a href="#setting-up-the-database">Setting up the Database</a></li>
+            </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#contributors">Contributors</a></li>
+  </ol>
+</details>
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-RentaStay is an oracle powered bootstrapped django Website inspired by [Airbnb](https://www.airbnb.com/). 
+RentaStay is an oracle powered bootstrapped Django website inspired by [Airbnb](https://www.airbnb.com/). Here a user can rent rooms that are available in the location they are going. At the same time, they can upload the information of their own house so that others can rent that. Based on this key idea many other features are added to ease access of the site for the users. We tried our best to add as many features as we could in this brief time. 
 
-The goal of the project is to learn database from the core. So, we were not allowed to use Django's built-in models features.  Instead, we had to use raw sql. 
+Watch the video describing detailed features of the website [here](https://youtu.be/EC00IQQwTzk)
+
+The goal of the project was to learn database from the core. So, we were not allowed to use Django's built-in models features.  Instead, we had to use raw sql. Other than that, we had the privilege to use all the other features of Django that made the website easier to build. This was quite a challenging journey but a fun way to learn new things about website development.
+
+
 
 ### Built With 
 
 #### Database
 ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
+
 #### Backend
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
 
 #### Fronend
 
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
-
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/bootstrap-%23563D7C.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
+
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
 
 <p align="right"><a href="#top">back to top</a></p>
 
@@ -61,7 +94,7 @@ Make sure you have python and oracle installed in your device.
 
 2. If you don't have git installed in your device then download zip
 
-#### Setting up python
+#### Setting up Python
 
 1. Go to the repository base folder and open terminal.
 
@@ -134,11 +167,9 @@ Make sure you have python and oracle installed in your device.
 
 ## Supervisor
 
-- Dr. Rifat Shahriyar (রিফাত শাহরিয়ার)
+- Dr. Rifat Shahriyar
 
-  - **Professor**
-
-    ▶ **Contact:**
+   **Professor**
 
     Department of Computer Science and Engineering
     Bangladesh University of Engineering and Technology
