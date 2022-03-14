@@ -43,7 +43,7 @@
 
 RentaStay is an oracle powered bootstrapped Django website inspired by [Airbnb](https://www.airbnb.com/). Here a user can rent rooms that are available in the location they are going. At the same time, they can upload the information of their own house so that others can rent that. Based on this key idea many other features are added to ease access of the site for the users. We tried our best to add as many features as we could in this brief time. 
 
-Watch the video describing detailed features of the website [here](https://youtu.be/EC00IQQwTzk)
+Watch the video describing detailed features of the website [here](https://youtu.be/EC00IQQwTzk).
 
 The goal of the project was to learn database from the core. So, we were not allowed to use Django's built-in models features.  Instead, we had to use raw sql. Other than that, we had the privilege to use all the other features of Django that made the website easier to build. This was quite a challenging journey but a fun way to learn new things about website development.
 
@@ -78,9 +78,9 @@ Follow the step by step installation procedure to install and run this on your m
 
 Make sure you have python and oracle installed in your device.
 
-**`Python`**: Install Python from [here](https://www.python.org/downloads/)
+**`Python`**: Install Python from [here](https://www.python.org/downloads/).
 
-**`Oracle`**: Install Oracle from [here](http://www.oracle.com/index.html) and register for an account of your own
+**`Oracle`**: Install Oracle from [here](http://www.oracle.com/index.html) and register for an account of your own.
 
 ### Installation
 
@@ -89,7 +89,7 @@ Make sure you have python and oracle installed in your device.
 1. Clone the repo:
 
     ```sh
-    git clone https://github.com/fardinanam/RENTASTAY.git
+    git clone https://github.com/fardinanam/RentaStay.git
     ```
 
 2. If you don't have git installed in your device then download zip
@@ -107,7 +107,7 @@ Make sure you have python and oracle installed in your device.
 
 #### Setting up Oracle
 
-0. The oracle `TNSListener` and `Services` are supposed to be run by default but on windows sometimes these are required to run manually. In that case, you need to manually start those. In `Windows->Services` find `OracleOraDB19Home2TNSListener` (or just find the one that starts with oracle and ends with Listener) and `OracleServiceORCL`. Start these sequencially.
+0. The oracle `TNSListener` and `Services` are supposed to run by default but on windows sometimes these are required to start manually. In that case, in `Windows->Services` find `OracleOraDB19Home2TNSListener` (or just find the one that starts with oracle and ends with Listener) and `OracleServiceORCL`. Start these sequencially.
 
 1. Open SQL Plus
 
